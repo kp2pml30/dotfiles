@@ -1,0 +1,20 @@
+{
+    "window.titleBarStyle": "custom",
+    "editor.renderWhitespace": "all",
+    "files.trimTrailingWhitespace": true,
+    "editor.renderFinalNewline": "off",
+    "files.insertFinalNewline": true,
+    "C_Cpp.autocomplete": "disabled",
+    "clangd.detectExtensionConflicts": false,
+    "editor.fontFamily": "'Fira Code', 'monospace', monospace",
+    "editor.fontLigatures": true,
+    "extensions.ignoreRecommendations": true,
+    "editor.accessibilitySupport": "on",
+    "files.trimFinalNewlines": true,
+    "editor.padding.top": 64,
+    "explorer.confirmDragAndDrop": false,
+    "git.openRepositoryInParentFolders": "always",
+    "cmake.preferredGenerators": [
+        "Ninja"
+    ]
+}
