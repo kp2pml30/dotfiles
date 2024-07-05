@@ -3,7 +3,9 @@ call plug#begin()
 	Plug 'kyazdani42/nvim-web-devicons'
 	Plug 'romgrk/barbar.nvim'
 	Plug 'jiangmiao/auto-pairs'
-	Plug 'neoclide/coc.nvim', {'branch': 'release'}
+	if executable('node')
+		Plug 'neoclide/coc.nvim', {'branch': 'release'}
+	endif
 	Plug 'spinks/vim-leader-guide'
 	Plug 'feline-nvim/feline.nvim'
 	Plug 'folke/tokyonight.nvim', { 'branch': 'main' }

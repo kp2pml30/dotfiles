@@ -12,7 +12,7 @@ function read_confirm
 end
 
 function fish_greeting
-	if status is-interactive && ! test -f /encrypt/.exists
+	if status is-interactive && ! test -f /encrypt/.exists && test -f ~/encrypted.vhdx
 		if test -f /tmp/.skip-encrypt
 			echo "Encrypted drive not installed"
 			return
@@ -42,7 +42,7 @@ if test -x ~/.rbenv/bin/rbenv
 	~/.rbenv/bin/rbenv init - fish | source
 end
 if test -f ~/.opam/opam-init/init.fish
-	source /home/r3vdy-2-b10vv/.opam/opam-init/init.fish
+	source ~/.opam/opam-init/init.fish
 end
 alias clear="printf '\033[2J\033[3J\033[1;1H'"
 export PATH="$PATH:$HOME/.bin:$HOME/.local/bin"
