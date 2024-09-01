@@ -32,18 +32,18 @@ if status is-interactive
 		zoxide init fish | source
 	end
 end
-if command -v poetry > /dev/null
-	poetry completions fish | source
-end
-if test -f ~/.ghcup/env
-	bass source ~/.ghcup/env
-end
-if test -x ~/.rbenv/bin/rbenv
-	~/.rbenv/bin/rbenv init - fish | source
-end
-if test -f ~/.opam/opam-init/init.fish
-	source ~/.opam/opam-init/init.fish
-end
+#if test -f ~/.ghcup/env
+#	bass source ~/.ghcup/env
+#end
+#if test -x ~/.rbenv/bin/rbenv
+#	~/.rbenv/bin/rbenv init - fish | source
+#end
+#if test -f ~/.opam/opam-init/init.fish
+#	source ~/.opam/opam-init/init.fish
+#end
 alias clear="printf '\033[2J\033[3J\033[1;1H'"
-export PATH="$PATH:$HOME/.bin:$HOME/.local/bin"
+export PATH="$PATH:$KP2PATH"
+if set -uq KP2COMPLETIONS
+	eval "$KP2COMPLETIONS"
+end
 bass source ~/.bashrc
