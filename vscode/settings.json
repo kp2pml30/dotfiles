@@ -6,7 +6,7 @@
     "files.insertFinalNewline": true,
     "C_Cpp.autocomplete": "disabled",
     "clangd.detectExtensionConflicts": false,
-    "editor.fontFamily": "'Fira Code', 'monospace', monospace",
+    "editor.fontFamily": "Fira Code, FiraCode, Consolas, 'monospace', monospace",
     "editor.fontLigatures": true,
     "extensions.ignoreRecommendations": true,
     "editor.accessibilitySupport": "on",
