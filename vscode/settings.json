@@ -9,7 +9,7 @@
     "editor.fontFamily": "Fira Code, FiraCode, Consolas, 'monospace', monospace",
     "editor.fontLigatures": true,
     "extensions.ignoreRecommendations": true,
-    "editor.accessibilitySupport": "on",
+    "editor.accessibilitySupport": "off",
     "files.trimFinalNewlines": true,
     "editor.padding.top": 64,
     "explorer.confirmDragAndDrop": false,
