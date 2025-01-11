@@ -1,0 +1,25 @@
+# editors
+.vscode/
+.idea/
+.godot/
+
+# apple
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# build related directories
+/build
+target
+zig-out
+zig-build
+
+# secrets
+.env
+
+# py
+__pycache__/
+.pytest_cache
+.mypy_cache
+.ruff_cache
+.coverage*

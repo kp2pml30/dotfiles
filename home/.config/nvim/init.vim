@@ -3,6 +3,7 @@ call plug#begin()
 	Plug 'kyazdani42/nvim-web-devicons'
 	Plug 'romgrk/barbar.nvim'
 	Plug 'jiangmiao/auto-pairs'
+	Plug 'RaafatTurki/hex.nvim'
 	if executable('node')
 		Plug 'neoclide/coc.nvim', {'branch': 'release'}
 	endif
@@ -73,3 +74,4 @@ let g:smap.l = {'name' : 'language'}
 call leaderGuide#register_prefix_descriptions("<Space>", "g:smap")
 
 lua require('feline').setup()
+lua require('hex').setup()
