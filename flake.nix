@@ -1,6 +1,6 @@
 {
 	inputs = {
-		nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+		nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.11";
 		nixos-wsl = {
 			url = "github:nix-community/NixOS-WSL/main";
 			inputs.nixpkgs.follows = "nixpkgs";
@@ -9,53 +9,62 @@
 			url = "github:nix-community/home-manager/release-24.11";
 			inputs.nixpkgs.follows = "nixpkgs";
 		};
+		#vscode-server = {
+		#	url = "github:nix-community/nixos-vscode-server";
+		#	inputs.nixpkgs.follows = "nixpkgs";
+		#};
 	};
 
 	outputs = inputs@{ self, nixpkgs, nixos-wsl, home-manager, ... }:
 		let
 			rootPath = self;
 			additionalArgs = { inherit inputs rootPath; };
-			importArg = inputs // { pkgs = nixpkgs; lib = nixpkgs.lib; } // additionalArgs;
-			hostNameMod = name: { networking.hostName = "kp2pml30-${name}"; };
-			makeNamedSys = nameArg: arg: {
-				"${nameArg}" =
-					nixpkgs.lib.nixosSystem
-					((builtins.removeAttrs arg ["modules"]) // { specialArgs = additionalArgs; modules = arg.modules ++ [(hostNameMod nameArg)]; });
-			};
-			makeSys = { sys }: [
-				(makeNamedSys "server-${sys}" {
-					system = sys;
+			lib = nixpkgs.lib;
+		in
+		{
+			nixosConfigurations = {
+				personal-laptop = nixpkgs.lib.nixosSystem {
+					system = "x86_64-linux";
 					modules = [
-						./nix/common.nix
-						./nix/server.nix
-					];
-				})
+						{
+							networking.hostName = "kp2pml30-personal-laptop";
+							networking.hostId = "e31a5cc0";
 
-				(makeNamedSys "personal-${sys}" {
-					system = sys;
-					modules = [
-						./nix/common.nix
-						./nix/personal.nix
-					];
-				})
+							time.timeZone = "Asia/Yerevan";
+						}
 
-				(makeNamedSys "personal-${sys}-wsl" {
-					system = sys;
+						./nix/hardware/ideapad.nix
+
+						./nix/common.nix
+
+						./nix/personal
+
+						{
+							kp2pml30 = {
+								xserver = true;
+								vscode = true;
+								kitty = true;
+								opera = true;
+								steam = true;
+							};
+						}
+					];
+					specialArgs = additionalArgs;
+				};
+				personal-wsl = nixpkgs.lib.nixosSystem {
+					system = "x86_64-linux";
 					modules = [
+						{
+							networking.hostName = "kp2pml30-personal-wsl";
+							networking.hostId = "e31a5cbf";
+						}
 						./nix/wsl.nix
 						./nix/common.nix
 						./nix/personal.nix
 					];
-				})
-			] ;
-		in
-		{
-			nixosConfigurations =
-				builtins.foldl'
-					(x: y: x // y)
-					{}
-					(builtins.concatMap makeSys [ { sys = "x86_64-linux"; } ])
-			;
+					specialArgs = additionalArgs;
+				};
+			};
 		};
 }
 

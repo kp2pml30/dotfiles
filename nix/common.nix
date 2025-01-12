@@ -6,6 +6,8 @@
 
 	users.mutableUsers = false;
 
+	console.keyMap = "us";
+
 	nix.gc = {
 		automatic = true;
 		dates = "weekly";

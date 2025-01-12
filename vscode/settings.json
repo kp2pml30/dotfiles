@@ -16,5 +16,6 @@
     "git.openRepositoryInParentFolders": "always",
     "cmake.preferredGenerators": [
         "Ninja"
-    ]
+    ],
+    "cSpell.language": "en,ru"
 }
