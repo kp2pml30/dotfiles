@@ -17,12 +17,17 @@ in {
 		};
 
 		nginx = lib.mkEnableOption "";
+
+		sitePath = lib.mkOption {
+			type = lib.types.str;
+		};
 	};
 
 	imports =  [
 		./ssh.nix
 		./nginx.nix
 		./boot.nix
+		./site.nix
 	];
 
 	config = {

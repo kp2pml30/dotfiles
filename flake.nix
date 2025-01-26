@@ -37,6 +37,7 @@
 
 							kp2pml30.server = {
 								hostname = "kp2pml30.moe";
+								nginx = true;
 							};
 						}
 

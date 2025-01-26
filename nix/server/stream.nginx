@@ -77,10 +77,29 @@ upstream deny {
 	server 127.0.0.1:9;
 }
 
+upstream self {
+	server 127.0.0.1:80;
+}
+
 server {
-	listen                443;
-	proxy_pass            $name;
-	ssl_preread           on;
-	error_log             /dev/null;
-	access_log            off;
+	listen          443 ssl;
+	server_name     pr.kp2pml30.moe;
+	proxy_pass      $name;
+	ssl_preread     on;
+
+	ssl_certificate         /var/lib/acme/kp2pml30.moe/fullchain.pem;
+	ssl_certificate_key     /var/lib/acme/kp2pml30.moe/key.pem;
+	ssl_trusted_certificate /var/lib/acme/kp2pml30.moe/chain.pem;
+}
+
+server {
+	listen 443 ssl;
+	server_name kp2pml30.moe;
+	error_log   /tmp/err.nginx debug;
+
+	proxy_pass self;
+
+	ssl_certificate         /var/lib/acme/kp2pml30.moe/fullchain.pem;
+	ssl_certificate_key     /var/lib/acme/kp2pml30.moe/key.pem;
+	ssl_trusted_certificate /var/lib/acme/kp2pml30.moe/chain.pem;
 }

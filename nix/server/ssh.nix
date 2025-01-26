@@ -17,4 +17,14 @@ in {
 			AllowUsers = [ cfg.username ];
 		};
 	};
+
+	services.fail2ban = {
+		enable = true;
+		maxretry = 5;
+		bantime = "168h";
+		bantime-increment = {
+			enable = true;
+			formula = "ban.Time * ban.Time";
+		};
+	};
 }
