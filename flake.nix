@@ -9,13 +9,17 @@
 			url = "github:nix-community/home-manager/release-24.11";
 			inputs.nixpkgs.follows = "nixpkgs";
 		};
+		nixos-generators = {
+			url = "github:nix-community/nixos-generators";
+			inputs.nixpkgs.follows = "nixpkgs";
+		};
 		#vscode-server = {
 		#	url = "github:nix-community/nixos-vscode-server";
 		#	inputs.nixpkgs.follows = "nixpkgs";
 		#};
 	};
 
-	outputs = inputs@{ self, nixpkgs, nixos-wsl, home-manager, ... }:
+	outputs = inputs@{ self, nixpkgs, nixos-wsl, home-manager, nixos-generators, ... }:
 		let
 			rootPath = self;
 			additionalArgs = { inherit inputs rootPath; };
@@ -23,6 +27,29 @@
 		in
 		{
 			nixosConfigurations = {
+				server = nixpkgs.lib.nixosSystem {
+					system = "x86_64-linux";
+
+					modules = [
+						{
+							networking.hostId = "e31a5cc1";
+							time.timeZone = "Asia/Yerevan";
+
+							kp2pml30.server = {
+								hostname = "kp2pml30.moe";
+							};
+						}
+
+						./nix/common.nix
+
+						./nix/server
+
+						./nix/hardware/server.nix
+
+						nixos-generators.nixosModules.all-formats
+					];
+				};
+
 				personal-laptop = nixpkgs.lib.nixosSystem {
 					system = "x86_64-linux";
 					modules = [
@@ -46,6 +73,8 @@
 								kitty = true;
 								opera = true;
 								steam = true;
+
+								boot.efiGrub = true;
 							};
 						}
 					];
@@ -60,7 +89,7 @@
 						}
 						./nix/wsl.nix
 						./nix/common.nix
-						./nix/personal.nix
+						./nix/personal
 					];
 					specialArgs = additionalArgs;
 				};

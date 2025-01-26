@@ -1,0 +1,54 @@
+# architectures
+aarch
+simd
+
+# build systems
+cflags
+cxxflags
+ldflags
+sysroot
+depfile
+codegen
+
+# bash
+pushd
+popd
+
+# language abbreviations
+errno
+syscall
+callconv
+noreturn
+orelse
+defer
+threadlocal
+
+# compiler
+klass
+iface
+zelf
+
+# python
+kwargs
+mkpath
+pathlib
+itertools
+
+# common abbreviations
+incref
+decref
+uninit
+
+# terms
+keccak
+
+# well known projects
+zlib
+bzlib
+lzma
+neovim
+cpython
+rustc
+wasm*
+wasi
+witx

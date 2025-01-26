@@ -4,25 +4,23 @@
 , ...
 }:
 {
-	hardware.enableRedistributableFirmware = true;
-
-	boot = {
-		loader.grub = {
-			enable = true;
-			devices = [ "nodev" ];
-			efiSupport = true;
-			useOSProber = true;
-		};
-
-		loader.efi.canTouchEfiVariables = true;
-
-		initrd.availableKernelModules = [ "nvme" "xhci_pci" "usb_storage" "sd_mod" "sdhci_pci" ];
-		initrd.kernelModules = [ ];
-		extraModulePackages = [ ];
+	options.kp2pml30.boot = {
+		efiGrub = lib.mkEnableOption "";
 	};
 
-	networking = {
-		networkmanager.enable = true;
-		useDHCP = lib.mkDefault true;
+	imports = [
+		./efiGrub.nix
+	];
+
+	config = {
+		hardware.enableRedistributableFirmware = true;
+
+		boot = {
+			loader.efi.canTouchEfiVariables = true;
+
+			initrd.availableKernelModules = [ "nvme" "xhci_pci" "usb_storage" "sd_mod" "sdhci_pci" "uas" "usbcore" ];
+			initrd.kernelModules = [ ];
+			extraModulePackages = [ ];
+		};
 	};
 }

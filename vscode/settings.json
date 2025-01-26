@@ -1,21 +1,28 @@
 {
-    "window.titleBarStyle": "custom",
-    "editor.renderWhitespace": "all",
-    "files.trimTrailingWhitespace": true,
-    "editor.renderFinalNewline": "off",
-    "files.insertFinalNewline": true,
-    "C_Cpp.autocomplete": "disabled",
-    "clangd.detectExtensionConflicts": false,
-    "editor.fontFamily": "Fira Code, FiraCode, Consolas, 'monospace', monospace",
-    "editor.fontLigatures": true,
-    "extensions.ignoreRecommendations": true,
-    "editor.accessibilitySupport": "off",
-    "files.trimFinalNewlines": true,
-    "editor.padding.top": 64,
-    "explorer.confirmDragAndDrop": false,
-    "git.openRepositoryInParentFolders": "always",
-    "cmake.preferredGenerators": [
-        "Ninja"
-    ],
-    "cSpell.language": "en,ru"
+	"window.titleBarStyle": "custom",
+
+	"editor.fontFamily": "Fira Code, FiraCode, Consolas, 'monospace', monospace",
+	"editor.fontLigatures": true,
+
+	"files.trimTrailingWhitespace": true,
+	"files.insertFinalNewline": true,
+	"files.trimFinalNewlines": true,
+	"editor.padding.top": 64,
+	"editor.renderWhitespace": "all",
+	"editor.renderFinalNewline": "off",
+
+	"editor.accessibilitySupport": "off",
+	"explorer.confirmDragAndDrop": false,
+
+	"extensions.ignoreRecommendations": true,
+
+	"C_Cpp.autocomplete": "disabled",
+	"clangd.detectExtensionConflicts": false,
+
+	"git.openRepositoryInParentFolders": "always",
+
+	"cmake.preferredGenerators": [
+		"Ninja"
+	],
+	"cSpell.language": "en,ru"
 }

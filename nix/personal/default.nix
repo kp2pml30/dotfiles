@@ -54,10 +54,6 @@ in {
 			fishPlugins.bass
 
 			grc
-
-			fira-code
-			fira-code-nerdfont
-			#nerd-fonts.fira-code
 		];
 
 		nixpkgs.config.allowUnfreePredicate = pkg:

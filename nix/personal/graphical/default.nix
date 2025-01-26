@@ -14,4 +14,9 @@ in {
 		./opera.nix
 		./steam.nix
 	];
+
+	environment.systemPackages = with pkgs; [
+		fira-code
+		fira-code-nerdfont
+	];
 }

@@ -39,4 +39,9 @@
 			support32Bit.enable = true;
 		};
 	};
+
+	networking = {
+		networkmanager.enable = true;
+		useDHCP = lib.mkDefault true;
+	};
 }
