@@ -35,6 +35,7 @@ in lib.mkIf cfg.nginx {
 
 			locations."/" = {
 				root = cfg.sitePath;
+				tryFiles = "$uri $uri/ index.html";
 			};
 		};
 
