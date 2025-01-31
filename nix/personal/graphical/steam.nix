@@ -13,4 +13,6 @@ in lib.mkIf cfg.steam {
 		dedicatedServer.openFirewall = false;
 		localNetworkGameTransfers.openFirewall = false;
 	};
+
+	hardware.steam-hardware.enable = true;
 }

@@ -76,6 +76,8 @@
 								steam = true;
 
 								boot.efiGrub = true;
+
+								hardware.wireless = true;
 							};
 						}
 					];

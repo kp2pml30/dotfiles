@@ -15,8 +15,11 @@ in {
 		./steam.nix
 	];
 
-	environment.systemPackages = with pkgs; [
+	fonts.packages = with pkgs; [
 		fira-code
 		fira-code-nerdfont
+		fira-code-symbols
+
+		(nerdfonts.override { fonts = [ "FiraCode" ]; })
 	];
 }

@@ -8,8 +8,13 @@
 		efiGrub = lib.mkEnableOption "";
 	};
 
+	options.kp2pml30.hardware = {
+		wireless = lib.mkEnableOption "";
+	};
+
 	imports = [
 		./efiGrub.nix
+		./wireless.nix
 	];
 
 	config = {

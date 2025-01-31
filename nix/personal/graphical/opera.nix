@@ -11,8 +11,5 @@ in lib.mkIf cfg.opera {
 		packages = with pkgs; [
 			(opera.override { proprietaryCodecs = true; })
 		];
-
-		file.".config/opera/Default/Preferences" = { source = rootPath + "/home/.config/opera/Default/Preferences"; };
-		file.".config/opera/Default/Bookmarks" = { source = rootPath + "/home/.config/opera/Default/Bookmarks"; };
 	};
 }

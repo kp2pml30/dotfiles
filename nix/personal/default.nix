@@ -9,7 +9,7 @@ let
 in {
 	options.kp2pml30 = {
 		username = lib.mkOption {
-			type = lib.types.string;
+			type = lib.types.str;
 			default = "kp2pml30";
 		};
 		xserver = lib.mkEnableOption "";
