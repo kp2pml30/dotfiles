@@ -39,7 +39,6 @@ if system('uname -a') =~ '\<WSL2\>'
 	\ }
 endif
 
-" colorscheme tokyonight-night
 if exists(':GuiRenderLigatures')
 	GuiRenderLigatures 1
 endif
@@ -49,6 +48,8 @@ if exists(':GuiFont')
 endif
 
 function s:post_load()
+	colorscheme tokyonight-night
+
 	if exists(':NERDTreeToggle')
 		map <F3> :NERDTreeToggle<CR>
 		autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif

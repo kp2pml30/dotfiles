@@ -30,12 +30,12 @@ in lib.mkIf cfg.nginx {
 
 			listen = [
 				{ addr = "0.0.0.0"; port = 80; }
-				{ addr = "0.0.0.0"; port = 444; ssl = true; }
+				# { addr = "0.0.0.0"; port = 444; ssl = true; }
 			];
 
 			locations."/" = {
 				root = cfg.sitePath;
-				tryFiles = "$uri $uri/ index.html";
+				tryFiles = "$uri $uri/ /index.html";
 			};
 		};
 

@@ -31,12 +31,23 @@ in lib.mkIf cfg.xserver {
 
 	environment.systemPackages = with pkgs; [
 		xclip
+		brightnessctl
 	];
 
 	home-manager.users.${cfg.username} = {
-		home.file.".config/awesome/rc.lua" = { source = rootPath + "/home/.config/awesome/rc.lua"; };
 		programs.rofi = {
 			enable = true;
+		};
+		home.file.".config/rofi" = { source = rootPath + "/home/.config/rofi"; recursive = true; };
+
+		home.file.".config/awesome/rc.lua" = { source = rootPath + "/home/.config/awesome/rc.lua"; };
+		home.file.".config/awesome/theme.lua" = { source = rootPath + "/home/.config/awesome/theme.lua"; };
+		home.file.".config/awesome/deficient" = {
+			source = builtins.fetchGit {
+				url = "https://github.com/deficient/deficient.git";
+				rev = "22ad2bea198f0c231afac0b7197d9b4eb6d80da3";
+			};
+			recursive = true;
 		};
 	};
 }

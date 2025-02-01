@@ -13,6 +13,9 @@ in {
 
 		./opera.nix
 		./steam.nix
+
+		./messengers.nix
+		./messengers-work.nix
 	];
 
 	fonts.packages = with pkgs; [

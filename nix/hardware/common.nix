@@ -10,11 +10,13 @@
 
 	options.kp2pml30.hardware = {
 		wireless = lib.mkEnableOption "";
+		audio = lib.mkEnableOption "";
 	};
 
 	imports = [
 		./efiGrub.nix
 		./wireless.nix
+		./audio.nix
 	];
 
 	config = {

@@ -17,6 +17,10 @@ in {
 		kitty = lib.mkEnableOption "";
 		opera = lib.mkEnableOption "";
 		steam = lib.mkEnableOption "";
+		messengers = {
+			personal = lib.mkEnableOption "";
+			work = lib.mkEnableOption "";
+		};
 	};
 
 	imports = [
@@ -53,6 +57,7 @@ in {
 			fishPlugins.grc
 			fishPlugins.bass
 
+			python312 # needed for bass
 			grc
 		];
 
@@ -67,6 +72,7 @@ in {
 				"nvidia-settings"
 				"nvidia-persistenced"
 				"opera"
+				"discord-ptb"
 			];
 	};
 }

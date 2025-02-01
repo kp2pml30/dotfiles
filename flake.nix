@@ -78,6 +78,9 @@
 								boot.efiGrub = true;
 
 								hardware.wireless = true;
+								hardware.audio = true;
+
+								messengers.personal = true;
 							};
 						}
 					];

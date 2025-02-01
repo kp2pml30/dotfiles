@@ -8,6 +8,7 @@ local awful = require("awful")
 require("awful.autofocus")
 -- Widget and layout library
 local wibox = require("wibox")
+local deficient = require("deficient")
 -- Theme handling library
 local beautiful = require("beautiful")
 -- Notification library
@@ -45,7 +46,9 @@ end
 
 -- {{{ Variable definitions
 -- Themes define colours, icons, font and wallpapers.
-beautiful.init(gears.filesystem.get_themes_dir() .. "default/theme.lua")
+if not beautiful.init(require("theme")) then
+	beautiful.init(gears.filesystem.get_themes_dir() .. "default/theme.lua")
+end
 
 -- This is used later as the default terminal and editor to run.
 terminal = "kitty"
@@ -83,11 +86,11 @@ awful.layout.layouts = {
 -- {{{ Menu
 -- Create a launcher widget and a main menu
 myawesomemenu = {
-   { "hotkeys", function() hotkeys_popup.show_help(nil, awful.screen.focused()) end },
-   { "manual", terminal .. " -e man awesome" },
-   { "edit config", editor_cmd .. " " .. awesome.conffile },
-   { "restart", awesome.restart },
-   { "quit", function() awesome.quit() end },
+	{ "hotkeys", function() hotkeys_popup.show_help(nil, awful.screen.focused()) end },
+	{ "manual", terminal .. " -e man awesome" },
+	{ "edit config", editor_cmd .. " " .. awesome.conffile },
+	{ "restart", awesome.restart },
+	{ "quit", function() awesome.quit() end },
 }
 
 mymainmenu = awful.menu({ items = { { "awesome", myawesomemenu, beautiful.awesome_icon },
@@ -107,7 +110,14 @@ mykeyboardlayout = awful.widget.keyboardlayout()
 
 -- {{{ Wibar
 -- Create a textclock widget
-mytextclock = wibox.widget.textclock()
+local mytextclock = wibox.widget {
+	format = "%a %d/%m/%y %H:%M %b",
+	widget = wibox.widget.textclock,
+}
+
+local my_brightness = deficient.brightness {
+}
+local my_volume = deficient.volume_control({})
 
 -- Create a wibox for each screen and add it
 local taglist_buttons = gears.table.join(
@@ -213,6 +223,8 @@ awful.screen.connect_for_each_screen(function(s)
 			mykeyboardlayout,
 			wibox.widget.systray(),
 			mytextclock,
+			my_brightness.widget,
+			my_volume.widget,
 			s.mylayoutbox,
 		},
 	}
@@ -250,8 +262,6 @@ globalkeys = gears.table.join(
 		end,
 		{description = "focus previous by index", group = "client"}
 	),
-	awful.key({ modkey,           }, "w", function () mymainmenu:show() end,
-			  {description = "show main menu", group = "awesome"}),
 
 	-- Layout manipulation
 	awful.key({ modkey, "Shift"   }, "j", function () awful.client.swap.byidx(  1)    end,
@@ -313,7 +323,7 @@ globalkeys = gears.table.join(
 	-- Prompt
 	awful.key({ modkey },            "r",     function () awful.screen.focused().mypromptbox:run() end,
 			  {description = "run prompt", group = "launcher"}),
-	awful.key({ modkey },            "d",     function () awful.spawn("rofi -show drun") end,
+	awful.key({ modkey },            "d",     function () awful.spawn("rofi -show drun -drun-show-actions") end,
 			  {description = "run prompt", group = "launcher"}),
 
 	awful.key({ modkey }, "x",
@@ -328,7 +338,15 @@ globalkeys = gears.table.join(
 			  {description = "lua execute prompt", group = "awesome"}),
 	-- Menubar
 	awful.key({ modkey }, "p", function() menubar.show() end,
-			  {description = "show the menubar", group = "launcher"})
+			  {description = "show the menubar", group = "launcher"}),
+
+	-- fns
+	awful.key({}, "XF86AudioRaiseVolume", function() my_volume:up() end),
+	awful.key({}, "XF86AudioLowerVolume", function() my_volume:down() end),
+	awful.key({}, "XF86AudioMute",        function() my_volume:toggle() end),
+
+	awful.key({}, "XF86MonBrightnessDown", function() my_brightness:down() end),
+	awful.key({}, "XF86MonBrightnessUp",   function() my_brightness:up() end)
 )
 
 clientkeys = gears.table.join(
