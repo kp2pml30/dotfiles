@@ -6,6 +6,7 @@
 let
 	cfg = config.kp2pml30.server;
 	acmeRoot = "/var/lib/acme/acme-challenge";
+	pref = "kp2";
 in lib.mkIf cfg.nginx {
 	security.acme = {
 		acceptTerms = true;
@@ -13,7 +14,7 @@ in lib.mkIf cfg.nginx {
 		defaults.email = "kp2pml30@gmail.com";
 		#defaults.server = "https://acme-staging-v02.api.letsencrypt.org/directory";
 		certs."${cfg.hostname}" = {
-			extraDomainNames = [ "pr.${cfg.hostname}" "www.${cfg.hostname}" ];
+			extraDomainNames = [ "pr.${cfg.hostname}" "www.${cfg.hostname}" "git.${cfg.hostname}" ];
 			webroot = acmeRoot;
 			group = "nginx";
 		};
@@ -22,15 +23,27 @@ in lib.mkIf cfg.nginx {
 	services.nginx = {
 		enable = true;
 
+		virtualHosts."git.${cfg.hostname}" = {
+			enableACME = true;
+			acmeRoot = acmeRoot;
+
+			listen = [
+				{ addr = "0.0.0.0"; port = 80; }
+			];
+
+			locations."/" = {
+				proxyPass = "http://127.0.0.1:8002";
+			};
+		};
+
 		virtualHosts."${cfg.hostname}" = {
-			addSSL = true;
+			# addSSL = true;
 			# forceSSL = true;
 			enableACME = true;
 			acmeRoot = acmeRoot;
 
 			listen = [
 				{ addr = "0.0.0.0"; port = 80; }
-				# { addr = "0.0.0.0"; port = 444; ssl = true; }
 			];
 
 			locations."/" = {

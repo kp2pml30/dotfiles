@@ -18,6 +18,8 @@ in {
 
 		nginx = lib.mkEnableOption "";
 
+		forgejo = lib.mkEnableOption "";
+
 		sitePath = lib.mkOption {
 			type = lib.types.str;
 		};
@@ -28,6 +30,7 @@ in {
 		./nginx.nix
 		./boot.nix
 		./site.nix
+		./forgejo.nix
 	];
 
 	config = {

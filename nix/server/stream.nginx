@@ -11,14 +11,15 @@ map $ssl_preread_server_name $name {
 	svr2.signal.org                         svr2;
 	updates.signal.org                      updates;
 	updates2.signal.org                     updates2;
-	backend1.svr3.signal.org                svr31;
-	backend2.svr3.signal.org                svr32;
-	backend3.svr3.signal.org                svr33;
+
+	kp2pml30.moe                            self;
+	git.kp2pml30.moe                        self;
+
 	default                                 deny;
 }
 
 upstream signal-service {
-	 server chat.signal.org:443;
+	server chat.signal.org:443;
 }
 
 upstream storage-service {
@@ -53,18 +54,6 @@ upstream svr2 {
 	server svr2.signal.org:443;
 }
 
-upstream svr31 {
-	server backend1.svr3.signal.org:443;
-}
-
-upstream svr32 {
-	server backend2.svr3.signal.org:443;
-}
-
-upstream svr33 {
-	server backend3.svr3.signal.org:443;
-}
-
 upstream updates {
 	server updates.signal.org:443;
 }
@@ -81,6 +70,10 @@ upstream self {
 	server 127.0.0.1:80;
 }
 
+upstream forgejo {
+	server 127.0.0.1:3000;
+}
+
 server {
 	listen          443 ssl;
 	server_name     pr.kp2pml30.moe;
@@ -93,11 +86,9 @@ server {
 }
 
 server {
-	listen 443 ssl;
-	server_name kp2pml30.moe;
-	error_log   /tmp/err.nginx debug;
-
-	proxy_pass self;
+	listen          443 ssl;
+	server_name     kp2pml30.moe git.kp2pml30.moe;
+	proxy_pass      self;
 
 	ssl_certificate         /var/lib/acme/kp2pml30.moe/fullchain.pem;
 	ssl_certificate_key     /var/lib/acme/kp2pml30.moe/key.pem;
