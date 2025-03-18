@@ -346,7 +346,10 @@ globalkeys = gears.table.join(
 	awful.key({}, "XF86AudioMute",        function() my_volume:toggle() end),
 
 	awful.key({}, "XF86MonBrightnessDown", function() my_brightness:down() end),
-	awful.key({}, "XF86MonBrightnessUp",   function() my_brightness:up() end)
+	awful.key({}, "XF86MonBrightnessUp",   function() my_brightness:up() end),
+
+	-- screenshot
+	awful.key({}, "Print",   function () awful.spawn.with_shell("xfce4-screenshooter -r --save /dev/stdout | xclip -i -selection clipboard -t image/png") end)
 )
 
 clientkeys = gears.table.join(

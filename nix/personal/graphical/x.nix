@@ -32,6 +32,7 @@ in lib.mkIf cfg.xserver {
 	environment.systemPackages = with pkgs; [
 		xclip
 		brightnessctl
+		xfce.xfce4-screenshooter
 	];
 
 	home-manager.users.${cfg.username} = {
