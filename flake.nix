@@ -52,7 +52,43 @@
 					];
 				};
 
-				personal-laptop = nixpkgs.lib.nixosSystem {
+				personal-pc = nixpkgs.lib.nixosSystem rec {
+					system = "x86_64-linux";
+					modules = [
+						{
+							networking.hostName = "kp2pml30-personal-pc";
+							networking.hostId = "e31a5cc2";
+
+							time.timeZone = "Asia/Yerevan";
+						}
+
+						./nix/hardware/mini.nix
+
+						./nix/common.nix
+
+						./nix/personal
+
+						{
+							kp2pml30 = {
+								xserver = true;
+								vscode = true;
+								kitty = true;
+								opera = true;
+								steam = true;
+
+								boot.efiGrub = true;
+
+								hardware.wireless = true;
+								hardware.audio = true;
+
+								messengers.personal = true;
+								messengers.work = true;
+							};
+						}
+					];
+					specialArgs = additionalArgs // { inherit system; };
+				};
+				personal-laptop = nixpkgs.lib.nixosSystem rec {
 					system = "x86_64-linux";
 					modules = [
 						{
@@ -85,7 +121,7 @@
 							};
 						}
 					];
-					specialArgs = additionalArgs;
+					specialArgs = additionalArgs // { inherit system; };
 				};
 				personal-wsl = nixpkgs.lib.nixosSystem {
 					system = "x86_64-linux";
@@ -103,9 +139,3 @@
 			};
 		};
 }
-
-# example
-# + nix --extra-experimental-features 'nix-command flakes' build --out-link /tmp/nixos-rebuild.ydOEVb/nixos-rebuild '.#nixosConfigurations."wsl-amd64".config.system.build.nixos-rebuild' --show-trace
-# ++ readlink -e /tmp/nixos-rebuild.ydOEVb/nixos-rebuild
-# + p=/nix/store/rd18dwsifrcyghim695q18nhvyfykxxg-nixos-rebuild
-# exec /nix/store/rd18dwsifrcyghim695q18nhvyfykxxg-nixos-rebuild/bin/nixos-rebuild switch --flake .#wsl-amd64

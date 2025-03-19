@@ -73,6 +73,7 @@ in {
 				"nvidia-persistenced"
 				"opera"
 				"discord-ptb"
+				"slack"
 			];
 	};
 }

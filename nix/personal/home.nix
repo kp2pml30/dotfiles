@@ -16,7 +16,7 @@ in {
 	home-manager.useUserPackages = true;
 	home-manager.backupFileExtension = "bak";
 
-	home-manager.users.${cfg.username} = {
+	home-manager.users.${cfg.username} = { lib, ... }: {
 		home = {
 			stateVersion = "24.05";
 			username = cfg.username;
@@ -27,6 +27,13 @@ in {
 
 			sessionVariables = {
 				TERMINAL = "kitty";
+			};
+
+			activation = {
+				makeWorkDir = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+					run mkdir -p ~/work/personal
+					run mkdir -p ~/work/experiments
+				'';
 			};
 		};
 
@@ -62,6 +69,21 @@ in {
 			};
 
 			home-manager.enable = true;
+
+			direnv = {
+				enable = true;
+				enableBashIntegration = true;
+				#enableFishIntegration = lib.mkDefault true;
+				nix-direnv.enable = true;
+			};
 		};
+
+		dconf.settings = {
+			"org/gnome/desktop/interface" = {
+				color-scheme = "prefer-dark";
+			};
+		};
+
+		systemd.user.sessionVariables = config.home-manager.users.${cfg.username}.home.sessionVariables;
 	};
 }

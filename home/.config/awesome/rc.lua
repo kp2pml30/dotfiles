@@ -174,12 +174,40 @@ end
 -- Re-set wallpaper when a screen's geometry changes (e.g. different resolution)
 screen.connect_signal("property::geometry", set_wallpaper)
 
+local all_tags = {}
+
+for i = 1,9 do
+	all_tags[i - 1] = awful.tag.add(tostring(i), {
+			screen = awful.screen.primary,
+			layout = awful.layout.layouts[1],
+		}
+	)
+end
+
+local function screen_delta(delta)
+	local cur_screen = awful.screen.focused()
+	local tag = cur_screen.selected_tag
+
+	local all_screens = {}
+	local i = 0
+	local idx = 0
+
+	for s in screen do
+		all_screens[i] = s
+		if s == cur_screen then
+			idx = i
+		end
+		i = i + 1
+	end
+
+	local next_screen = all_screens[(idx + delta + i) % i]
+
+	tag.screen = next_screen
+end
+
 awful.screen.connect_for_each_screen(function(s)
 	-- Wallpaper
 	set_wallpaper(s)
-
-	-- Each screen has its own tag table.
-	awful.tag({ "1", "2", "3", "4", "5", "6", "7", "8", "9" }, s, awful.layout.layouts[1])
 
 	-- Create a promptbox for each screen
 	s.mypromptbox = awful.widget.prompt()
@@ -348,6 +376,16 @@ globalkeys = gears.table.join(
 	awful.key({}, "XF86MonBrightnessDown", function() my_brightness:down() end),
 	awful.key({}, "XF86MonBrightnessUp",   function() my_brightness:up() end),
 
+	-- switch screen
+	awful.key({ modkey }, "[", function () awful.screen.focus_relative(-1) end),
+	awful.key({ modkey }, "]", function () awful.screen.focus_relative(1) end),
+	awful.key({ modkey, "Shift" }, "[", function ()
+		screen_delta(-1)
+	end),
+	awful.key({ modkey, "Shift" }, "]", function ()
+		screen_delta(1)
+	end),
+
 	-- screenshot
 	awful.key({}, "Print",   function () awful.spawn.with_shell("xfce4-screenshooter -r --save /dev/stdout | xclip -i -selection clipboard -t image/png") end)
 )
@@ -403,46 +441,28 @@ for i = 1, 9 do
 	globalkeys = gears.table.join(globalkeys,
 		-- View tag only.
 		awful.key({ modkey }, "#" .. i + 9,
-				  function ()
-						local screen = awful.screen.focused()
-						local tag = screen.tags[i]
+				function ()
+						-- local screen = awful.screen.focused()
+						-- local tag = screen.tags[i]
+						local tag = all_tags[i - 1]
 						if tag then
-						   tag:view_only()
+							tag:view_only()
+							awful.screen.focus(tag.screen)
 						end
-				  end,
-				  {description = "view tag #"..i, group = "tag"}),
-		-- Toggle tag display.
-		awful.key({ modkey, "Control" }, "#" .. i + 9,
-				  function ()
-					  local screen = awful.screen.focused()
-					  local tag = screen.tags[i]
-					  if tag then
-						 awful.tag.viewtoggle(tag)
-					  end
-				  end,
-				  {description = "toggle tag #" .. i, group = "tag"}),
+				end,
+				{description = "view tag #"..i, group = "tag"}),
 		-- Move client to tag.
 		awful.key({ modkey, "Shift" }, "#" .. i + 9,
-				  function ()
-					  if client.focus then
-						  local tag = client.focus.screen.tags[i]
-						  if tag then
-							  client.focus:move_to_tag(tag)
-						  end
-					 end
-				  end,
-				  {description = "move focused client to tag #"..i, group = "tag"}),
-		-- Toggle tag on focused client.
-		awful.key({ modkey, "Control", "Shift" }, "#" .. i + 9,
-				  function ()
-					  if client.focus then
-						  local tag = client.focus.screen.tags[i]
-						  if tag then
-							  client.focus:toggle_tag(tag)
-						  end
-					  end
-				  end,
-				  {description = "toggle focused client on tag #" .. i, group = "tag"})
+				function ()
+					if client.focus then
+						--local tag = client.focus.screen.tags[i]
+						local tag = all_tags[i - 1]
+						if tag then
+							client.focus:move_to_tag(tag)
+						end
+					end
+				end,
+				{description = "move focused client to tag #"..i, group = "tag"})
 	)
 end
 

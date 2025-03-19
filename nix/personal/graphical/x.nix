@@ -32,8 +32,12 @@ in lib.mkIf cfg.xserver {
 	environment.systemPackages = with pkgs; [
 		xclip
 		brightnessctl
+		arandr
+		libnotify
 		xfce.xfce4-screenshooter
 	];
+
+	programs.dconf.enable = true;
 
 	home-manager.users.${cfg.username} = {
 		programs.rofi = {
