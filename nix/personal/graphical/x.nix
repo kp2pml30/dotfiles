@@ -42,8 +42,10 @@ in lib.mkIf cfg.xserver {
 	home-manager.users.${cfg.username} = {
 		programs.rofi = {
 			enable = true;
+			theme = "simple-tokyonight";
+			location = "center";
 		};
-		home.file.".config/rofi" = { source = rootPath + "/home/.config/rofi"; recursive = true; };
+		home.file.".config/rofi/simple-tokyonight.rasi" = { source = rootPath + "/home/.config/rofi/simple-tokyonight.rasi"; };
 
 		home.file.".config/awesome/rc.lua" = { source = rootPath + "/home/.config/awesome/rc.lua"; };
 		home.file.".config/awesome/theme.lua" = { source = rootPath + "/home/.config/awesome/theme.lua"; };

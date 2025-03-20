@@ -33,6 +33,7 @@ in {
 				makeWorkDir = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
 					run mkdir -p ~/work/personal
 					run mkdir -p ~/work/experiments
+					run mkdir -p ~/.sock
 				'';
 			};
 		};
@@ -55,7 +56,7 @@ in {
 
 			fish = {
 				enable = true;
-				shellInitLast = builtins.readFile (rootPath + "/home/.config/fish/minimal.fish");
+				shellInitLast = builtins.readFile (rootPath + "/home/.config/fish/config.fish");
 			};
 
 			starship = {

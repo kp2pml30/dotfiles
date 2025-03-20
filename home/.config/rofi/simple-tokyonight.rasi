@@ -1,4 +1,5 @@
-# See https://github.com/newmanls/rofi-themes-collection/tree/master (GPLv3)
+// See https://github.com/newmanls/rofi-themes-collection/tree/master (GPLv3)
+// This version may be modified
 * {
   font:   "Iosevka Nerd Font Medium 11";
 
@@ -32,11 +33,6 @@ element-icon, element-text, scrollbar {
 }
 
 window {
-  location : northwest;
-  width    : 280px;
-  x-offset : 4px;
-  y-offset : 26px;
-
   background-color: @bg1;
   border: 1px;
   border-color: @bg3;
