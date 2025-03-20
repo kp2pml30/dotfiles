@@ -14,7 +14,7 @@ in {
 			PasswordAuthentication = false;
 			KbdInteractiveAuthentication = false;
 			PermitRootLogin = lib.mkForce "no";
-			AllowUsers = [ cfg.username ];
+			AllowUsers = [ cfg.username "forgejo" ];
 		};
 	};
 
