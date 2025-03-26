@@ -17,5 +17,6 @@ in lib.mkIf cfg.hardware.audio {
 	environment.systemPackages = with pkgs; [
 		alsa-utils
 		acpid
+		pulseaudio
 	];
 }

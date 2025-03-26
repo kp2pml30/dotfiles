@@ -8,3 +8,5 @@ if status is-interactive
 		zoxide init fish | source
 	end
 end
+
+export GPG_TTY=(tty)

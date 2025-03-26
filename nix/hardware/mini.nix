@@ -41,6 +41,12 @@
 
 	programs.nix-ld.enable = true;
 
+	home-manager.users.${config.kp2pml30.username}.programs.git.extraConfig = {
+		user.signingkey = "0xCD6528BAC23E3E34!";
+		commit.gpgsign = true;
+		tag.gpgSign = true;
+	};
+
 	hardware = {
 		graphics = {
 			enable = true;

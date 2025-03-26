@@ -40,6 +40,15 @@ in {
 			HandleLidSwitch=hibernate
 		'';
 
+		services.pcscd = {
+			enable = true;
+		};
+
+		programs.gnupg.agent = {
+			enable = true;
+			enableSSHSupport = true;
+		};
+
 		i18n.supportedLocales = [
 			"C.UTF-8/UTF-8"
 			"en_US.UTF-8/UTF-8"
