@@ -70,4 +70,6 @@
 	networking = {
 		useDHCP = lib.mkDefault true;
 	};
+
+	virtualisation.docker.enable = true;
 }

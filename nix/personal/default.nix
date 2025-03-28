@@ -28,6 +28,7 @@ in {
 		./home.nix
 		./user.nix
 		./neovim.nix
+		./tui.nix
 	];
 
 	config = {
@@ -57,8 +58,6 @@ in {
 
 		programs = {
 			fish.enable = true;
-			tmux.enable = true;
-			yazi.enable = true;
 		};
 
 		environment.systemPackages = with pkgs; [

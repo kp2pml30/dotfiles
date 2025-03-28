@@ -39,6 +39,12 @@ in lib.mkIf cfg.xserver {
 
 	programs.dconf.enable = true;
 
+	users.users.${cfg.username} = {
+		packages = with pkgs; [
+			rofimoji
+		];
+	};
+
 	home-manager.users.${cfg.username} = {
 		programs.rofi = {
 			enable = true;
