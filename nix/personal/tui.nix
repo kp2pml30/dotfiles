@@ -13,5 +13,10 @@ in {
 			yazi.enable = true;
 			htop.enable = true;
 		};
+
+			environment.systemPackages = with pkgs; [
+			ncdu
+		];
+
 	};
 }

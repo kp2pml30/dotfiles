@@ -70,10 +70,6 @@ upstream self {
 	server 127.0.0.1:80;
 }
 
-upstream forgejo {
-	server 127.0.0.1:3000;
-}
-
 server {
 	listen          443 ssl;
 	server_name     pr.kp2pml30.moe;
@@ -87,7 +83,7 @@ server {
 
 server {
 	listen          443 ssl;
-	server_name     kp2pml30.moe git.kp2pml30.moe;
+	server_name     kp2pml30.moe git.kp2pml30.moe backend.kp2pml30.moe;
 	proxy_pass      self;
 
 	ssl_certificate         /var/lib/acme/kp2pml30.moe/fullchain.pem;

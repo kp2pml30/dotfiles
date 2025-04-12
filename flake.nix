@@ -17,9 +17,14 @@
 		#	url = "github:nix-community/nixos-vscode-server";
 		#	inputs.nixpkgs.follows = "nixpkgs";
 		#};
+
+		kp2pml30-moe = {
+			url = "github:kp2pml30/kp2pml30.github.io/fa9019733540a9569fd6c678c358c8b7a61f435c";
+			inputs.nixpkgs.follows = "nixpkgs";
+		};
 	};
 
-	outputs = inputs@{ self, nixpkgs, nixos-wsl, home-manager, nixos-generators, ... }:
+	outputs = inputs@{ self, nixpkgs, nixos-wsl, home-manager, nixos-generators, kp2pml30-moe, ... }:
 		let
 			rootPath = self;
 			additionalArgs = { inherit inputs rootPath; };
@@ -50,6 +55,8 @@
 
 						nixos-generators.nixosModules.all-formats
 					];
+
+					specialArgs = { inherit kp2pml30-moe; system = "x86_64-linux"; };
 				};
 
 				personal-pc = nixpkgs.lib.nixosSystem rec {
