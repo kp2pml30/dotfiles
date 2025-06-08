@@ -68,17 +68,17 @@
         "systems": "systems"
       },
       "locked": {
-        "lastModified": 1744493823,
-        "narHash": "sha256-GBadamNxakZitu7zMNHJTaDpSe3ZcRyZAtBuB8mKdhI=",
+        "lastModified": 1746476573,
+        "narHash": "sha256-n8492bBXn4GY7JHzgIB1LvCTCr9EkWQW+3zVHjS6B9Y=",
         "owner": "kp2pml30",
         "repo": "kp2pml30.github.io",
-        "rev": "fa9019733540a9569fd6c678c358c8b7a61f435c",
+        "rev": "0babadc3ebeddc96dbe84a90f3d36117c5e942a4",
         "type": "github"
       },
       "original": {
         "owner": "kp2pml30",
         "repo": "kp2pml30.github.io",
-        "rev": "fa9019733540a9569fd6c678c358c8b7a61f435c",
+        "rev": "0babadc3ebeddc96dbe84a90f3d36117c5e942a4",
         "type": "github"
       }
     },

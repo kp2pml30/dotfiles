@@ -21,4 +21,6 @@ in lib.mkIf cfg.hardware.wireless {
 		enable = true;
 		powerOnBoot = true;
 	};
+
+	environment.systemPackages = with pkgs; [ bluetui ];
 }

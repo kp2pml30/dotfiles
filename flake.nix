@@ -19,7 +19,7 @@
 		#};
 
 		kp2pml30-moe = {
-			url = "github:kp2pml30/kp2pml30.github.io/fa9019733540a9569fd6c678c358c8b7a61f435c";
+			url = "github:kp2pml30/kp2pml30.github.io/0babadc3ebeddc96dbe84a90f3d36117c5e942a4";
 			inputs.nixpkgs.follows = "nixpkgs";
 		};
 	};

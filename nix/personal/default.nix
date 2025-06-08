@@ -82,6 +82,7 @@ in {
 				"opera"
 				"discord-ptb"
 				"slack"
+				"anytype"
 			];
 	};
 }

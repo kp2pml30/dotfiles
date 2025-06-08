@@ -18,6 +18,8 @@ in {
 		./messengers-work.nix
 	];
 
+	environment.systemPackages = [ pkgs.anytype ];
+
 	fonts.packages = with pkgs; [
 		fira-code
 		fira-code-nerdfont

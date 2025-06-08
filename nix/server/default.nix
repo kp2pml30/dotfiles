@@ -34,6 +34,8 @@ in {
 	];
 
 	config = {
+		security.pam.enableSSHAgentAuth = true;
+
 		users.users."${cfg.username}" = {
 			isNormalUser = true;
 			openssh.authorizedKeys.keys = [
