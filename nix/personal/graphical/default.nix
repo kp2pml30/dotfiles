@@ -20,7 +20,12 @@ in {
 
 	environment.systemPackages = [ pkgs.anytype ];
 
+	fonts.enableDefaultFonts = true;
 	fonts.packages = with pkgs; [
+		noto-fonts
+		noto-fonts-cjk-sans
+		noto-fonts-cjk-sans
+
 		fira-code
 		fira-code-nerdfont
 		fira-code-symbols

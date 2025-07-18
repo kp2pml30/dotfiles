@@ -66,7 +66,7 @@
 							networking.hostName = "kp2pml30-personal-pc";
 							networking.hostId = "e31a5cc2";
 
-							time.timeZone = "Asia/Yerevan";
+							time.timeZone = "Asia/Tokyo";
 						}
 
 						./nix/hardware/mini.nix
