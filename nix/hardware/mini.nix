@@ -1,4 +1,3 @@
-
 { pkgs
 , inputs
 , lib
@@ -6,7 +5,10 @@
 , ...
 }:
 {
-	imports = [ ./common.nix ];
+	imports = [
+		./common.nix
+		# ./nvidia.nix
+	];
 
 	fileSystems."/" = {
 		device = "/dev/disk/by-uuid/1ec7bbd6-cb83-427a-a901-d5fb7a4ef3ba";
@@ -19,15 +21,15 @@
 		options = [ "fmask=0077" "dmask=0077" ];
 	};
 
-	fileSystems."/mnt/d" = {
-		device = "/dev/sda1";
-		fsType = "exfat";
-		options = [
-			"users"
-			"exec"
-			"nofail"
-		];
-	};
+#	fileSystems."/mnt/d" = {
+#		device = "/dev/sda1";
+#		fsType = "exfat";
+#		options = [
+#			"users"
+#			"exec"
+#			"nofail"
+#		];
+#	};
 
 	swapDevices = [ { device = "/dev/disk/by-uuid/c68daa9f-f165-4e23-8710-2aab0ad8d282"; } ];
 

@@ -20,6 +20,9 @@ in {
 
 		forgejo = lib.mkEnableOption "";
 
+		dns = lib.mkEnableOption "";
+		nix-cache = lib.mkEnableOption "";
+
 		sitePath = lib.mkOption {
 			type = lib.types.str;
 		};
@@ -31,6 +34,8 @@ in {
 		./boot.nix
 		./site.nix
 		./forgejo.nix
+		./dns.nix
+		./nix-cache.nix
 	];
 
 	config = {

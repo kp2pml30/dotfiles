@@ -14,6 +14,7 @@ map $ssl_preread_server_name $name {
 
 	kp2pml30.moe                            self;
 	git.kp2pml30.moe                        self;
+	cache.nix.kp2pml30.moe                        self;
 
 	default                                 deny;
 }
@@ -83,7 +84,7 @@ server {
 
 server {
 	listen          443 ssl;
-	server_name     kp2pml30.moe git.kp2pml30.moe backend.kp2pml30.moe;
+	server_name     kp2pml30.moe git.kp2pml30.moe backend.kp2pml30.moe dns.kp2pml30.moe cache.nix.kp2pml30.moe;
 	proxy_pass      self;
 
 	ssl_certificate         /var/lib/acme/kp2pml30.moe/fullchain.pem;

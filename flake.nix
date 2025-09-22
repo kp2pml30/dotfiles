@@ -44,6 +44,7 @@
 								hostname = "kp2pml30.moe";
 								nginx = true;
 								forgejo = true;
+								nix-cache = true;
 							};
 						}
 
