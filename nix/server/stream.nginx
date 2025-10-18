@@ -12,9 +12,14 @@ map $ssl_preread_server_name $name {
 	updates.signal.org                      updates;
 	updates2.signal.org                     updates2;
 
-	kp2pml30.moe                            self;
-	git.kp2pml30.moe                        self;
-	cache.nix.kp2pml30.moe                        self;
+	x.kp2pml30.moe                          xray-entrypoint;
+	pr.kp2pml30.moe                         signal-proxy;
+
+	kp2pml30.moe                            ssl-terminator;
+	dns.kp2pml30.moe                        ssl-terminator;
+	git.kp2pml30.moe                        ssl-terminator;
+	cache.nix.kp2pml30.moe                  ssl-terminator;
+	backend.kp2pml30.moe                    ssl-terminator;
 
 	default                                 deny;
 }
@@ -63,6 +68,10 @@ upstream updates2 {
 	server updates2.signal.org:443;
 }
 
+upstream xray-entrypoint {
+	server 127.0.0.1:8010;
+}
+
 upstream deny {
 	server 127.0.0.1:9;
 }
@@ -71,23 +80,45 @@ upstream self {
 	server 127.0.0.1:80;
 }
 
-server {
-	listen          443 ssl;
-	server_name     pr.kp2pml30.moe;
-	proxy_pass      $name;
-	ssl_preread     on;
+upstream ssl-terminator {
+	server 127.0.0.1:8443;
+}
 
-	ssl_certificate         /var/lib/acme/kp2pml30.moe/fullchain.pem;
-	ssl_certificate_key     /var/lib/acme/kp2pml30.moe/key.pem;
-	ssl_trusted_certificate /var/lib/acme/kp2pml30.moe/chain.pem;
+upstream signal-proxy {
+	server 127.0.0.1:8444;
 }
 
 server {
-	listen          443 ssl;
-	server_name     kp2pml30.moe git.kp2pml30.moe backend.kp2pml30.moe dns.kp2pml30.moe cache.nix.kp2pml30.moe;
+	listen          443;
+	ssl_preread     on;
+	proxy_pass      $name;
+}
+
+server {
+	listen          8443 ssl;
+	server_name     kp2pml30.moe git.kp2pml30.moe cache.nix.kp2pml30.moe backend.kp2pml30.moe dns.kp2pml30.moe;
 	proxy_pass      self;
 
 	ssl_certificate         /var/lib/acme/kp2pml30.moe/fullchain.pem;
 	ssl_certificate_key     /var/lib/acme/kp2pml30.moe/key.pem;
 	ssl_trusted_certificate /var/lib/acme/kp2pml30.moe/chain.pem;
 }
+
+server {
+	listen          8444 ssl;
+	server_name     pr.kp2pml30.moe;
+	ssl_preread     on;
+	proxy_pass      $name;
+
+	ssl_certificate         /var/lib/acme/kp2pml30.moe/fullchain.pem;
+	ssl_certificate_key     /var/lib/acme/kp2pml30.moe/key.pem;
+	ssl_trusted_certificate /var/lib/acme/kp2pml30.moe/chain.pem;
+}
+
+log_format proxy_log '$remote_addr [$time_local] '
+	'$protocol $status $bytes_sent $bytes_received '
+	'$session_time "$upstream_addr" '
+	'"$upstream_bytes_sent" "$upstream_bytes_received" "$upstream_connect_time"'
+	'Proxy: "$ssl_preread_server_name" $name"';
+
+access_log /var/log/nginx/aboba-access.log proxy_log buffer=1k flush=1m;

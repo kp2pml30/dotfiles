@@ -11,13 +11,7 @@ let
 	discord-version = "0.0.160";
 in lib.mkIf cfg.messengers.personal {
 	users.users.${cfg.username}.packages = with pkgs; [
-		discord-ptb
-		#(discord-ptb.overrideAttrs(finalAttrs: previousAttrs: {
-		#	src = fetchurl {
-		#		url = "https://ptb.dl2.discordapp.net/apps/linux/${discord-version}/discord-ptb-${discord-version}.tar.gz";
-		#		hash = lib.fakeHash;
-		#	};
-		#}))
+		discord
 		telegram-desktop
 #		(pkgs.callPackage "${pkgs.path}/pkgs/by-name/si/signal-desktop/generic.nix" { } rec {
 #			pname = "signal-desktop";

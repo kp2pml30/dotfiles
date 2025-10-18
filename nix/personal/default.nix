@@ -54,6 +54,7 @@ in {
 			"C.UTF-8/UTF-8"
 			"en_US.UTF-8/UTF-8"
 			"ru_RU.UTF-8/UTF-8"
+			"ja_JP.UTF-8/UTF-8"
 		];
 
 		programs = {
@@ -80,7 +81,7 @@ in {
 				"nvidia-settings"
 				"nvidia-persistenced"
 				"opera"
-				"discord-ptb"
+				"discord"
 				"slack"
 				"anytype"
 			];

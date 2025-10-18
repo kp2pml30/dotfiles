@@ -45,6 +45,7 @@
 								nginx = true;
 								forgejo = true;
 								nix-cache = true;
+								xray = true;
 							};
 						}
 

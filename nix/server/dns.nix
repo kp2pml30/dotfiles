@@ -10,6 +10,7 @@
 }@args:
 let
 	cfg = config.kp2pml30.server;
+	ports = config.kp2pml30.server.ports;
 in lib.mkIf cfg.nginx {
 	services.coredns.enable = true;
 	services.coredns.config = ''
@@ -21,7 +22,7 @@ in lib.mkIf cfg.nginx {
 			cache
 		}
 
-		https://.:8003 {
+		https://.:${toString ports.coredns-https} {
 			forward . dns://127.0.0.1:53 {
 				tls
 				tls_servername cloudflare-dns.com

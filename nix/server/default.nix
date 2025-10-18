@@ -22,6 +22,7 @@ in {
 
 		dns = lib.mkEnableOption "";
 		nix-cache = lib.mkEnableOption "";
+		xray = lib.mkEnableOption "";
 
 		sitePath = lib.mkOption {
 			type = lib.types.str;
@@ -29,6 +30,7 @@ in {
 	};
 
 	imports =  [
+		./ports.nix
 		./ssh.nix
 		./nginx.nix
 		./boot.nix
@@ -36,6 +38,8 @@ in {
 		./forgejo.nix
 		./dns.nix
 		./nix-cache.nix
+		./xray.nix
+		./secrets.nix
 	];
 
 	config = {

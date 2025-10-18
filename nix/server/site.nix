@@ -9,6 +9,7 @@
 }@args:
 let
 	cfg = config.kp2pml30.server;
+	ports = config.kp2pml30.server.ports;
 	backend = kp2pml30-moe.packages.${system}.kp2pml30-moe-backend;
 	frontend = kp2pml30-moe.packages.${system}.kp2pml30-moe-frontend;
 in lib.mkIf cfg.nginx {
@@ -45,7 +46,7 @@ in lib.mkIf cfg.nginx {
 			Restart = "on-failure";
 			RestartSec = "3";
 
-			ExecStart = ''${pkgs.bash}/bin/bash -c "source /home/kp2pml30-moe-backend/env.sh && touch /home/kp2pml30-moe-backend/db.json && ${backend}/bin/kp2pml30-moe-backend --port 8001 --moderated-path /home/kp2pml30-moe-backend/chatbox-db.json"'';
+			ExecStart = ''${pkgs.bash}/bin/bash -c "source /home/kp2pml30-moe-backend/env.sh && touch /home/kp2pml30-moe-backend/db.json && ${backend}/bin/kp2pml30-moe-backend --port ${toString ports.backend} --moderated-path /home/kp2pml30-moe-backend/chatbox-db.json"'';
 		};
 	};
 }
