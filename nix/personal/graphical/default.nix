@@ -30,6 +30,6 @@ in {
 		fira-code-nerdfont
 		fira-code-symbols
 
-		(nerdfonts.override { fonts = [ "FiraCode" ]; })
+		nerd-fonts.fira-code
 	];
 }

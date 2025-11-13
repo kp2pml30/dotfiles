@@ -7,22 +7,15 @@
 }:
 let
 	cfg = config.kp2pml30;
-	signalSuffix = if system == "x86_64-linux" then "amd64" else "arm64";
-	discord-version = "0.0.160";
+	signal-pkgs = import (builtins.fetchTarball {
+		url = "https://github.com/NixOS/nixpkgs/archive/71cbb752aa36854eb4a7deb3685b9789256d643c.tar.gz";
+		sha256 = "10dnjv2c28bjgplyj6nbk2q9lng6f95jf75i5yh541zngrr8b2qg";
+	}) {
+		system = pkgs.system;
+	};
 in lib.mkIf cfg.messengers.personal {
 	users.users.${cfg.username}.packages = with pkgs; [
 		discord
 		telegram-desktop
-#		(pkgs.callPackage "${pkgs.path}/pkgs/by-name/si/signal-desktop/generic.nix" { } rec {
-#			pname = "signal-desktop";
-#			version = "7.65.0";
-#
-#			libdir = "opt/Signal";
-#			bindir = libdir;
-#			extractPkg = "dpkg-deb -x $downloadedFile $out";
-#
-#			url = "https://updates.signal.org/desktop/apt/pool/s/signal-desktop/signal-desktop_${version}_amd64.deb";
-#			hash = lib.fakeHash;
-#		})
-	];
+	] ++ [signal-pkgs.signal-desktop];
 }

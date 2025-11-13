@@ -1,3 +1,36 @@
+{
+    "log": {
+        "loglevel": "warning"
+    },
+    "routing": {
+        "domainStrategy": "IPIfNonMatch",
+        "rules": [
+            {
+                "type": "field",
+                "domain": [
+                    "regexp:\\.ru$",
+                    "regexp:\\.рф$",
+                    "domain:vk.com"
+                ],
+                "outboundTag": "block"
+            },
+            {
+                "type": "field",
+                "ip": [
+                    "geoip:cn",
+                    "geoip:ru"
+                ],
+                "outboundTag": "block"
+            }
+        ]
+    },
+    "inbounds": [
+        {
+            "listen": "127.0.0.1",
+            "port": 8010,
+            "protocol": "vless",
+            "settings": {
+                "clients": [
                 ],
                 "decryption": "none",
                 "fallbacks": [
