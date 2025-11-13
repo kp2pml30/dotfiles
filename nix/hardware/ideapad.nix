@@ -26,21 +26,25 @@
 
 	boot.kernelModules = [ "kvm-amd" ];
 
+	programs.nix-ld.enable = true;
+
 	hardware.cpu.amd.updateMicrocode = true;
 
 	hardware = {
 		graphics = {
 			enable = true;
 			enable32Bit = true;
-		};
+			extraPackages = with pkgs; [
+			];
 
-		amdgpu.amdvlk = {
-			enable = true;
-			support32Bit.enable = true;
+			extraPackages32 = with pkgs; [
+			];
 		};
 	};
 
 	networking = {
 		useDHCP = lib.mkDefault true;
 	};
+
+	virtualisation.docker.enable = true;
 }
