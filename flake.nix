@@ -44,7 +44,7 @@
 					modules = [
 						{
 							networking.hostId = "e31a5cc1";
-							time.timeZone = "Asia/Yerevan";
+							time.timeZone = "Asia/Tokyo";
 
 							kp2pml30.short-hostname = "vdsina";
 
@@ -137,9 +137,8 @@
 							networking.hostName = "kp2pml30-personal-laptop";
 							networking.hostId = "e31a5cc0";
 
-							time.timeZone = "Asia/Yerevan";
-
 							nixpkgs.overlays = [ code-flake.overlays.default ];
+							time.timeZone = "Asia/Tokyo";
 						}
 
 						./nix/hardware/ideapad.nix
@@ -168,6 +167,7 @@
 								messengers.personal = true;
 
 								headscale-client.enable = true;
+								messengers.work = true;
 							};
 						}
 					];
