@@ -72,6 +72,7 @@ in {
 
 		nixpkgs.config.allowUnfreePredicate = pkg:
 			builtins.elem (pkgs.lib.getName pkg) [
+				"anytype-heart"
 				"vscode"
 				"steam"
 				"steam-run"

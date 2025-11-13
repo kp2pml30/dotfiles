@@ -12,6 +12,7 @@ map $ssl_preread_server_name $name {
 	updates.signal.org                      updates;
 	updates2.signal.org                     updates2;
 
+	www.microsoft.com                       xray-entrypoint;
 	x.kp2pml30.moe                          xray-entrypoint;
 	pr.kp2pml30.moe                         signal-proxy;
 

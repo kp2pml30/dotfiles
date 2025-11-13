@@ -26,29 +26,28 @@ let
     ${pkgs.openssl}/bin/openssl enc -aes-256-cbc -pbkdf2 -iter 1000000 -base64 -d -k "$KP2_DOTFILES_SECRET_KEY" -in "${./secrets.yaml}" | ${pkgs.yq}/bin/yq '.XRAY_UIDS[]' -r
   '';
 
-  xray-config-pre = builtins.toFile "xray-pre.json" (builtins.readFile ./xray-pre.json);
-  xray-config-post = builtins.toFile "xray-post.json" (builtins.readFile ./xray-post.json);
+  xray-config-base = builtins.toFile "xray.json" (builtins.readFile ./xray.json);
 
   # Script to generate complete xray configuration
   generateXrayConfig = pkgs.writeShellScript "generate-xray-config" ''
     set -euo pipefail
 
-    cat ${xray-config-pre}
+    ALL_IDS="["
 
     first=true
     while IFS= read -r uuid; do
       if [ "$first" = true ]; then
         first=false
       else
-        echo ","
+        ALL_IDS="$ALL_IDS,"
       fi
-      echo "          {"
-      echo "            \"id\": \"$uuid\","
-      echo "            \"flow\": \"xtls-rprx-vision\""
-      echo "          }"
+      ALL_IDS="$ALL_IDS{\"id\":\"$uuid\",\"flow\": \"xtls-rprx-vision\"}"
     done < <(${decryptSecrets})
 
-    cat ${xray-config-post}
+    ALL_IDS="$ALL_IDS]"
+
+    cat "${xray-config-base}" | \
+      jq --argjson val "$ALL_IDS" '.inbounds.[0].settings.clients = $val'
   '';
 
 in {
@@ -85,6 +84,8 @@ in {
         chown xray:xray /run/secrets/xray-config.json
         chmod 440 /run/secrets/xray-config.json
       '';
+
+      path = [ pkgs.jq ];
     };
 
     # Ensure secrets directory exists

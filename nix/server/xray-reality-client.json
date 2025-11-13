@@ -1,0 +1,81 @@
+{
+    "log": {
+        "loglevel": "warning"
+    },
+    "inbounds": [
+        {
+            "port": 1080,
+            "listen": "127.0.0.1",
+            "protocol": "socks",
+            "settings": {
+                "udp": true
+            }
+        },
+        {
+            "port": 1081,
+            "listen": "127.0.0.1",
+            "protocol": "http"
+        }
+    ],
+    "outbounds": [
+        {
+            "tag": "proxy",
+            "protocol": "vless",
+            "settings": {
+                "vnext": [
+                    {
+                        "address": "x.kp2pml30.moe",
+                        "port": 443,
+                        "users": [
+                            {
+                                "id": "YOUR-UUID-HERE",
+                                "encryption": "none",
+                                "flow": "xtls-rprx-vision"
+                            }
+                        ]
+                    }
+                ]
+            },
+            "streamSettings": {
+                "network": "tcp",
+                "security": "reality",
+                "realitySettings": {
+                    "show": false,
+                    "fingerprint": "chrome",
+                    "serverName": "www.microsoft.com",
+                    "publicKey": "dRvlorHTupOukJ7aFZNPx-wXUMYJt3GQNrtSjMm9lAg",
+                    "shortId": "deadbabe",
+                    "spiderX": "/"
+                }
+            }
+        },
+        {
+            "tag": "direct",
+            "protocol": "freedom"
+        },
+        {
+            "tag": "block",
+            "protocol": "blackhole"
+        }
+    ],
+    "routing": {
+        "domainStrategy": "AsIs",
+        "rules": [
+            {
+                "type": "field",
+                "domain": [
+                    "regexp:\\.ru$",
+                    "geosite:category-ru",
+                    "regexp:\\.рф$",
+                    "regexp:(^|\\.)vk\\.com$"
+                ],
+                "outboundTag": "block"
+            },
+            {
+                "type": "field",
+                "network": "tcp,udp",
+                "outboundTag": "proxy"
+            }
+        ]
+    }
+}

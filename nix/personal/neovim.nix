@@ -27,7 +27,9 @@ in
 			nerdtree
 			tokyonight-nvim
 			barbar-nvim
-			feline-nvim
+			((fromGitHub "3587f57480b88e8009df7b36dc84e9c7ff8f2c49" "famiu/feline.nvim").overrideAttrs (old: {
+				doCheck = false;
+			}))
 			(fromGitHub "d63c811337b2f75de52f16efee176695f31e7fbc" "timakro/vim-yadi")
 			(fromGitHub "aafa5c187a15701a7299a392b907ec15d9a7075f" "nvim-tree/nvim-web-devicons")
 		];

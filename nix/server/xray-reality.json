@@ -1,0 +1,90 @@
+{
+    "log": {
+        "loglevel": "debug"
+    },
+    "routing": {
+        "domainStrategy": "IPIfNonMatch",
+        "rules": [
+            {
+                "type": "field",
+                "domain": [
+                    "regexp:\\.ru$",
+                    "regexp:\\.рф$",
+                    "domain:vk.com"
+                ],
+                "outboundTag": "block"
+            },
+            {
+                "type": "field",
+                "ip": [
+                    "geoip:cn",
+                    "geoip:ru"
+                ],
+                "outboundTag": "block"
+            },
+            {
+                "type": "field",
+                "network": "tcp,udp",
+                "outboundTag": "direct"
+            }
+        ]
+    },
+    "inbounds": [
+        {
+            "listen": "127.0.0.1",
+            "port": 8010,
+            "protocol": "vless",
+            "settings": {
+                "clients": [
+                    {
+                        "id": "YOUR-UUID-HERE",
+                        "flow": "xtls-rprx-vision"
+                    }
+                ],
+                "decryption": "none"
+            },
+            "streamSettings": {
+                "network": "tcp",
+                "security": "reality",
+                "realitySettings": {
+                    "show": true,
+                    "dest": "www.microsoft.com:443",
+                    "xver": 0,
+                    "serverNames": [
+                        "www.microsoft.com"
+                    ],
+                    "privateKey": "",
+                    "shortIds": [
+                        "deadbabe"
+                    ],
+                    "debug": true
+                }
+            },
+            "sniffing": {
+                "enabled": true,
+                "destOverride": [
+                    "http",
+                    "tls"
+                ]
+            }
+        }
+    ],
+    "outbounds": [
+        {
+            "protocol": "freedom",
+            "tag": "direct"
+        },
+        {
+            "protocol": "blackhole",
+            "tag": "block"
+        }
+    ],
+    "policy": {
+        "levels": {
+            "0": {
+                "handshake": 3,
+                "connIdle": 127
+            }
+        }
+    }
+}
