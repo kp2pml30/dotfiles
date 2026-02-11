@@ -1,6 +1,6 @@
 {
 	inputs = {
-		nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.05";
+		nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.11";
 		nixos-wsl = {
 			url = "github:nix-community/NixOS-WSL/main";
 			inputs.nixpkgs.follows = "nixpkgs";
@@ -19,7 +19,7 @@
 		#};
 
 		kp2pml30-moe = {
-			url = "github:kp2pml30/kp2pml30.github.io/0babadc3ebeddc96dbe84a90f3d36117c5e942a4";
+			url = "github:kp2pml30/kp2pml30.github.io/c70b7cc290dc4ca341d791fe952ea5e5e2e36e1b";
 			inputs.nixpkgs.follows = "nixpkgs";
 		};
 	};
@@ -31,6 +31,12 @@
 			lib = nixpkgs.lib;
 		in
 		{
+			packages.x86_64-linux.docker-nix-node = import ./nix/docker-images/nix-node.nix {
+				pkgs = import nixpkgs { system = "x86_64-linux"; };
+				inherit lib;
+				rootPath = self;
+			};
+
 			nixosConfigurations = {
 				server = nixpkgs.lib.nixosSystem {
 					system = "x86_64-linux";
@@ -64,12 +70,15 @@
 				personal-pc = nixpkgs.lib.nixosSystem rec {
 					system = "x86_64-linux";
 					modules = [
-						{
+						({ pkgs, ...}: {
 							networking.hostName = "kp2pml30-personal-pc";
 							networking.hostId = "e31a5cc2";
 
 							time.timeZone = "Asia/Tokyo";
-						}
+							environment.systemPackages = [
+								# pkgs.claude-code
+							];
+						})
 
 						./nix/hardware/mini.nix
 

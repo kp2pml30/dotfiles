@@ -36,10 +36,10 @@ in {
 		boot.supportedFilesystems = [ "zfs" ];
 		boot.zfs.forceImportRoot = false;
 
-		services.logind.extraConfig = ''
-			HandlePowerKey=poweroff
-			HandleLidSwitch=hibernate
-		'';
+		services.logind.settings.Login = {
+			HandlePowerKey = "poweroff";
+			HandleLidSwitch = "hibernate";
+		};
 
 		services.pcscd = {
 			enable = true;
@@ -85,6 +85,7 @@ in {
 				"discord"
 				"slack"
 				"anytype"
+				"claude-code"
 			];
 	};
 }

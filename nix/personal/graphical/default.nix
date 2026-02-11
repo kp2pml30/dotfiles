@@ -11,23 +11,41 @@ in {
 		./kitty.nix
 		./vscode.nix
 
-		./opera.nix
 		./steam.nix
 
 		./messengers.nix
 		./messengers-work.nix
 	];
 
-	environment.systemPackages = [ pkgs.anytype ];
+	xdg.portal = {
+		enable = true;
+		extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
+	};
+	services.flatpak.enable = true;
+	systemd.services.flatpak-repo = {
+		wantedBy = [ "multi-user.target" ];
+		path = [ pkgs.flatpak ];
+		script = ''
+		flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+		'';
+	};
 
-	fonts.enableDefaultFonts = true;
+	environment.systemPackages = with pkgs; [
+		anytype
+		flatpak
+		gnome-software
+
+		nodePackages.npm
+		nodejs
+	];
+
+	fonts.enableDefaultPackages = true;
 	fonts.packages = with pkgs; [
 		noto-fonts
 		noto-fonts-cjk-sans
 		noto-fonts-cjk-sans
 
 		fira-code
-		fira-code-nerdfont
 		fira-code-symbols
 
 		nerd-fonts.fira-code

@@ -11,11 +11,16 @@
 # build related directories
 /build
 target
+result
 zig-out
 zig-build
 
 # secrets
 .env
+
+# direnv
+.envrc
+.direnv
 
 # py
 __pycache__/
@@ -23,3 +28,4 @@ __pycache__/
 .mypy_cache
 .ruff_cache
 .coverage*
+core.[0-9]*

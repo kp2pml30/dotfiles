@@ -7,7 +7,7 @@
 {
 	imports = [
 		./common.nix
-		# ./nvidia.nix
+		./nvidia.nix
 	];
 
 	fileSystems."/" = {
@@ -37,6 +37,7 @@
 
 	environment.systemPackages = with pkgs; [
 		exfat
+		pciutils
 	];
 
 	hardware.cpu.amd.updateMicrocode = true;
@@ -53,20 +54,22 @@
 		graphics = {
 			enable = true;
 			enable32Bit = true;
+			extraPackages = with pkgs; [
+			];
+
+			extraPackages32 = with pkgs; [
+			];
 		};
 
-		amdgpu.amdvlk = {
-			enable = true;
-			support32Bit.enable = true;
+
+		nvidia.prime = {
+			offload = {
+				enable = true;
+				enableOffloadCmd = true;
+			};
+			nvidiaBusId = "PCI:5:0:0";
+			amdgpuBusId = "PCI:198:0:0";
 		};
-
-		opengl.extraPackages = with pkgs; [
-			amdvlk
-		];
-
-		opengl.extraPackages32 = with pkgs; [
-			driversi686Linux.amdvlk
-		];
 	};
 
 	networking = {

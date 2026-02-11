@@ -17,6 +17,7 @@ in {
 		environment.systemPackages = with pkgs; [
 			ncdu
 			timewarrior
+			p7zip
 		];
 
 	};
