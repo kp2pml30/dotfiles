@@ -199,6 +199,15 @@ local function screen_delta(delta)
 
 	if tag == nil then return end
 
+	local other_tag = nil
+
+	for _, some_tag in ipairs(cur_screen.tags) do
+		if some_tag ~= tag then
+			other_tag = some_tag
+			break
+		end
+	end
+
 	local all_screens = {}
 	local i = 0
 	local idx = 0
@@ -214,6 +223,11 @@ local function screen_delta(delta)
 	local next_screen = all_screens[(idx + delta + i) % i]
 
 	tag.screen = next_screen
+	next_screen.selected_tag = tag
+
+	if other_tag ~= nil then
+		cur_screen.selected_tag = other_tag
+	end
 end
 
 awful.screen.connect_for_each_screen(function(s)
@@ -349,10 +363,6 @@ globalkeys = gears.table.join(
 		{description = "increase the number of columns", group = "layout"}),
 	awful.key({ modkey, "Control" }, "l",     function () awful.tag.incncol(-1, nil, true)    end,
 		{description = "decrease the number of columns", group = "layout"}),
-	awful.key({ modkey,           }, "space", function () awful.layout.inc( 1)                end,
-		{description = "select next", group = "layout"}),
-	awful.key({ modkey, "Shift"   }, "space", function () awful.layout.inc(-1)                end,
-		{description = "select previous", group = "layout"}),
 
 	awful.key({ modkey, "Control" }, "n",
 		function ()

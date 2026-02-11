@@ -26,7 +26,8 @@ in {
 			];
 
 			sessionVariables = {
-				TERMINAL = "kitty";
+				TERMINAL = "xterm-kitty";
+				NPM_CONFIG_PREFIX = "$HOME/.local/share/npm-global";
 			};
 
 			activation = {

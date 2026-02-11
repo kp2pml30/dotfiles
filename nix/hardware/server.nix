@@ -42,12 +42,12 @@
 	services.qemuGuest.enable = true;
 
 	networking = {
-		hostName = "v168671";
+		hostName = "v633633";
 		interfaces.ens3.ipv4.addresses = [ {
 			prefixLength = 24;
-			address = "185.121.233.63";
+			address = "146.103.126.11";
 		} ];
-		defaultGateway = "185.121.233.1";
+		defaultGateway = "146.103.126.1";
 		nameservers = [
 			"1.1.1.1"
 			"8.8.8.8"
