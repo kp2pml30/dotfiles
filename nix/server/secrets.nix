@@ -26,7 +26,12 @@ let
     ${pkgs.openssl}/bin/openssl enc -aes-256-cbc -pbkdf2 -iter 1000000 -base64 -d -k "$KP2_DOTFILES_SECRET_KEY" -in "${./secrets.yaml}" | ${pkgs.yq}/bin/yq '.XRAY_UIDS[]' -r
   '';
 
-  xray-config-base = builtins.toFile "xray.json" (builtins.readFile ./xray.json);
+  xray-config-base = builtins.toFile "xray.json" (builtins.toJSON (
+    let base = builtins.fromJSON (builtins.readFile ./xray.json);
+    in base // {
+      inbounds = map (ib: ib // { port = config.kp2pml30.server.ports.xray-main; }) base.inbounds;
+    }
+  ));
 
   # Script to generate complete xray configuration
   generateXrayConfig = pkgs.writeShellScript "generate-xray-config" ''

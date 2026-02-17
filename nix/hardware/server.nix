@@ -47,10 +47,17 @@
 			prefixLength = 24;
 			address = "146.103.126.11";
 		} ];
+		interfaces.ens3.ipv6.addresses = [ {
+			prefixLength = 64;
+			address = "2a14:1e00:3:44d::1";
+		} ];
 		defaultGateway = "146.103.126.1";
+		defaultGateway6 = { address = "fe80::1"; interface = "ens3"; };
 		nameservers = [
 			"1.1.1.1"
 			"8.8.8.8"
+			"2606:4700:4700::1111"
+			"2001:4860:4860::8888"
 		];
 	};
 

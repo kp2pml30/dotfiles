@@ -6,6 +6,7 @@
 let
 	cfg = config.kp2pml30.server;
 	ports = config.kp2pml30.server.ports;
+	ips = import ./ips.nix;
 	acmeRoot = "/var/lib/acme/acme-challenge";
 	pref = "kp2";
 in lib.mkIf cfg.nginx {
@@ -15,9 +16,9 @@ in lib.mkIf cfg.nginx {
 		defaults.email = "kp2pml30@gmail.com";
 		#defaults.server = "https://acme-staging-v02.api.letsencrypt.org/directory";
 		certs."${cfg.hostname}" = {
-			extraDomainNames = [ "pr.${cfg.hostname}" "www.${cfg.hostname}" "git.${cfg.hostname}" "backend.${cfg.hostname}" "dns.${cfg.hostname}" "cache.nix.${cfg.hostname}" "x.${cfg.hostname}" ];
+			extraDomainNames = lib.mapAttrsToList (_: v: v.full-address) ips.addresses;
 			webroot = acmeRoot;
-			group = "nginx";
+			group = "certreaders";
 		};
 	};
 
@@ -34,6 +35,7 @@ in lib.mkIf cfg.nginx {
 
 				listen = [
 					{ addr = "0.0.0.0"; port = 80; }
+					{ addr = "[::]"; port = 80; }
 				];
 
 				locations."/" = {
@@ -47,6 +49,7 @@ in lib.mkIf cfg.nginx {
 
 				listen = [
 					{ addr = "0.0.0.0"; port = 80; }
+					{ addr = "[::]"; port = 80; }
 				];
 
 				locations."/" = {
@@ -60,6 +63,7 @@ in lib.mkIf cfg.nginx {
 
 				listen = [
 					{ addr = "0.0.0.0"; port = 80; }
+					{ addr = "[::]"; port = 80; }
 				];
 
 				locations."/" = {
@@ -73,6 +77,7 @@ in lib.mkIf cfg.nginx {
 
 				listen = [
 					{ addr = "0.0.0.0"; port = 80; }
+					{ addr = "[::]"; port = 80; }
 				];
 
 				locations."/" = {
@@ -98,7 +103,7 @@ in lib.mkIf cfg.nginx {
 						proxy_send_timeout                 60s;
 						proxy_read_timeout                 60s;
 
-						resolver 1.1.1.1;
+						resolver 127.0.0.1;
 					'';
 				};
 			};
@@ -112,6 +117,7 @@ in lib.mkIf cfg.nginx {
 
 				listen = [
 					{ addr = "0.0.0.0"; port = 80; }
+					{ addr = "[::]"; port = 80; }
 				];
 
 				locations."/" = {
@@ -149,7 +155,7 @@ in lib.mkIf cfg.nginx {
 						proxy_send_timeout                 60s;
 						proxy_read_timeout                 60s;
 
-						resolver 1.1.1.1;
+						resolver 127.0.0.1;
 					'';
 				};
 			};
@@ -182,7 +188,7 @@ in lib.mkIf cfg.nginx {
 						proxy_send_timeout                 60s;
 						proxy_read_timeout                 60s;
 
-						resolver 1.1.1.1;
+						resolver 127.0.0.1;
 					'';
 				};
 			};
@@ -192,6 +198,7 @@ in lib.mkIf cfg.nginx {
 				acmeRoot = acmeRoot;
 				listen = [
 					{ addr = "0.0.0.0"; port = 80; }
+					{ addr = "[::]"; port = 80; }
 				];
 				locations."/" = {
 					proxyPass = "http://${config.services.nix-serve.bindAddress}:${toString config.services.nix-serve.port}";
@@ -199,6 +206,9 @@ in lib.mkIf cfg.nginx {
 			};
 		} else {});
 
-		streamConfig = (builtins.readFile ./stream.nginx);
+		streamConfig = builtins.replaceStrings
+			["@SIGNAL_PROXY_PORT@"]
+			["${toString ports.signal-proxy-port}"]
+			(builtins.readFile ./stream.nginx);
 	};
 }

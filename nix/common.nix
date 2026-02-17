@@ -1,7 +1,18 @@
 {  pkgs
+, lib
 , ...
 }:
+let
+	ips = import ./server/ips.nix;
+	groupByAttr = attr: lib.foldlAttrs (acc: _: v:
+		acc // { ${v.${attr}} = (acc.${v.${attr}} or []) ++ [ v.full-address ]; }
+	) {} ips.addresses;
+	groupToLines = lib.mapAttrsToList (ip: domains: "${ip} ${lib.concatStringsSep " " domains}");
+in
 {
+	networking.extraHosts = lib.concatStringsSep "\n" (
+		groupToLines (groupByAttr "ip") ++ groupToLines (groupByAttr "ipv6")
+	);
 	system.stateVersion = "24.05";
 
 	users.mutableUsers = false;
@@ -20,12 +31,7 @@
 		environment.TMPDIR = "/var/tmp";
 	};
 
-	networking = {
-		firewall = {
-			enable = true;
-			allowedTCPPorts = [ 80 443 ];
-		};
-	};
+	networking.firewall.enable = true;
 
 	nix.settings.experimental-features = [ "nix-command" "flakes" ];
 	environment.systemPackages = with pkgs; [

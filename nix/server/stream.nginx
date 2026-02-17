@@ -12,7 +12,6 @@ map $ssl_preread_server_name $name {
 	updates.signal.org                      updates;
 	updates2.signal.org                     updates2;
 
-	www.microsoft.com                       xray-entrypoint;
 	x.kp2pml30.moe                          xray-entrypoint;
 	pr.kp2pml30.moe                         signal-proxy;
 
@@ -86,11 +85,12 @@ upstream ssl-terminator {
 }
 
 upstream signal-proxy {
-	server 127.0.0.1:8444;
+	server 127.0.0.1:@SIGNAL_PROXY_PORT@;
 }
 
 server {
 	listen          443;
+	listen          [::]:443;
 	ssl_preread     on;
 	proxy_pass      $name;
 }
@@ -106,7 +106,7 @@ server {
 }
 
 server {
-	listen          8444 ssl;
+	listen          @SIGNAL_PROXY_PORT@ ssl;
 	server_name     pr.kp2pml30.moe;
 	ssl_preread     on;
 	proxy_pass      $name;
