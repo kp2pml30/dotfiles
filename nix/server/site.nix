@@ -31,6 +31,7 @@ in lib.mkIf cfg.nginx {
 	systemd.services.kp2pml30-moe-backend-service = {
 		enable = true;
 
+		wants = [ "network-online.target" ];
 		after = [ "network-online.target" ];
 		wantedBy = [ "multi-user.target" ];
 

@@ -40,10 +40,14 @@ in {
 		./nix-cache.nix
 		./xray.nix
 		./secrets.nix
+		./firewall.nix
 	];
 
 	config = {
-		security.pam.enableSSHAgentAuth = true;
+		users.groups.certreaders = {};
+		users.users.nginx.extraGroups = [ "certreaders" ];
+
+		security.pam.sshAgentAuth.enable = true;
 
 		users.users."${cfg.username}" = {
 			isNormalUser = true;

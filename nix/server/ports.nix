@@ -41,5 +41,11 @@
       default = 8012;
       description = "Xray websocket fallback port";
     };
+
+    signal-proxy-port = lib.mkOption {
+      type = lib.types.int;
+      default = 8444;
+      description = "Signal proxy TLS termination port";
+    };
   };
 }
