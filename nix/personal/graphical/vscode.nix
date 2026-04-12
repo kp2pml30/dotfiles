@@ -10,15 +10,16 @@ in lib.mkIf cfg.vscode {
 	home-manager.users.${cfg.username} = {
 		programs.vscode = {
 			enable = true;
-			package = (pkgs.vscode.overrideAttrs (oldAttrs: rec {
-				src = (builtins.fetchTarball {
-				url = "https://update.code.visualstudio.com/1.104.1/linux-x64/stable";
-				sha256 = "sha256:109mdk1v323dyhzrq0444gjjhfpjxbllkqkhsapfj44ypjzdjcy8";
-				});
-				version = "1.102.2";
-			}));
+			package = pkgs.vscode.overrideAttrs (oldAttrs: {
+				buildInputs = (oldAttrs.buildInputs or []) ++ [
+					pkgs.curl
+					pkgs.openssl
+					pkgs.webkitgtk_4_1
+					pkgs.libsoup_3
+				];
+			});
 			mutableExtensionsDir = false;
-			userSettings = lib.importJSON("${rootPath}/vscode/settings.json");
+			profiles.default.userSettings = lib.importJSON("${rootPath}/vscode/settings.json");
 #			extensions = with pkgs; [
 #				vscode-extensions.eamodio.gitlens
 #				vscode-extensions.editorconfig.editorconfig

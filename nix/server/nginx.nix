@@ -124,6 +124,16 @@ in lib.mkIf cfg.nginx {
 					root = cfg.sitePath;
 					tryFiles = "$uri $uri/ /index.html";
 				};
+
+				locations."/fs/" = {
+					root = cfg.sitePath;
+					tryFiles = "$uri $uri/ /fs/index.html";
+				};
+
+				locations."/view/" = {
+					root = cfg.sitePath;
+					tryFiles = "$uri $uri/ /view/index.html";
+				};
 			};
 		} // (if cfg.xray then {
 			# Xray fallback proxy servers

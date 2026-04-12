@@ -13,7 +13,7 @@ in lib.mkIf cfg.xray {
   };
 
   # Ensure xray can read the certificates
-  users.users.xray.extraGroups = [ "nginx" ];
+  users.users.xray.extraGroups = [ "certreaders" ];
 
   # Ensure the xray service starts after ACME certificates are available
   systemd.services.xray.after = [ "acme-${cfg.hostname}.service" ];

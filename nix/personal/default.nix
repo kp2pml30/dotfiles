@@ -6,6 +6,8 @@
 }@args:
 let
 	cfg = config.kp2pml30;
+	startsWith = prefix: str:
+		builtins.substring 0 (builtins.stringLength prefix) str == prefix;
 in {
 	options.kp2pml30 = {
 		username = lib.mkOption {
@@ -65,22 +67,17 @@ in {
 			fish
 			fishPlugins.grc
 			fishPlugins.bass
+			nushell
+			carapace
 
 			python312 # needed for bass
 			grc
 		];
 
 		nixpkgs.config.allowUnfreePredicate = pkg:
+			builtins.any (x: startsWith x (pkgs.lib.getName pkg)) [ "vscode" "steam" "nvidia" ] ||
 			builtins.elem (pkgs.lib.getName pkg) [
 				"anytype-heart"
-				"vscode"
-				"steam"
-				"steam-run"
-				"steam-original"
-				"steam-unwrapped"
-				"nvidia-x11"
-				"nvidia-settings"
-				"nvidia-persistenced"
 				"opera"
 				"discord"
 				"slack"
