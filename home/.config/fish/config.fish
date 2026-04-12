@@ -7,6 +7,9 @@ if status is-interactive
 	if command -v zoxide > /dev/null
 		zoxide init fish | source
 	end
+	if command -v carapace > /dev/null
+		carapace _carapace | source
+	end
 end
 
 export GPG_TTY=(tty)

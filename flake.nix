@@ -6,37 +6,33 @@
 			inputs.nixpkgs.follows = "nixpkgs";
 		};
 		home-manager = {
-			url = "github:nix-community/home-manager/release-25.05";
+			url = "github:nix-community/home-manager/release-25.11";
 			inputs.nixpkgs.follows = "nixpkgs";
 		};
 		nixos-generators = {
 			url = "github:nix-community/nixos-generators";
 			inputs.nixpkgs.follows = "nixpkgs";
 		};
-		#vscode-server = {
-		#	url = "github:nix-community/nixos-vscode-server";
-		#	inputs.nixpkgs.follows = "nixpkgs";
-		#};
-
 		kp2pml30-moe = {
-			url = "github:kp2pml30/kp2pml30.github.io/73cbd5858e7196c236029f86756119806d484612";
+			url = "github:kp2pml30/kp2pml30.github.io";
 			inputs.nixpkgs.follows = "nixpkgs";
 		};
+
+		code-flake = {
+			url = "github:kp2pml30/code-flake";
+			inputs.nixpkgs.follows = "nixpkgs";
+		};
+
+		claude-code.url = "github:sadjow/claude-code-nix";
 	};
 
-	outputs = inputs@{ self, nixpkgs, nixos-wsl, home-manager, nixos-generators, kp2pml30-moe, ... }:
+	outputs = inputs@{ self, nixpkgs, nixos-wsl, home-manager, nixos-generators, kp2pml30-moe, code-flake, claude-code, ... }:
 		let
 			rootPath = self;
 			additionalArgs = { inherit inputs rootPath; };
 			lib = nixpkgs.lib;
 		in
 		{
-			packages.x86_64-linux.docker-nix-node = import ./nix/docker-images/nix-node.nix {
-				pkgs = import nixpkgs { system = "x86_64-linux"; };
-				inherit lib;
-				rootPath = self;
-			};
-
 			nixosConfigurations = {
 				server = nixpkgs.lib.nixosSystem {
 					system = "x86_64-linux";
@@ -75,9 +71,8 @@
 							networking.hostId = "e31a5cc2";
 
 							time.timeZone = "Asia/Tokyo";
-							environment.systemPackages = [
-								# pkgs.claude-code
-							];
+
+							nixpkgs.overlays = [ claude-code.overlays.default code-flake.overlays.default ];
 						})
 
 						./nix/hardware/mini.nix
@@ -86,6 +81,10 @@
 
 						./nix/personal
 
+						./nix/qemu.nix
+
+						./nix/xray.nix
+
 						{
 							kp2pml30 = {
 								xserver = true;
@@ -93,6 +92,11 @@
 								kitty = true;
 								opera = true;
 								steam = true;
+
+								qemu = true;
+
+								xray-client = true;
+								xray-client-id = "mini";
 
 								boot.efiGrub = true;
 
@@ -114,6 +118,8 @@
 							networking.hostId = "e31a5cc0";
 
 							time.timeZone = "Asia/Yerevan";
+
+							nixpkgs.overlays = [ code-flake.overlays.default ];
 						}
 
 						./nix/hardware/ideapad.nix
@@ -151,6 +157,26 @@
 						./nix/wsl.nix
 						./nix/common.nix
 						./nix/personal
+					];
+					specialArgs = additionalArgs;
+				};
+
+				claude-vm = nixpkgs.lib.nixosSystem {
+					system = "x86_64-linux";
+					modules = [
+						{ networking.hostId = "c1a0de00"; }
+						./nix/common.nix
+						./nix/claude-vm
+						./nix/personal
+						./nix/hardware/claude-vm.nix
+					];
+					specialArgs = additionalArgs;
+				};
+
+				claude-vm-installer = nixpkgs.lib.nixosSystem {
+					system = "x86_64-linux";
+					modules = [
+						./nix/claude-vm/installer.nix
 					];
 					specialArgs = additionalArgs;
 				};

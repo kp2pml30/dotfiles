@@ -23,7 +23,7 @@ let
     fi
 
     # Decrypt and parse XRAY_UIDS
-    ${pkgs.openssl}/bin/openssl enc -aes-256-cbc -pbkdf2 -iter 1000000 -base64 -d -k "$KP2_DOTFILES_SECRET_KEY" -in "${./secrets.yaml}" | ${pkgs.yq}/bin/yq '.XRAY_UIDS[]' -r
+    ${pkgs.openssl}/bin/openssl enc -aes-256-cbc -pbkdf2 -iter 1000000 -base64 -d -k "$KP2_DOTFILES_SECRET_KEY" -in "${./secrets.yaml}" | ${pkgs.yq}/bin/yq '.XRAY_UIDS[].uid' -r
   '';
 
   xray-config-base = builtins.toFile "xray.json" (builtins.toJSON (

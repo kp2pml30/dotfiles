@@ -18,7 +18,7 @@ in {
 
 	home-manager.users.${cfg.username} = { lib, ... }: {
 		home = {
-			stateVersion = "24.05";
+			stateVersion = "25.11";
 			username = cfg.username;
 			homeDirectory = "/home/${cfg.username}";
 			packages = with pkgs; [
@@ -41,16 +41,16 @@ in {
 
 		nix.gc = {
 			automatic = true;
-			frequency = "weekly";
+			dates = "weekly";
 		};
 
 		programs = {
 			git = {
 				enable = true;
-				userName = cfg.username;
-				userEmail = "kp2pml30@gmail.com";
 				lfs.enable = true;
-				extraConfig = {
+				settings = {
+					user.name = cfg.username;
+					user.email = "kp2pml30@gmail.com";
 					init.defaultBranch = "main";
 				};
 			};
@@ -58,6 +58,12 @@ in {
 			fish = {
 				enable = true;
 				shellInitLast = builtins.readFile (rootPath + "/home/.config/fish/config.fish");
+			};
+
+			nushell = {
+				enable = true;
+				extraEnv = builtins.readFile (rootPath + "/home/.config/nushell/env.nu");
+				extraConfig = builtins.readFile (rootPath + "/home/.config/nushell/config.nu");
 			};
 
 			starship = {
@@ -80,7 +86,50 @@ in {
 			};
 		};
 
-		dconf.settings = {
+		xdg.desktopEntries = lib.mkIf config.kp2pml30.xserver {
+			yazi = {
+				name = "Yazi";
+				comment = "Terminal file manager";
+				exec = "kitty -- yazi %u";
+				terminal = false;
+				mimeType = [ "inode/directory" ];
+				categories = [ "System" "FileManager" ];
+			};
+			nvim = {
+				name = "Neovim";
+				comment = "Terminal text editor";
+				exec = "kitty -- nvim %F";
+				terminal = false;
+				mimeType = [ "text/plain" ];
+				categories = [ "Utility" "TextEditor" ];
+			};
+		};
+
+		xdg.mimeApps = lib.mkIf config.kp2pml30.xserver (let
+			mimeMap = desktop: types:
+				builtins.listToAttrs (map (t: { name = t; value = [ desktop ]; }) types);
+		in {
+			enable = true;
+			defaultApplications =
+				{ "inode/directory" = [ "yazi.desktop" ]; }
+				// mimeMap "nvim.desktop" [
+					"text/plain" "text/html" "text/css" "text/xml" "text/markdown"
+					"text/x-csrc" "text/x-chdr" "text/x-c++src" "text/x-c++hdr"
+					"text/x-python" "text/x-shellscript" "text/x-makefile"
+					"application/json" "application/xml" "application/x-yaml"
+					"application/toml" "application/javascript" "application/x-shellscript"
+					"application/x-nix"
+				]
+				// mimeMap "feh.desktop" [
+					"image/png" "image/jpeg" "image/gif" "image/webp" "image/bmp" "image/svg+xml"
+				]
+				// mimeMap "vlc.desktop" [
+					"video/mp4" "video/x-matroska" "video/webm" "video/x-msvideo"
+					"video/quicktime" "video/x-flv"
+				];
+		});
+
+		dconf.settings = lib.mkIf config.kp2pml30.xserver {
 			"org/gnome/desktop/interface" = {
 				color-scheme = "prefer-dark";
 			};

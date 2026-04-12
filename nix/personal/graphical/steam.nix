@@ -9,9 +9,9 @@ let
 in lib.mkIf cfg.steam {
 	programs.steam = {
 		enable = true;
-		remotePlay.openFirewall = false;
+		remotePlay.openFirewall = true;
 		dedicatedServer.openFirewall = false;
-		localNetworkGameTransfers.openFirewall = false;
+		localNetworkGameTransfers.openFirewall = true;
 	};
 
 	hardware.steam-hardware.enable = true;

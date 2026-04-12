@@ -29,3 +29,21 @@ __pycache__/
 .ruff_cache
 .coverage*
 core.[0-9]*
+
+# claude sandbox
+/.bash_profile
+/.bashrc
+/.gitconfig
+/.mcp.json
+/.profile
+/.ripgreprc
+/.zprofile
+/.zshrc
+/HEAD
+/config
+/hooks
+/objects
+/refs
+.claude/agents
+.claude/commands
+.claude/settings.json

@@ -21,15 +21,24 @@
 		options = [ "fmask=0077" "dmask=0077" ];
 	};
 
-#	fileSystems."/mnt/d" = {
-#		device = "/dev/sda1";
-#		fsType = "exfat";
-#		options = [
-#			"users"
-#			"exec"
-#			"nofail"
-#		];
-#	};
+	fileSystems."/mnt/d" = {
+		device = "/dev/sda1";
+		fsType = "exfat";
+		options = [
+			"users"
+			"exec"
+			"nofail"
+		];
+	};
+
+	fileSystems."/mnt/d/SteamLibrary/steamapps/compatdata" = {
+		device = "/home/kp2pml30/.local/share/Steam/steamapps/compatdata-d";
+		fsType = "none";
+		options = [
+			"bind"
+			"nofail"
+		];
+	};
 
 	swapDevices = [ { device = "/dev/disk/by-uuid/c68daa9f-f165-4e23-8710-2aab0ad8d282"; } ];
 
@@ -44,8 +53,8 @@
 
 	programs.nix-ld.enable = true;
 
-	home-manager.users.${config.kp2pml30.username}.programs.git.extraConfig = {
-		user.signingkey = "0xCD6528BAC23E3E34!";
+	home-manager.users.${config.kp2pml30.username}.programs.git.settings = {
+		user.signingkey = "0x1739F9D8BA250D04!";
 		commit.gpgsign = true;
 		tag.gpgSign = true;
 	};
