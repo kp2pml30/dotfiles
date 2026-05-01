@@ -23,7 +23,10 @@
 			inputs.nixpkgs.follows = "nixpkgs";
 		};
 
-		claude-code.url = "github:sadjow/claude-code-nix";
+		claude-code = {
+			url = "github:sadjow/claude-code-nix";
+			inputs.nixpkgs.follows = "nixpkgs";
+		};
 	};
 
 	outputs = inputs@{ self, nixpkgs, nixos-wsl, home-manager, nixos-generators, kp2pml30-moe, code-flake, claude-code, ... }:
@@ -92,6 +95,7 @@
 								kitty = true;
 								opera = true;
 								steam = true;
+								claude = true;
 
 								qemu = true;
 

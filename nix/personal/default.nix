@@ -15,6 +15,7 @@ in {
 			default = "kp2pml30";
 		};
 		xserver = lib.mkEnableOption "";
+		claude = lib.mkEnableOption "";
 		vscode = lib.mkEnableOption "";
 		kitty = lib.mkEnableOption "";
 		opera = lib.mkEnableOption "";
@@ -35,7 +36,7 @@ in {
 
 	config = {
 
-		boot.supportedFilesystems = [ "zfs" ];
+		boot.supportedFilesystems = [ "zfs" "exfat" ];
 		boot.zfs.forceImportRoot = false;
 
 		services.logind.settings.Login = {
