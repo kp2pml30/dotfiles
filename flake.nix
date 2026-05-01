@@ -32,7 +32,8 @@
 	outputs = inputs@{ self, nixpkgs, nixos-wsl, home-manager, nixos-generators, kp2pml30-moe, code-flake, claude-code, ... }:
 		let
 			rootPath = self;
-			additionalArgs = { inherit inputs rootPath; };
+			user-groups-ids = import ./nix/user-groups-ids.nix;
+			additionalArgs = { inherit inputs rootPath user-groups-ids; };
 			lib = nixpkgs.lib;
 		in
 		{
@@ -63,7 +64,7 @@
 						nixos-generators.nixosModules.all-formats
 					];
 
-					specialArgs = { inherit kp2pml30-moe; system = "x86_64-linux"; };
+					specialArgs = { inherit kp2pml30-moe user-groups-ids; system = "x86_64-linux"; };
 				};
 
 				personal-pc = nixpkgs.lib.nixosSystem rec {

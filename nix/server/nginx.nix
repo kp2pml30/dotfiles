@@ -1,6 +1,7 @@
 { config
 , pkgs
 , lib
+, user-groups-ids
 , ...
 }:
 let
@@ -10,6 +11,9 @@ let
 	acmeRoot = "/var/lib/acme/acme-challenge";
 	pref = "kp2";
 in lib.mkIf cfg.nginx {
+	users.users.acme.uid = user-groups-ids.uids.acme;
+	users.groups.acme.gid = user-groups-ids.gids.acme;
+
 	security.acme = {
 		acceptTerms = true;
 		maxConcurrentRenewals = 1;

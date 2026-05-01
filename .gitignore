@@ -53,3 +53,6 @@ core.[0-9]*
 .claude/agents
 .claude/commands
 .claude/settings.json
+
+.agents/plans
+.agents/settings.local.json
