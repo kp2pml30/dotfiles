@@ -21,8 +21,18 @@
 		options = [ "fmask=0077" "dmask=0077" ];
 	};
 
+	fileSystems."/mnt/g" = {
+		device = "/dev/disk/by-uuid/7878-8620";
+		fsType = "exfat";
+		options = [
+			"users"
+			"exec"
+			"nofail"
+		];
+	};
+
 	fileSystems."/mnt/d" = {
-		device = "/dev/sda1";
+		device = "/dev/disk/by-uuid/C1E9-8BA0";
 		fsType = "exfat";
 		options = [
 			"users"
@@ -42,6 +52,7 @@
 
 	swapDevices = [ { device = "/dev/disk/by-uuid/c68daa9f-f165-4e23-8710-2aab0ad8d282"; } ];
 
+	boot.kernelParams = [ "pcie_aspm=off" ];
 	boot.kernelModules = [ "kvm-amd" ];
 
 	environment.systemPackages = with pkgs; [
@@ -72,10 +83,7 @@
 
 
 		nvidia.prime = {
-			offload = {
-				enable = true;
-				enableOffloadCmd = true;
-			};
+			sync.enable = true;
 			nvidiaBusId = "PCI:5:0:0";
 			amdgpuBusId = "PCI:198:0:0";
 		};
@@ -83,6 +91,30 @@
 
 	networking = {
 		useDHCP = lib.mkDefault true;
+		extraHosts = lib.concatMapStringsSep "\n" (domain: "0.0.0.0 ${domain}") [
+			"overseauspider.yuanshen.com"
+			"log-upload-os.hoyoverse.com"
+			"log-upload-os.mihoyo.com"
+			"dump.gamesafe.qq.com"
+
+			"apm-log-upload-os.hoyoverse.com"
+			"zzz-log-upload-os.hoyoverse.com"
+
+			"log-upload.mihoyo.com"
+			"devlog-upload.mihoyo.com"
+			"uspider.yuanshen.com"
+			"sg-public-data-api.hoyoverse.com"
+			"hkrpg-log-upload-os.hoyoverse.com"
+			"public-data-api.mihoyo.com"
+
+			"prd-lender.cdp.internal.unity3d.com"
+			"thind-prd-knob.data.ie.unity3d.com"
+			"thind-gke-usc.prd.data.corp.unity3d.com"
+			"cdp.cloud.unity3d.com"
+			"remote-config-proxy-prd.uca.cloud.unity3d.com"
+
+			"pc.crashsight.wetest.net"
+		];
 	};
 
 	virtualisation.docker.enable = true;

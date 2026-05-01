@@ -37,6 +37,12 @@ in lib.mkIf cfg.xserver {
 		xfce.xfce4-screenshooter
 	];
 
+	services.picom = {
+		enable = true;
+		vSync = true;
+		backend = "glx";
+	};
+
 	programs.dconf.enable = true;
 
 	users.users.${cfg.username} = {
