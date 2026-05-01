@@ -1,12 +1,16 @@
 { config
 , pkgs
 , lib
+, user-groups-ids
 , ...
 }:
 let
 	cfg = config.kp2pml30.server;
 	ports = config.kp2pml30.server.ports;
 in lib.mkIf cfg.forgejo {
+	users.users.forgejo.uid = user-groups-ids.uids.forgejo;
+	users.groups.forgejo.gid = user-groups-ids.gids.forgejo;
+
 	services.forgejo = {
 		enable = true;
 		database.type = "postgres";

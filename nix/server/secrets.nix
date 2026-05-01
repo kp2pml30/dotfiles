@@ -1,6 +1,7 @@
 { config
 , pkgs
 , lib
+, user-groups-ids
 , ...
 }:
 let
@@ -66,10 +67,11 @@ in {
     # Ensure xray user and group exist
     users.users.xray = {
       isSystemUser = true;
+      uid = user-groups-ids.uids.xray;
       group = "xray";
     };
 
-    users.groups.xray = {};
+    users.groups.xray = { gid = user-groups-ids.gids.xray; };
 
     # Create a systemd service to decrypt and prepare xray clients config
     systemd.services.xray-secrets = {

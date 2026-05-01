@@ -6,6 +6,7 @@
 , nixpkgs
 , kp2pml30-moe
 , system
+, user-groups-ids
 , ...
 }@args:
 let
@@ -43,10 +44,11 @@ ${zoneRecords}
 in lib.mkIf cfg.nginx {
 	users.users.coredns = {
 		isSystemUser = true;
+		uid = user-groups-ids.uids.coredns;
 		group = "coredns";
 		extraGroups = [ "certreaders" ];
 	};
-	users.groups.coredns = {};
+	users.groups.coredns = { gid = user-groups-ids.gids.coredns; };
 
 	services.coredns.enable = true;
 	services.coredns.config = ''
