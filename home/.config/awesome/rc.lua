@@ -97,9 +97,16 @@ myawesomemenu = {
 	{ "quit", function() awesome.quit() end },
 }
 
+mytuimenu = {
+	{ "pulsemixer", terminal .. " -e pulsemixer" },
+	{ "impala (wifi)", terminal .. " -e impala" },
+	{ "bluetui (bluetooth)", terminal .. " -e bluetui" },
+}
+
 mymainmenu = awful.menu({
 	items = {
 		{ "awesome", myawesomemenu, beautiful.awesome_icon },
+		{ "tui", mytuimenu },
 		{ "open terminal", terminal }
 	}
 })

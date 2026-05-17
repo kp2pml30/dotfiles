@@ -7,7 +7,6 @@
 		kp2pml30             = 1000;
 
 		# server
-		kp2pml30-serv        = 1100;
 		kp2pml30-moe-backend = 1001;
 		xray                 = 993;
 		coredns              = 992;
@@ -27,6 +26,7 @@
 
 	gids = {
 		users       = 100;
+		steam-input = 988;
 		certreaders = 990;
 		coredns     = 989;
 		xray        = 991;

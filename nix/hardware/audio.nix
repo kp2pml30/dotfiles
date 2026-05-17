@@ -18,5 +18,6 @@ in lib.mkIf cfg.hardware.audio {
 		alsa-utils
 		acpid
 		pulseaudio
+		pulsemixer
 	];
 }

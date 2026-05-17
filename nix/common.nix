@@ -33,7 +33,12 @@ in
 
 	networking.firewall.enable = true;
 
-	nix.settings.experimental-features = [ "nix-command" "flakes" ];
+	nix.settings = {
+		experimental-features = [ "nix-command" "flakes" ];
+		auto-optimise-store = true;
+		sandbox = true;
+		sandbox-fallback = false;
+	};
 	environment.systemPackages = with pkgs; [
 		curl
 		neovim
@@ -51,6 +56,7 @@ in
 		gnused
 		gnugrep
 		stow
+		xxd
 
 		killall
 		gnupg

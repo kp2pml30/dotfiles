@@ -22,5 +22,5 @@ in lib.mkIf cfg.hardware.wireless {
 		powerOnBoot = true;
 	};
 
-	environment.systemPackages = with pkgs; [ bluetui ];
+	environment.systemPackages = with pkgs; [ bluetui impala ];
 }
