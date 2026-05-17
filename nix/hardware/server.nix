@@ -61,5 +61,5 @@
 		];
 	};
 
-	nix.settings.trusted-users = [ "root" "kp2pml30-serv" ];
+	nix.settings.trusted-users = [ "root" "kp2pml30" ];
 }

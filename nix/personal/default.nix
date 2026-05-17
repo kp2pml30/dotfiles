@@ -19,7 +19,7 @@ in {
 		vscode = lib.mkEnableOption "";
 		kitty = lib.mkEnableOption "";
 		opera = lib.mkEnableOption "";
-		steam = lib.mkEnableOption "";
+		gayming = lib.mkEnableOption "";
 		messengers = {
 			personal = lib.mkEnableOption "";
 			work = lib.mkEnableOption "";
@@ -36,8 +36,12 @@ in {
 
 	config = {
 
-		boot.supportedFilesystems = [ "zfs" "exfat" ];
-		boot.zfs.forceImportRoot = false;
+		boot.supportedFilesystems = [ "exfat" ] ++ lib.optional cfg.gayming "ntfs";
+		boot.loader.timeout = 30;
+
+		documentation.doc.enable = false;
+		# [ "zfs" ]
+		# boot.zfs.forceImportRoot = false;
 
 		services.logind.settings.Login = {
 			HandlePowerKey = "poweroff";

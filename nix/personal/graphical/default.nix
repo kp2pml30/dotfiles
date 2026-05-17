@@ -11,7 +11,7 @@ in {
 		./kitty.nix
 		./vscode.nix
 
-		./steam.nix
+		./gayming.nix
 
 		./messengers.nix
 		./messengers-work.nix
@@ -22,7 +22,7 @@ in {
 			{ assertion = cfg.kitty -> cfg.xserver; message = "kp2pml30.kitty requires kp2pml30.xserver"; }
 			{ assertion = cfg.vscode -> cfg.xserver; message = "kp2pml30.vscode requires kp2pml30.xserver"; }
 			{ assertion = cfg.opera -> cfg.xserver; message = "kp2pml30.opera requires kp2pml30.xserver"; }
-			{ assertion = cfg.steam -> cfg.xserver; message = "kp2pml30.steam requires kp2pml30.xserver"; }
+			{ assertion = cfg.gayming -> cfg.xserver; message = "kp2pml30.gayming requires kp2pml30.xserver"; }
 			{ assertion = cfg.messengers.personal -> cfg.xserver; message = "kp2pml30.messengers.personal requires kp2pml30.xserver"; }
 			{ assertion = cfg.messengers.work -> cfg.xserver; message = "kp2pml30.messengers.work requires kp2pml30.xserver"; }
 		];
@@ -39,6 +39,22 @@ in {
 			script = ''
 			flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 			'';
+		};
+
+		systemd.services.flatpak-update = {
+			path = [ pkgs.flatpak ];
+			serviceConfig.Type = "oneshot";
+			script = ''
+			flatpak update --noninteractive --assumeyes
+			'';
+		};
+		systemd.timers.flatpak-update = {
+			wantedBy = [ "timers.target" ];
+			timerConfig = {
+				OnCalendar = "weekly";
+				Persistent = true;
+				RandomizedDelaySec = "1h";
+			};
 		};
 
 		environment.systemPackages = with pkgs; [

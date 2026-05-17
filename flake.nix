@@ -1,12 +1,8 @@
 {
 	inputs = {
-		nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.11";
-		nixos-wsl = {
-			url = "github:nix-community/NixOS-WSL/main";
-			inputs.nixpkgs.follows = "nixpkgs";
-		};
+		nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
 		home-manager = {
-			url = "github:nix-community/home-manager/release-25.11";
+			url = "github:nix-community/home-manager/master";
 			inputs.nixpkgs.follows = "nixpkgs";
 		};
 		nixos-generators = {
@@ -29,7 +25,7 @@
 		};
 	};
 
-	outputs = inputs@{ self, nixpkgs, nixos-wsl, home-manager, nixos-generators, kp2pml30-moe, code-flake, claude-code, ... }:
+	outputs = inputs@{ self, nixpkgs, home-manager, nixos-generators, kp2pml30-moe, code-flake, claude-code, ... }:
 		let
 			rootPath = self;
 			user-groups-ids = import ./nix/user-groups-ids.nix;
@@ -77,6 +73,8 @@
 							time.timeZone = "Asia/Tokyo";
 
 							nixpkgs.overlays = [ claude-code.overlays.default code-flake.overlays.default ];
+
+							boot.binfmt.emulatedSystems = [ "aarch64-linux" ];
 						})
 
 						./nix/hardware/mini.nix
@@ -95,7 +93,7 @@
 								vscode = true;
 								kitty = true;
 								opera = true;
-								steam = true;
+								gayming = true;
 								claude = true;
 
 								qemu = true;
@@ -139,7 +137,7 @@
 								vscode = true;
 								kitty = true;
 								opera = true;
-								steam = true;
+								gayming = true;
 
 								boot.efiGrub = true;
 
@@ -151,19 +149,6 @@
 						}
 					];
 					specialArgs = additionalArgs // { inherit system; };
-				};
-				personal-wsl = nixpkgs.lib.nixosSystem {
-					system = "x86_64-linux";
-					modules = [
-						{
-							networking.hostName = "kp2pml30-personal-wsl";
-							networking.hostId = "e31a5cbf";
-						}
-						./nix/wsl.nix
-						./nix/common.nix
-						./nix/personal
-					];
-					specialArgs = additionalArgs;
 				};
 
 				claude-vm = nixpkgs.lib.nixosSystem {
@@ -185,6 +170,30 @@
 					];
 					specialArgs = additionalArgs;
 				};
+
+				nanopi-m5-homeserver = nixpkgs.lib.nixosSystem {
+					modules = [
+						{
+							networking.hostName = "kp2pml30-nanopi-m5";
+							networking.hostId = "0fe2738b";
+
+							time.timeZone = "Asia/Tokyo";
+
+							nixpkgs.hostPlatform = "aarch64-linux";
+						}
+
+						./nix/common.nix
+						./nix/hardware/nanopi-m5-homeserver
+					];
+					specialArgs = additionalArgs;
+				};
+			};
+
+			packages.aarch64-linux = {
+				nanopi-m5-homeserver-sd =
+					self.nixosConfigurations.nanopi-m5-homeserver.config.system.build.sdImage;
+				nanopi-m5-homeserver-toplevel =
+					self.nixosConfigurations.nanopi-m5-homeserver.config.system.build.toplevel;
 			};
 		};
 }

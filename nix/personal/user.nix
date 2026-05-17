@@ -8,6 +8,8 @@
 let
 	cfg = config.kp2pml30;
 in {
+	nix.settings.trusted-users = [ cfg.username ];
+
 	users.users.${cfg.username} = {
 		isNormalUser = true;
 		uid = user-groups-ids.uids.kp2pml30;

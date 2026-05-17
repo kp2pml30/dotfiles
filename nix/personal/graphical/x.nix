@@ -34,7 +34,7 @@ in lib.mkIf cfg.xserver {
 		brightnessctl
 		arandr
 		libnotify
-		xfce.xfce4-screenshooter
+		xfce4-screenshooter
 	];
 
 	services.picom = {

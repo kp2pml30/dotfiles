@@ -83,7 +83,7 @@
 
 
 		nvidia.prime = {
-			sync.enable = true;
+			reverseSync.enable = true;
 			nvidiaBusId = "PCI:5:0:0";
 			amdgpuBusId = "PCI:198:0:0";
 		};

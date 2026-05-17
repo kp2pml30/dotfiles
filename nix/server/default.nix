@@ -10,7 +10,7 @@ in {
 	options.kp2pml30.server = {
 		username = lib.mkOption {
 			type = lib.types.str;
-			default = "kp2pml30-serv";
+			default = "kp2pml30";
 		};
 		hostname = lib.mkOption {
 			type = lib.types.str;
@@ -52,7 +52,7 @@ in {
 
 		users.users."${cfg.username}" = {
 			isNormalUser = true;
-			uid = user-groups-ids.uids.kp2pml30-serv;
+			uid = user-groups-ids.uids.kp2pml30;
 			openssh.authorizedKeys.keys = [
 				"ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAII2dRBDECmIuKt+2B2q9cmFudKga+EzbD4pCX6x3JNLB kp2pml30@kp2pml30-personal-pc"
 			];
