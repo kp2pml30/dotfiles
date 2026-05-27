@@ -24,7 +24,15 @@
 
 	swapDevices = [ { device = "/dev/disk/by-uuid/3231b9fd-4afe-41cf-a3ee-e71ceb774c1b"; } ];
 
+	boot.kernelPackages = pkgs.linuxPackages_6_12;
 	boot.kernelModules = [ "kvm-amd" ];
+
+	# Razer Kiyo (1532:0e03) trips UVC probe control with -32 EPIPE.
+	# 0x1 PROBE_MINMAX | 0x2 PROBE_EXTRAFIELDS | 0x20 FIX_BANDWIDTH
+	# | 0x40 PROBE_DEF | 0x100 RESTORE_CTRLS_ON_INIT | 0x800 WAKE_AUTOSUSPEND
+	boot.extraModprobeConfig = ''
+		options uvcvideo quirks=0x963
+	'';
 
 	programs.nix-ld.enable = true;
 

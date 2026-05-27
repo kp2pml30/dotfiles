@@ -158,6 +158,7 @@
 								kitty = true;
 								opera = true;
 								gayming = true;
+								claude = true;
 
 								boot.efiGrub = true;
 
