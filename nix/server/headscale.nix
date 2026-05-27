@@ -50,7 +50,7 @@ in lib.mkIf cfg.headscale {
 
 	# Idempotently ensure the primary user exists. Pre-auth keys are minted
 	# manually via `headscale preauthkeys create -u kp2pml30 --reusable` and
-	# pasted into secrets.yaml under HEADSCALE_NODE_KEYS.
+	# stored encrypted at nix/secrets/data/headscale-preauth/<id>.
 	systemd.services.headscale-bootstrap = {
 		description = "Ensure headscale users exist";
 		wantedBy = [ "multi-user.target" ];

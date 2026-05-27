@@ -2,7 +2,7 @@
 , config
 , lib
 , inputs
-, user-groups-ids
+, data
 , ...
 }:
 let
@@ -12,7 +12,7 @@ in {
 
 	users.users.${cfg.username} = {
 		isNormalUser = true;
-		uid = user-groups-ids.uids.kp2pml30;
+		uid = data.uids.kp2pml30;
 		extraGroups = [
 			"wheel" # sudo
 			"networkmanager"

@@ -5,7 +5,7 @@
 , nixpkgs
 , kp2pml30-moe
 , system
-, user-groups-ids
+, data
 , ...
 }@args:
 let
@@ -22,7 +22,7 @@ in lib.mkIf cfg.nginx {
 	users.users.kp2pml30-moe-backend = {
 		home = "/home/kp2pml30-moe-backend";
 		isNormalUser = true;
-		uid = user-groups-ids.uids.kp2pml30-moe-backend;
+		uid = data.uids.kp2pml30-moe-backend;
 
 		packages = [
 			backend

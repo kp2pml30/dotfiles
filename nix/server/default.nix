@@ -1,7 +1,7 @@
 { config
 , pkgs
 , lib
-, user-groups-ids
+, data
 , ...
 }:
 let
@@ -47,16 +47,16 @@ in {
 	];
 
 	config = {
-		users.groups.certreaders = { gid = user-groups-ids.gids.certreaders; };
+		users.groups.certreaders = { gid = data.gids.certreaders; };
 		users.users.nginx.extraGroups = [ "certreaders" ];
 
 		security.pam.sshAgentAuth.enable = true;
 
 		users.users."${cfg.username}" = {
 			isNormalUser = true;
-			uid = user-groups-ids.uids.kp2pml30;
+			uid = data.uids.kp2pml30;
 			openssh.authorizedKeys.keys = [
-				"ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAII2dRBDECmIuKt+2B2q9cmFudKga+EzbD4pCX6x3JNLB kp2pml30@kp2pml30-personal-pc"
+				data.ssh-keys.kp2pml30-personal-pc
 			];
 			extraGroups = [ "wheel" "networkmanager" "acme" ];
 			hashedPassword = "$6$UK6oHr2gPRYD4Rak$lgF.mYReC0jahNuI4kt0j/CsrajVzMprvp3HgjKwwsjYHU6/Ur9jfROXZbKhhpyCLRmnlCpWeRCbHEYO/jhIv/";

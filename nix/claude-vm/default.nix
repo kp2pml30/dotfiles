@@ -1,10 +1,10 @@
-{ pkgs, lib, user-groups-ids, ... }:
+{ pkgs, lib, data, ... }:
 {
 	users.mutableUsers = false;
 
 	users.users.claude = {
 		isNormalUser = true;
-		uid = user-groups-ids.uids.claude;
+		uid = data.uids.claude;
 		extraGroups = [ "wheel" ];
 		shell = pkgs.fish;
 		hashedPassword = "";

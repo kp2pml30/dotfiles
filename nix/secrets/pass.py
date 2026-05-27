@@ -15,6 +15,7 @@ Setting up a recipient
      sudo install -d -m 0700 /var/lib/secrets
      sudo age-keygen -pq -o /var/lib/secrets/main
      sudo chmod 0600 /var/lib/secrets/main
+     sudo age-keygen -y /var/lib/secrets/main | sudo tee /var/lib/secrets/main.pub
 
    The file contains the private identity. `age-keygen` prints the public
    recipient string as `# public key: age1...` on stderr; that's what other
@@ -171,6 +172,24 @@ def cmd_edit(args: argparse.Namespace) -> None:
         write_recipients(name, ids)
 
 
+def cmd_create(args: argparse.Namespace) -> None:
+    name = args.path
+    dp = data_path(name)
+    if dp.is_file() and not args.force:
+        sys.exit(f"{dp} already exists; pass --force to overwrite or use `edit`")
+    if not args.recipient:
+        sys.exit("create requires at least one -r <id>")
+    ids = list(dict.fromkeys(args.recipient))
+    for rid in ids:
+        key_path(rid)
+    plaintext = sys.stdin.buffer.read()
+    if not plaintext:
+        sys.exit("refusing to create empty secret from stdin")
+    encrypt(name, plaintext, ids)
+    write_recipients(name, ids)
+    print(f"wrote {dp} (recipients: {', '.join(ids)})", file=sys.stderr)
+
+
 def cmd_list_recipients(args: argparse.Namespace) -> None:
     for rid in read_recipients(args.path):
         print(rid)
@@ -212,6 +231,13 @@ def main() -> None:
     sp.add_argument("-r", "--recipient", action="append",
                     help="recipient id (from keys/<id>.pub); required when creating; repeatable")
     sp.set_defaults(func=cmd_edit)
+
+    sp = sub.add_parser("create", help="encrypt stdin to <path> with recipients")
+    sp.add_argument("path")
+    sp.add_argument("-r", "--recipient", action="append",
+                    help="recipient id (from keys/<id>.pub); repeatable; required")
+    sp.add_argument("--force", action="store_true", help="overwrite if file exists")
+    sp.set_defaults(func=cmd_create)
 
     sp = sub.add_parser("list-recipients", help="print recipient ids, one per line")
     sp.add_argument("path")

@@ -12,68 +12,92 @@ in
 {
 	imports = [ ./secrets ];
 
-	networking.extraHosts = lib.concatStringsSep "\n" (
-		groupToLines (groupByAttr "ip") ++ groupToLines (groupByAttr "ipv6")
-	);
-	system.stateVersion = "24.05";
-
-	users.mutableUsers = false;
-
-	console.keyMap = "us";
-
-	nix.gc = {
-		automatic = true;
-		dates = "weekly";
+	options.kp2pml30.short-hostname = lib.mkOption {
+		type = lib.types.str;
+		description = "Short identifier for this host (e.g. mini, vdsina). Used as the default for tailscale id, encrypted-secret recipient id, etc.";
 	};
 
-	boot = {
-		tmp.useTmpfs = true;
-	};
+	config = {
+		networking.extraHosts = lib.concatStringsSep "\n" (
+			groupToLines (groupByAttr "ip") ++ groupToLines (groupByAttr "ipv6")
+		);
+		system.stateVersion = "24.05";
 
-	systemd.services.nix-daemon = {
-		environment.TMPDIR = "/var/tmp";
-	};
+		users.mutableUsers = false;
 
-	networking.firewall.enable = true;
+		services.openssh.settings = {
+			PasswordAuthentication = lib.mkDefault false;
+			KbdInteractiveAuthentication = lib.mkDefault false;
+			PermitRootLogin = lib.mkDefault "no";
 
-	nix.settings = {
-		experimental-features = [ "nix-command" "flakes" ];
-		auto-optimise-store = true;
-		sandbox = true;
-		sandbox-fallback = false;
-	};
-	environment.systemPackages = with pkgs; [
-		curl
-		neovim
-		bash
-		git
+			# PQ-hybrid KEX only. Both algorithms mix in X25519 so the connection
+			# is at least as strong as classical ECDH even if the PQ part breaks.
+			# Requires OpenSSH >= 9.9 on the client (mlkem768) or >= 9.0 (sntrup761).
+			KexAlgorithms = [
+				"mlkem768x25519-sha256"
+				"sntrup761x25519-sha512@openssh.com"
+			];
+		};
 
-		zip unzip
-		xz
-		zstd
-		gnutar
+		console.keyMap = "us";
 
-		diffutils
-		file
-		tree
-		gnused
-		gnugrep
-		stow
-		xxd
+		nix.gc = {
+			automatic = true;
+			dates = "weekly";
+		};
 
-		killall
-		gnupg
-	];
+		boot = {
+			tmp.useTmpfs = true;
+		};
 
-	programs = {
-		neovim.enable = true;
-		neovim.defaultEditor = true;
+		systemd.services.nix-daemon = {
+			environment.TMPDIR = "/var/tmp";
+		};
 
-		git = {
-			enable = true;
-			lfs.enable = true;
-			config = {
-				init.defaultBranch = "main";
+		networking.firewall.enable = true;
+
+		nix.settings = {
+			experimental-features = [ "nix-command" "flakes" ];
+			auto-optimise-store = true;
+			sandbox = true;
+			sandbox-fallback = false;
+			# allow members of wheel to push store paths via SSH for
+			# `nixos-rebuild --target-host`; root is implicitly trusted.
+			trusted-users = [ "root" "@wheel" ];
+		};
+		environment.systemPackages = with pkgs; [
+			curl
+			neovim
+			bash
+			git
+
+			zip unzip
+			xz
+			zstd
+			gnutar
+
+			diffutils
+			file
+			tree
+			gnused
+			gnugrep
+			stow
+			xxd
+
+			killall
+			gnupg
+		];
+
+		programs = {
+			neovim.enable = true;
+			neovim.defaultEditor = true;
+
+			git = {
+				enable = true;
+				lfs.enable = true;
+				config = {
+					init.defaultBranch = "main";
+				};
 			};
 		};
 	};
