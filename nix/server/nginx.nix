@@ -1,7 +1,7 @@
 { config
 , pkgs
 , lib
-, user-groups-ids
+, data
 , ...
 }:
 let
@@ -11,8 +11,8 @@ let
 	acmeRoot = "/var/lib/acme/acme-challenge";
 	pref = "kp2";
 in lib.mkIf cfg.nginx {
-	users.users.acme.uid = user-groups-ids.uids.acme;
-	users.groups.acme.gid = user-groups-ids.gids.acme;
+	users.users.acme.uid = data.uids.acme;
+	users.groups.acme.gid = data.gids.acme;
 
 	security.acme = {
 		acceptTerms = true;
@@ -28,6 +28,14 @@ in lib.mkIf cfg.nginx {
 
 	services.nginx = {
 		enable = true;
+
+		recommendedTlsSettings = true;
+		recommendedProxySettings = true;
+		recommendedGzipSettings = true;
+
+		commonHttpConfig = ''
+			add_header Strict-Transport-Security "max-age=63072000; includeSubDomains; preload" always;
+		'';
 
 		logError = "stderr debug";
 

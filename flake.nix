@@ -28,19 +28,25 @@
 	outputs = inputs@{ self, nixpkgs, home-manager, nixos-generators, kp2pml30-moe, code-flake, claude-code, ... }:
 		let
 			rootPath = self;
-			user-groups-ids = import ./nix/user-groups-ids.nix;
-			additionalArgs = { inherit inputs rootPath user-groups-ids; };
+			data = {
+				uids = import ./nix/data/uids.nix;
+				gids = import ./nix/data/gids.nix;
+				ssh-keys = import ./nix/data/ssh-keys.nix;
+			};
+			additionalArgs = { inherit inputs rootPath data; };
 			lib = nixpkgs.lib;
 		in
 		{
 			nixosConfigurations = {
-				server = nixpkgs.lib.nixosSystem {
+				vdsina = nixpkgs.lib.nixosSystem {
 					system = "x86_64-linux";
 
 					modules = [
 						{
 							networking.hostId = "e31a5cc1";
 							time.timeZone = "Asia/Yerevan";
+
+							kp2pml30.short-hostname = "vdsina";
 
 							kp2pml30.server = {
 								hostname = "kp2pml30.moe";
@@ -50,21 +56,25 @@
 								xray = true;
 								headscale = true;
 							};
+
+							kp2pml30.headscale-client.enable = true;
 						}
 
 						./nix/common.nix
 
 						./nix/server
 
-						./nix/hardware/server.nix
+						./nix/headscale-client.nix
+
+						./nix/hardware/vdsina.nix
 
 						nixos-generators.nixosModules.all-formats
 					];
 
-					specialArgs = { inherit kp2pml30-moe user-groups-ids; system = "x86_64-linux"; };
+					specialArgs = { inherit kp2pml30-moe data; system = "x86_64-linux"; };
 				};
 
-				personal-pc = nixpkgs.lib.nixosSystem rec {
+				mini = nixpkgs.lib.nixosSystem rec {
 					system = "x86_64-linux";
 					modules = [
 						({ pkgs, ...}: {
@@ -92,6 +102,8 @@
 
 						{
 							kp2pml30 = {
+								short-hostname = "mini";
+
 								xserver = true;
 								vscode = true;
 								kitty = true;
@@ -104,8 +116,7 @@
 								xray-client = true;
 								xray-client-id = "mini";
 
-								headscale-client = true;
-								headscale-client-id = "mini";
+								headscale-client.enable = true;
 
 								boot.efiGrub = true;
 
@@ -119,7 +130,7 @@
 					];
 					specialArgs = additionalArgs // { inherit system; };
 				};
-				personal-laptop = nixpkgs.lib.nixosSystem rec {
+				ideapad = nixpkgs.lib.nixosSystem rec {
 					system = "x86_64-linux";
 					modules = [
 						{
@@ -141,6 +152,8 @@
 
 						{
 							kp2pml30 = {
+								short-hostname = "ideapad";
+
 								xserver = true;
 								vscode = true;
 								kitty = true;
@@ -154,8 +167,7 @@
 
 								messengers.personal = true;
 
-								headscale-client = true;
-								headscale-client-id = "ideapad";
+								headscale-client.enable = true;
 							};
 						}
 					];
@@ -182,7 +194,7 @@
 					specialArgs = additionalArgs;
 				};
 
-				nanopi-m5-homeserver = nixpkgs.lib.nixosSystem {
+				nanopi-m5 = nixpkgs.lib.nixosSystem {
 					modules = [
 						{
 							networking.hostName = "kp2pml30-nanopi-m5";
@@ -199,8 +211,9 @@
 
 						{
 							kp2pml30 = {
-								headscale-client = true;
-								headscale-client-id = "nanopi";
+								short-hostname = "nanopi-m5";
+
+								headscale-client.enable = true;
 							};
 						}
 					];
@@ -209,10 +222,10 @@
 			};
 
 			packages.aarch64-linux = {
-				nanopi-m5-homeserver-sd =
-					self.nixosConfigurations.nanopi-m5-homeserver.config.system.build.sdImage;
-				nanopi-m5-homeserver-toplevel =
-					self.nixosConfigurations.nanopi-m5-homeserver.config.system.build.toplevel;
+				nanopi-m5-sd =
+					self.nixosConfigurations.nanopi-m5.config.system.build.sdImage;
+				nanopi-m5-toplevel =
+					self.nixosConfigurations.nanopi-m5.config.system.build.toplevel;
 			};
 		};
 }

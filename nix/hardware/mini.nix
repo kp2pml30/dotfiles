@@ -2,6 +2,7 @@
 , inputs
 , lib
 , config
+, data
 , ...
 }:
 {
@@ -62,6 +63,17 @@
 	];
 
 	hardware.cpu.amd.updateMicrocode = true;
+
+	services.openssh = {
+		enable = true;
+		ports = [ 22 ];
+		openFirewall = false;     # reachable only via tailnet (trusted interface)
+		settings.AllowUsers = [ "kp2pml30" ];
+	};
+
+	users.users.kp2pml30.openssh.authorizedKeys.keys = [
+		data.ssh-keys.kp2pml30-ideapad
+	];
 
 	programs.nix-ld.enable = true;
 

@@ -2,7 +2,7 @@
 , lib
 , rootPath
 , config
-, user-groups-ids
+, data
 , ...
 }:
 let
@@ -17,7 +17,7 @@ in lib.mkIf cfg.gayming {
 
 	hardware.steam-hardware.enable = true;
 
-	users.groups.steam-input.gid = user-groups-ids.gids.steam-input;
+	users.groups.steam-input.gid = data.gids.steam-input;
 	users.users.${cfg.username}.extraGroups = [ "steam-input" ];
 
 	# Switch 2 Pro Controller (057e:2069) — grant Steam uaccess so it can

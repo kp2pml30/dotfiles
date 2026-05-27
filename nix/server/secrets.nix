@@ -1,31 +1,11 @@
 { config
 , pkgs
 , lib
-, user-groups-ids
+, data
 , ...
 }:
 let
   cfg = config.kp2pml30.server;
-
-  # Script to decrypt secrets.yaml and extract XRAY_UIDS
-  decryptSecrets = pkgs.writeShellScript "decrypt-secrets" ''
-    set -euo pipefail
-
-    source /var/lib/secrets/.env
-
-    if [ -z "''${KP2_DOTFILES_SECRET_KEY:-}" ]; then
-      echo "Error: KP2_DOTFILES_SECRET_KEY environment variable not set" >&2
-      exit 1
-    fi
-
-    if [ ! -f "${./secrets.yaml}" ]; then
-      echo "Error: secrets.yaml not found" >&2
-      exit 1
-    fi
-
-    # Decrypt and parse XRAY_UIDS
-    ${pkgs.openssl}/bin/openssl enc -aes-256-cbc -pbkdf2 -iter 1000000 -base64 -d -k "$KP2_DOTFILES_SECRET_KEY" -in "${./secrets.yaml}" | ${pkgs.yq}/bin/yq '.XRAY_UIDS[].uid' -r
-  '';
 
   xray-config-base = builtins.toFile "xray.json" (builtins.toJSON (
     let base = builtins.fromJSON (builtins.readFile ./xray.json);
@@ -34,71 +14,50 @@ let
     }
   ));
 
-  # Script to generate complete xray configuration
-  generateXrayConfig = pkgs.writeShellScript "generate-xray-config" ''
-    set -euo pipefail
-
-    ALL_IDS="["
-
-    first=true
-    while IFS= read -r uuid; do
-      if [ "$first" = true ]; then
-        first=false
-      else
-        ALL_IDS="$ALL_IDS,"
-      fi
-      ALL_IDS="$ALL_IDS{\"id\":\"$uuid\",\"flow\": \"xtls-rprx-vision\"}"
-    done < <(${decryptSecrets})
-
-    ALL_IDS="$ALL_IDS]"
-
-    cat "${xray-config-base}" | \
-      jq --argjson val "$ALL_IDS" '.inbounds.[0].settings.clients = $val'
-  '';
-
+  uidsDir = "/run/secrets/xray-uids";
 in {
-  options.kp2pml30.server.secretsDir = lib.mkOption {
-    type = lib.types.str;
-    default = "/var/lib/secrets";
-    description = "Directory for secrets management";
-  };
-
   config = lib.mkIf cfg.xray {
-    # Ensure xray user and group exist
     users.users.xray = {
       isSystemUser = true;
-      uid = user-groups-ids.uids.xray;
+      uid = data.uids.xray;
       group = "xray";
     };
 
-    users.groups.xray = { gid = user-groups-ids.gids.xray; };
+    users.groups.xray = { gid = data.gids.xray; };
 
-    # Create a systemd service to decrypt and prepare xray clients config
     systemd.services.xray-secrets = {
-      description = "Decrypt Xray client configuration";
+      description = "Generate Xray server configuration from decrypted UIDs";
       wantedBy = [ "xray.service" ];
       before = [ "xray.service" ];
+      after = [ "decrypt-secrets.service" ];
+      requires = [ "decrypt-secrets.service" ];
+      unitConfig.ConditionPathIsDirectory = uidsDir;
 
       serviceConfig = {
         Type = "oneshot";
         User = "root";
-        EnvironmentFile = "${cfg.secretsDir}/.env";
       };
 
+      path = [ pkgs.jq pkgs.coreutils ];
+
       script = ''
-        mkdir -p /run/secrets
-        ${generateXrayConfig} > /run/secrets/xray-config.json
+        set -euo pipefail
+
+        clients='[]'
+        for f in ${uidsDir}/*; do
+          [ -f "$f" ] || continue
+          uuid=$(tr -d '[:space:]' < "$f")
+          [ -n "$uuid" ] || continue
+          clients=$(jq -c --arg uuid "$uuid" \
+            '. + [{id: $uuid, flow: "xtls-rprx-vision"}]' <<<"$clients")
+        done
+
+        jq --argjson val "$clients" \
+          '.inbounds[0].settings.clients = $val' \
+          ${xray-config-base} > /run/secrets/xray-config.json
         chown xray:xray /run/secrets/xray-config.json
         chmod 440 /run/secrets/xray-config.json
       '';
-
-      path = [ pkgs.jq ];
     };
-
-    # Ensure secrets directory exists
-    systemd.tmpfiles.rules = [
-      "d ${cfg.secretsDir} 0750 root root -"
-      "d /run/secrets 0755 root root -"
-    ];
   };
 }
