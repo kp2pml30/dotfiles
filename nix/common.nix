@@ -10,6 +10,8 @@ let
 	groupToLines = lib.mapAttrsToList (ip: domains: "${ip} ${lib.concatStringsSep " " domains}");
 in
 {
+	imports = [ ./secrets ];
+
 	networking.extraHosts = lib.concatStringsSep "\n" (
 		groupToLines (groupByAttr "ip") ++ groupToLines (groupByAttr "ipv6")
 	);
@@ -27,6 +29,7 @@ in
 	boot = {
 		tmp.useTmpfs = true;
 	};
+
 	systemd.services.nix-daemon = {
 		environment.TMPDIR = "/var/tmp";
 	};

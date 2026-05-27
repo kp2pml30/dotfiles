@@ -48,6 +48,7 @@
 								forgejo = true;
 								nix-cache = true;
 								xray = true;
+								headscale = true;
 							};
 						}
 
@@ -87,6 +88,8 @@
 
 						./nix/xray.nix
 
+						./nix/headscale-client.nix
+
 						{
 							kp2pml30 = {
 								xserver = true;
@@ -100,6 +103,9 @@
 
 								xray-client = true;
 								xray-client-id = "mini";
+
+								headscale-client = true;
+								headscale-client-id = "mini";
 
 								boot.efiGrub = true;
 
@@ -131,6 +137,8 @@
 
 						./nix/personal
 
+						./nix/headscale-client.nix
+
 						{
 							kp2pml30 = {
 								xserver = true;
@@ -145,6 +153,9 @@
 								hardware.audio = true;
 
 								messengers.personal = true;
+
+								headscale-client = true;
+								headscale-client-id = "ideapad";
 							};
 						}
 					];
@@ -184,6 +195,14 @@
 
 						./nix/common.nix
 						./nix/hardware/nanopi-m5-homeserver
+						./nix/headscale-client.nix
+
+						{
+							kp2pml30 = {
+								headscale-client = true;
+								headscale-client-id = "nanopi";
+							};
+						}
 					];
 					specialArgs = additionalArgs;
 				};

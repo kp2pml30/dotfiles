@@ -1,5 +1,7 @@
-{ ... }:
+{ config, ... }:
 let
+	cfg = config.kp2pml30.server;
+	ports = config.kp2pml30.server.ports;
 	dnsPort = 53;
 	httpPort = 80;
 	httpsPort = 443;
@@ -7,6 +9,7 @@ let
 in {
 	networking.firewall = {
 		allowedTCPPorts = [ dnsPort httpPort httpsPort dnsOverTlsPort ];
-		allowedUDPPorts = [ dnsPort ];
+		allowedUDPPorts = [ dnsPort ]
+			++ (if cfg.headscale then [ ports.headscale-stun ] else []);
 	};
 }

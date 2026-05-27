@@ -21,6 +21,7 @@ map $ssl_preread_server_name $name {
 	git.kp2pml30.moe                        ssl-terminator;
 	cache.nix.kp2pml30.moe                  ssl-terminator;
 	backend.kp2pml30.moe                    ssl-terminator;
+	wg.kp2pml30.moe                         ssl-terminator;
 
 	default                                 deny;
 }
@@ -106,7 +107,7 @@ server {
 
 server {
 	listen          8443 ssl;
-	server_name     kp2pml30.moe git.kp2pml30.moe cache.nix.kp2pml30.moe backend.kp2pml30.moe dns.kp2pml30.moe;
+	server_name     kp2pml30.moe git.kp2pml30.moe cache.nix.kp2pml30.moe backend.kp2pml30.moe dns.kp2pml30.moe wg.kp2pml30.moe;
 	proxy_pass      self;
 
 	ssl_certificate         /var/lib/acme/kp2pml30.moe/fullchain.pem;
