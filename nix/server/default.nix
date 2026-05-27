@@ -24,6 +24,7 @@ in {
 		dns = lib.mkEnableOption "";
 		nix-cache = lib.mkEnableOption "";
 		xray = lib.mkEnableOption "";
+		headscale = lib.mkEnableOption "";
 
 		sitePath = lib.mkOption {
 			type = lib.types.str;
@@ -40,6 +41,7 @@ in {
 		./dns.nix
 		./nix-cache.nix
 		./xray.nix
+		./headscale.nix
 		./secrets.nix
 		./firewall.nix
 	];

@@ -52,6 +52,7 @@
 
 	swapDevices = [ { device = "/dev/disk/by-uuid/c68daa9f-f165-4e23-8710-2aab0ad8d282"; } ];
 
+	boot.kernelPackages = pkgs.linuxPackages_latest;
 	boot.kernelParams = [ "pcie_aspm=off" ];
 	boot.kernelModules = [ "kvm-amd" ];
 
@@ -63,6 +64,10 @@
 	hardware.cpu.amd.updateMicrocode = true;
 
 	programs.nix-ld.enable = true;
+
+	systemd.tmpfiles.rules = [
+		"L+ /lib/ld-musl-x86_64.so.1 - - - - ${pkgs.musl}/lib/ld-musl-x86_64.so.1"
+	];
 
 	home-manager.users.${config.kp2pml30.username}.programs.git.settings = {
 		user.signingkey = "0x1739F9D8BA250D04!";

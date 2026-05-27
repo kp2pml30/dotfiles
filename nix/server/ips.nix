@@ -12,5 +12,6 @@ rec {
 		signal-proxy = { ip = machines.vdsina; ipv6 = machines.vdsina-v6; full-address = "pr.kp2pml30.moe"; };
 		nix-cache  = { ip = machines.vdsina; ipv6 = machines.vdsina-v6; full-address = "cache.nix.kp2pml30.moe"; };
 		backend    = { ip = machines.vdsina; ipv6 = machines.vdsina-v6; full-address = "backend.kp2pml30.moe"; };
+		wg         = { ip = machines.vdsina; ipv6 = machines.vdsina-v6; full-address = "wg.kp2pml30.moe"; };
 	};
 }
