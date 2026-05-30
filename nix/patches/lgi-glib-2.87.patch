@@ -1,0 +1,27 @@
+Complements nixpkgs' glib-2.86.0.patch (which fixes TypeClass.ref -> .get).
+On GLib >= 2.87, enum_class.values is a plain Lua table rather than an
+lgi.record, so core.record.fromarray no longer works. Iterate with ipairs
+instead. Mirrors the upstream fix from https://github.com/lgi-devs/lgi/pull/361
+(commit 64016a9), trimmed to just the remaining hunk.
+
+--- a/lgi/ffi.lua
++++ b/lgi/ffi.lua
+@@ -83,9 +83,15 @@ function ffi.load_enum(gtype, name)
+    local type_class = GObject.TypeClass.get(gtype)
+    local enum_class = core.record.cast(
+       type_class, is_flags and GObject.FlagsClass or GObject.EnumClass)
+-   for i = 0, enum_class.n_values - 1 do
+-      local val = core.record.fromarray(enum_class.values, i)
+-      enum_component[core.upcase(val.value_nick):gsub('%-', '_')] = val.value
++   if type(enum_class.values) == 'table' then
++      for _, val in ipairs(enum_class.values) do
++         enum_component[core.upcase(val.value_nick):gsub('%-', '_')] = val.value
++      end
++   else
++      for i = 0, enum_class.n_values - 1 do
++         local val = core.record.fromarray(enum_class.values, i)
++         enum_component[core.upcase(val.value_nick):gsub('%-', '_')] = val.value
++      end
+    end
+    return enum_component
+ end

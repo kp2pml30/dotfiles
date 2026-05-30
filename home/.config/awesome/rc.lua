@@ -97,11 +97,7 @@ myawesomemenu = {
 	{ "quit", function() awesome.quit() end },
 }
 
-mytuimenu = {
-	{ "pulsemixer", terminal .. " -e pulsemixer" },
-	{ "impala (wifi)", terminal .. " -e impala" },
-	{ "bluetui (bluetooth)", terminal .. " -e bluetui" },
-}
+mytuimenu = require("tui-menu")
 
 mymainmenu = awful.menu({
 	items = {
