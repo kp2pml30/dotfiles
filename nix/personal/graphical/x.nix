@@ -6,7 +6,36 @@
 }:
 let
 	cfg = config.kp2pml30;
+	luaStr = s: "\"" + builtins.replaceStrings [ "\\" "\"" ] [ "\\\\" "\\\"" ] s + "\"";
+	tuiEntries = lib.filterAttrs
+		(_: e: builtins.elem "X-TUI" (e.categories or [ ]))
+		config.home-manager.users.${cfg.username}.xdg.desktopEntries;
+	tuiMenuLua = ''
+		-- Generated from xdg.desktopEntries tagged with X-TUI
+		return {
+		${lib.concatStringsSep "\n" (lib.mapAttrsToList
+			(_: e: "\t{ ${luaStr e.name}, ${luaStr e.exec} },")
+			tuiEntries)}
+		}
+	'';
 in lib.mkIf cfg.xserver {
+	# Workaround for https://github.com/NixOS/nixpkgs/issues/523345
+	# (lgi's ffi.load_enum breaks on GLib >= 2.87). Nixpkgs already applies
+	# a partial fix; this adds the missing n_values / ipairs hunk.
+	nixpkgs.overlays = [ (final: prev: {
+		awesome = prev.awesome.override {
+			lua = prev.lua.override {
+				packageOverrides = lfinal: lprev: {
+					lgi = lprev.lgi.overrideAttrs (old: {
+						patches = (old.patches or [ ]) ++ [
+							(rootPath + "/nix/patches/lgi-glib-2.87.patch")
+						];
+					});
+				};
+			};
+		};
+	}) ];
+
 	services.displayManager.ly.enable = true;
 	services.libinput.enable = true;
 	services.xserver = {
@@ -61,6 +90,7 @@ in lib.mkIf cfg.xserver {
 
 		home.file.".config/awesome/rc.lua" = { source = rootPath + "/home/.config/awesome/rc.lua"; };
 		home.file.".config/awesome/theme.lua" = { source = rootPath + "/home/.config/awesome/theme.lua"; };
+		home.file.".config/awesome/tui-menu.lua".text = tuiMenuLua;
 		home.file.".config/awesome/deficient" = {
 			source = builtins.fetchGit {
 				url = "https://github.com/deficient/deficient.git";

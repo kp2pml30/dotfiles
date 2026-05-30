@@ -93,7 +93,7 @@ in {
 				exec = "kitty -- yazi %u";
 				terminal = false;
 				mimeType = [ "inode/directory" ];
-				categories = [ "System" "FileManager" ];
+				categories = [ "System" "FileManager" "X-TUI" ];
 			};
 			nvim = {
 				name = "Neovim";
