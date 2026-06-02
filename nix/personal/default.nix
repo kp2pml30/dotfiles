@@ -32,9 +32,13 @@ in {
 		./user.nix
 		./neovim.nix
 		./tui.nix
+		./wireless.nix
+		./audio.nix
 	];
 
 	config = {
+
+		kp2pml30.machine-kind = "personal";
 
 		boot.supportedFilesystems = [ "exfat" ] ++ lib.optional cfg.gayming "ntfs";
 		boot.loader.timeout = 30;

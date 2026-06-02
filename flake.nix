@@ -207,6 +207,7 @@
 						}
 
 						./nix/common.nix
+						./nix/server
 						./nix/hardware/nanopi-m5-homeserver
 						./nix/headscale-client.nix
 
@@ -218,7 +219,12 @@
 							};
 						}
 					];
-					specialArgs = additionalArgs;
+					# nix/server submodules take these as module args even with all
+					# services off.
+					specialArgs = additionalArgs // {
+						inherit self nixpkgs kp2pml30-moe;
+						system = "aarch64-linux";
+					};
 				};
 			};
 

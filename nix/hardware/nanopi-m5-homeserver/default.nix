@@ -48,23 +48,15 @@ in {
 		networkConfig.DHCP = "yes";
 	};
 
-	services.openssh = {
-		enable = true;
-		ports = [ 22 ];
-		openFirewall = true;
-		settings = {
-			AllowUsers = [ "kp2pml30" ];
-		};
-	};
-
-	users.users.kp2pml30 = {
-		isNormalUser = true;
-		uid = data.uids.kp2pml30;
-		extraGroups = [ "wheel" ];
-		openssh.authorizedKeys.keys = [
-			data.ssh-keys.kp2pml30-personal-pc
-		];
-		hashedPassword = "$6$UK6oHr2gPRYD4Rak$lgF.mYReC0jahNuI4kt0j/CsrajVzMprvp3HgjKwwsjYHU6/Ur9jfROXZbKhhpyCLRmnlCpWeRCbHEYO/jhIv/";
-	};
 	security.sudo.wheelNeedsPassword = false;
+
+	# The box wedges every few days (answers ping, no userspace progress, journald
+	# silent), likely the SD/dwmmc controller stalling with tasks stuck in D state.
+	# The watchdog can miss that, so panic on a hung-task pileup and auto-reboot.
+	boot.kernel.sysctl = {
+		"kernel.hung_task_panic" = 1;
+		"kernel.hung_task_timeout_secs" = 120;
+		"kernel.panic" = 10;
+		"kernel.panic_on_oops" = 1;
+	};
 }

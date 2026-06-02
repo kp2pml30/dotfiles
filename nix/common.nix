@@ -12,9 +12,26 @@ in
 {
 	imports = [ ./secrets ];
 
-	options.kp2pml30.short-hostname = lib.mkOption {
-		type = lib.types.str;
-		description = "Short identifier for this host (e.g. mini, vdsina). Used as the default for tailscale id, encrypted-secret recipient id, etc.";
+	options.kp2pml30 = {
+		short-hostname = lib.mkOption {
+			type = lib.types.str;
+			description = "Short identifier for this host (e.g. mini, vdsina). Used as the default for tailscale id, encrypted-secret recipient id, etc.";
+		};
+
+		# Broad host profile. Declared here (not in ./personal) so hardware modules
+		# shared with headless hosts can gate graphical/home-manager extras on it.
+		# The ./personal profile sets this to "personal"; everything else is a
+		# server.
+		machine-kind = lib.mkOption {
+			type = lib.types.enum [ "server" "personal" ];
+			#default = "server";
+			description = "Host profile; gates graphical/home-manager-only config in shared modules.";
+		};
+
+		hardware = {
+			wireless = lib.mkEnableOption "";
+			audio = lib.mkEnableOption "";
+		};
 	};
 
 	config = {

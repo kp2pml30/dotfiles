@@ -4,13 +4,8 @@
 , ...
 }:
 {
-	options.kp2pml30.boot = {
-		efiGrub = lib.mkEnableOption "";
-	};
-
-	options.kp2pml30.hardware = {
-		wireless = lib.mkEnableOption "";
-		audio = lib.mkEnableOption "";
+	options.kp2pml30 = {
+		boot.efiGrub = lib.mkEnableOption "";
 	};
 
 	imports = [
