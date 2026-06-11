@@ -23,8 +23,8 @@
 	};
 
 	fileSystems."/mnt/g" = {
-		device = "/dev/disk/by-uuid/7878-8620";
-		fsType = "exfat";
+		device = "/dev/disk/by-uuid/A5B55E09BE187005";
+		fsType = "ntfs";
 		options = [
 			"users"
 			"exec"
@@ -42,6 +42,15 @@
 		];
 	};
 
+	fileSystems."/mnt/g/SteamLibrary/steamapps/compatdata" = {
+		device = "/home/kp2pml30/.local/share/Steam/steamapps/compatdata-g";
+		fsType = "none";
+		options = [
+			"bind"
+			"nofail"
+		];
+	};
+	
 	fileSystems."/mnt/d/SteamLibrary/steamapps/compatdata" = {
 		device = "/home/kp2pml30/.local/share/Steam/steamapps/compatdata-d";
 		fsType = "none";

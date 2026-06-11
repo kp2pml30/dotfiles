@@ -23,17 +23,6 @@ in lib.mkIf cfg.xserver {
 	# (lgi's ffi.load_enum breaks on GLib >= 2.87). Nixpkgs already applies
 	# a partial fix; this adds the missing n_values / ipairs hunk.
 	nixpkgs.overlays = [ (final: prev: {
-		awesome = prev.awesome.override {
-			lua = prev.lua.override {
-				packageOverrides = lfinal: lprev: {
-					lgi = lprev.lgi.overrideAttrs (old: {
-						patches = (old.patches or [ ]) ++ [
-							(rootPath + "/nix/patches/lgi-glib-2.87.patch")
-						];
-					});
-				};
-			};
-		};
 	}) ];
 
 	services.displayManager.ly.enable = true;
