@@ -32,6 +32,7 @@ in {
 		./user.nix
 		./neovim.nix
 		./tui.nix
+		./agent.nix
 		./wireless.nix
 		./audio.nix
 	];

@@ -1,0 +1,8 @@
+{
+  "packages": [
+    "npm:@juicesharp/rpiv-todo",
+    "npm:pi-web-access",
+    "npm:pi-mcp-adapter"
+  ],
+  "skills": ["~/.pi/agent/skills"]
+}
