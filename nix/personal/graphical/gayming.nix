@@ -15,6 +15,8 @@ in lib.mkIf cfg.gayming {
 		localNetworkGameTransfers.openFirewall = true;
 	};
 
+	programs.gamescope.enable = true;
+
 	hardware.steam-hardware.enable = true;
 
 	users.groups.steam-input.gid = data.gids.steam-input;
