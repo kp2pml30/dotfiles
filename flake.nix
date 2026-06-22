@@ -1,6 +1,14 @@
 {
 	inputs = {
 		nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+
+		# canonical leaves so consumers below dedupe to a single node each
+		systems.url = "github:nix-systems/default";
+		flake-utils = {
+			url = "github:numtide/flake-utils";
+			inputs.systems.follows = "systems";
+		};
+
 		home-manager = {
 			url = "github:nix-community/home-manager/master";
 			inputs.nixpkgs.follows = "nixpkgs";
@@ -12,6 +20,8 @@
 		kp2pml30-moe = {
 			url = "github:kp2pml30/kp2pml30.github.io";
 			inputs.nixpkgs.follows = "nixpkgs";
+			inputs.flake-utils.follows = "flake-utils";
+			inputs.systems.follows = "systems";
 		};
 
 		code-flake = {
@@ -22,11 +32,13 @@
 		claude-code = {
 			url = "github:sadjow/claude-code-nix";
 			inputs.nixpkgs.follows = "nixpkgs";
+			inputs.flake-utils.follows = "flake-utils";
 		};
 
 		pi = {
 			url = "github:lukasl-dev/pi.nix";
 			inputs.nixpkgs.follows = "nixpkgs";
+			inputs.systems.follows = "systems";
 		};
 	};
 
