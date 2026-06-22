@@ -12,8 +12,8 @@
 	forgejo              = 994;
 	acme                 = 995;
 
-	# claude-vm
-	claude               = 1200;
+	# agent-vm
+	agent                = 1200;
 
 	# Pinned upstream by nixpkgs (nixos/modules/misc/ids.nix);
 	# recorded here for visibility / collision avoidance only:

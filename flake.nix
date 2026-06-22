@@ -109,7 +109,7 @@
 								kitty = true;
 								opera = true;
 								gayming = true;
-								claude = true;
+								agent = true;
 
 								qemu = true;
 
@@ -158,7 +158,7 @@
 								kitty = true;
 								opera = true;
 								gayming = true;
-								claude = true;
+								agent = true;
 
 								boot.efiGrub = true;
 
@@ -175,22 +175,22 @@
 					specialArgs = additionalArgs // { inherit system; };
 				};
 
-				claude-vm = nixpkgs.lib.nixosSystem {
+				agent-vm = nixpkgs.lib.nixosSystem {
 					system = "x86_64-linux";
 					modules = [
 						{ networking.hostId = "c1a0de00"; }
 						./nix/common.nix
-						./nix/claude-vm
+						./nix/agent-vm
 						./nix/personal
-						./nix/hardware/claude-vm.nix
+						./nix/hardware/agent-vm.nix
 					];
 					specialArgs = additionalArgs;
 				};
 
-				claude-vm-installer = nixpkgs.lib.nixosSystem {
+				agent-vm-installer = nixpkgs.lib.nixosSystem {
 					system = "x86_64-linux";
 					modules = [
-						./nix/claude-vm/installer.nix
+						./nix/agent-vm/installer.nix
 					];
 					specialArgs = additionalArgs;
 				};

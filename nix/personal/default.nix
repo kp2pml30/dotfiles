@@ -15,7 +15,7 @@ in {
 			default = "kp2pml30";
 		};
 		xserver = lib.mkEnableOption "";
-		claude = lib.mkEnableOption "";
+		agent = lib.mkEnableOption "";
 		vscode = lib.mkEnableOption "";
 		kitty = lib.mkEnableOption "";
 		opera = lib.mkEnableOption "";

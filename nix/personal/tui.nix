@@ -8,7 +8,7 @@ let
 	cfg = config.kp2pml30;
 in {
 	config = {
-		nixpkgs.overlays = lib.optionals cfg.claude [ inputs.claude-code.overlays.default ];
+		nixpkgs.overlays = lib.optionals cfg.agent [ inputs.claude-code.overlays.default ];
 		programs = {
 			tmux.enable = true;
 			yazi.enable = true;
@@ -21,7 +21,7 @@ in {
 			p7zip
 			lazydocker
 			gh
-		] ++ lib.optionals cfg.claude [
+		] ++ lib.optionals cfg.agent [
 			claude-code
 		];
 

@@ -1,8 +1,8 @@
 /result
 /result-fd
 /.env
-/claude-docker
-/.claude-vm
+/agent-docker
+/.agent-vm
 
 # editors
 .vscode/

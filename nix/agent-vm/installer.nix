@@ -1,11 +1,11 @@
 { pkgs, lib, rootPath, modulesPath, ... }:
 let
-	install-claude-vm = pkgs.writeShellScriptBin "install-claude-vm" ''
+	install-agent-vm = pkgs.writeShellScriptBin "install-agent-vm" ''
 		set -euo pipefail
 
 		DISK="/dev/vda"
 
-		echo "=== claude-vm installer ==="
+		echo "=== agent-vm installer ==="
 		echo "Target disk: $DISK"
 
 		# Partition: MBR with single root partition
@@ -29,7 +29,7 @@ let
 
 		# Install
 		echo "Running nixos-install..."
-		nixos-install --flake /mnt/dotfiles#claude-vm --no-root-passwd --show-trace
+		nixos-install --flake /mnt/dotfiles#agent-vm --no-root-passwd --show-trace
 
 		echo "=== Installation complete! Shutting down... ==="
 		${pkgs.systemd}/bin/systemctl poweroff
@@ -46,17 +46,17 @@ in
 
 	environment.etc."dotfiles-src".source = rootPath;
 
-	environment.systemPackages = [ install-claude-vm ];
+	environment.systemPackages = [ install-agent-vm ];
 
 	# Auto-run installer on boot
 	systemd.services.auto-install = {
-		description = "Automatic claude-vm installation";
+		description = "Automatic agent-vm installation";
 		after = [ "multi-user.target" ];
 		wantedBy = [ "multi-user.target" ];
 		path = with pkgs; [ nix nixos-install-tools util-linux coreutils git curl wget binutils e2fsprogs dosfstools parted ];
 		serviceConfig = {
 			Type = "oneshot";
-			ExecStart = "${install-claude-vm}/bin/install-claude-vm";
+			ExecStart = "${install-agent-vm}/bin/install-agent-vm";
 			StandardOutput = "journal+console";
 			StandardError = "journal+console";
 		};

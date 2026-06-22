@@ -35,7 +35,7 @@
 	services.qemuGuest.enable = true;
 
 	networking = {
-		hostName = "claude-vm";
+		hostName = "agent-vm";
 		useDHCP = true;
 	};
 }

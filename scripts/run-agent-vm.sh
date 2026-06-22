@@ -3,7 +3,7 @@ set -exuo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 FLAKE_DIR="$(dirname "$SCRIPT_DIR")"
-VM_DIR="$FLAKE_DIR/.claude-vm"
+VM_DIR="$FLAKE_DIR/.agent-vm"
 DISK="$VM_DIR/disk.qcow2"
 DISK_SIZE="20G"
 RAM="12G"
@@ -27,7 +27,7 @@ qemu_base_args=(
 
 do_install() {
 	echo "=== Building installer ISO... ==="
-	ISO_PATH=$(nix build "${FLAKE_DIR}#nixosConfigurations.claude-vm-installer.config.system.build.isoImage" --no-link --print-out-paths)
+	ISO_PATH=$(nix build "${FLAKE_DIR}#nixosConfigurations.agent-vm-installer.config.system.build.isoImage" --no-link --print-out-paths)
 	ISO_FILE=$(find "$ISO_PATH/iso" -name '*.iso' | head -1)
 
 	if [ -z "$ISO_FILE" ]; then
@@ -56,7 +56,7 @@ do_run() {
 		exit 1
 	fi
 
-	echo "=== Booting claude-vm (SSH: localhost:${SSH_PORT}) ==="
+	echo "=== Booting agent-vm (SSH: localhost:${SSH_PORT}) ==="
 	qemu-system-x86_64 \
 		"${qemu_base_args[@]}"
 }

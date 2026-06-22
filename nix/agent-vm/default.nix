@@ -2,9 +2,9 @@
 {
 	users.mutableUsers = false;
 
-	users.users.claude = {
+	users.users.agent = {
 		isNormalUser = true;
-		uid = data.uids.claude;
+		uid = data.uids.agent;
 		extraGroups = [ "wheel" ];
 		shell = pkgs.fish;
 		hashedPassword = "";
@@ -26,5 +26,5 @@
 
 	networking.firewall.allowedTCPPorts = [ 22 ];
 
-	nix.settings.trusted-users = [ "root" "claude" ];
+	nix.settings.trusted-users = [ "root" "agent" ];
 }
