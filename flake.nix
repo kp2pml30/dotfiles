@@ -187,14 +187,6 @@
 					specialArgs = additionalArgs;
 				};
 
-				agent-vm-installer = nixpkgs.lib.nixosSystem {
-					system = "x86_64-linux";
-					modules = [
-						./nix/agent-vm/installer.nix
-					];
-					specialArgs = additionalArgs;
-				};
-
 				nanopi-m5 = nixpkgs.lib.nixosSystem {
 					modules = [
 						{
