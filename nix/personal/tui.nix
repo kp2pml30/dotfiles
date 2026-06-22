@@ -8,7 +8,7 @@ let
 	cfg = config.kp2pml30;
 in {
 	config = {
-		nixpkgs.overlays = lib.optionals cfg.agent [ inputs.claude-code.overlays.default ];
+		nixpkgs.overlays = lib.optionals cfg.agent [ inputs.claude-code.overlays.default inputs.pi.overlays.default ];
 		programs = {
 			tmux.enable = true;
 			yazi.enable = true;
@@ -23,6 +23,7 @@ in {
 			gh
 		] ++ lib.optionals cfg.agent [
 			claude-code
+			pi-coding-agent
 		];
 
 		home-manager.users.${cfg.username}.xdg.desktopEntries = lib.mkIf cfg.xserver {

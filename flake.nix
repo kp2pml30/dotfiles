@@ -23,6 +23,11 @@
 			url = "github:sadjow/claude-code-nix";
 			inputs.nixpkgs.follows = "nixpkgs";
 		};
+
+		pi = {
+			url = "github:lukasl-dev/pi.nix";
+			inputs.nixpkgs.follows = "nixpkgs";
+		};
 	};
 
 	outputs = inputs@{ self, nixpkgs, home-manager, nixos-generators, kp2pml30-moe, code-flake, claude-code, ... }:
