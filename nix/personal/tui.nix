@@ -20,9 +20,9 @@ in {
 			timewarrior
 			p7zip
 			lazydocker
+			gh
 		] ++ lib.optionals cfg.claude [
 			claude-code
-			gh
 		];
 
 		home-manager.users.${cfg.username}.xdg.desktopEntries = lib.mkIf cfg.xserver {
