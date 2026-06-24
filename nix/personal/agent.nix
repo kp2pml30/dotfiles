@@ -11,7 +11,10 @@ let
 	# so the target dirs stay writable (only managed files are symlinks).
 	linkTree = dest: src: lib.listToAttrs (map (f:
 		lib.nameValuePair
-			"${dest}/${lib.removePrefix "${toString src}/" (toString f)}"
+			# names are derived from store paths; strip context so they're
+			# usable as attribute names (the `source` keeps the real path).
+			(builtins.unsafeDiscardStringContext
+				"${dest}/${lib.removePrefix "${toString src}/" (toString f)}")
 			{ source = f; })
 		(lib.filesystem.listFilesRecursive src));
 in {
