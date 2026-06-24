@@ -21,9 +21,6 @@ in {
 			p7zip
 			lazydocker
 			gh
-		] ++ lib.optionals cfg.agent [
-			claude-code
-			pi-coding-agent
 		];
 
 		home-manager.users.${cfg.username}.xdg.desktopEntries = lib.mkIf cfg.xserver {

@@ -1,19 +1,33 @@
 { config
 , lib
 , rootPath
+, pkgs
 , ...
 }:
 let
 	cfg = config.kp2pml30;
+
+	# per-file home.file entries for every file under `src`, rooted at `dest`,
+	# so the target dirs stay writable (only managed files are symlinks).
+	linkTree = dest: src: lib.listToAttrs (map (f:
+		lib.nameValuePair
+			"${dest}/${lib.removePrefix "${toString src}/" (toString f)}"
+			{ source = f; })
+		(lib.filesystem.listFilesRecursive src));
 in {
 	config = lib.mkIf cfg.agent {
-		home-manager.users.${cfg.username}.home.file = {
-			".claude/skills".source = rootPath + "/agents/skills";
+		environment.systemPackages = with pkgs; [
+			claude-code
+			pi-coding-agent
+			rtk
+		];
 
-			".pi/agent/skills".source = rootPath + "/agents/skills";
-			".pi/agent/settings.json".source = rootPath + "/agents/pi/settings.json";
-			# auto-discovered from ~/.pi/agent/extensions/*/index.ts
-			".pi/agent/extensions/deepinfra".source = rootPath + "/agents/pi/ext/deepinfra";
-		};
+		home-manager.users.${cfg.username}.home.file =
+			linkTree ".claude/skills" (rootPath + "/agents/skills")
+			// linkTree ".pi/agent/skills" (rootPath + "/agents/skills")
+			// linkTree ".pi/agent/extensions" (rootPath + "/agents/pi/ext")
+			// {
+				".pi/agent/settings.json".source = rootPath + "/agents/pi/settings.json";
+			};
 	};
 }
