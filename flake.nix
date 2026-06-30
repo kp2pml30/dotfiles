@@ -40,6 +40,11 @@
 			inputs.nixpkgs.follows = "nixpkgs";
 			inputs.systems.follows = "systems";
 		};
+
+		herdr = {
+			url = "github:ogulcancelik/herdr";
+			inputs.nixpkgs.follows = "nixpkgs";
+		};
 	};
 
 	outputs = inputs@{ self, nixpkgs, home-manager, nixos-generators, kp2pml30-moe, code-flake, claude-code, ... }:

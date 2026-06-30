@@ -1,6 +1,6 @@
 ---
 name: commit-style
-description: Conventional commit message style. Use when writing a commit message, squashing/merging a PR, or amending history. Covers the `type(scope): summary <emoji>` format, the five types, scope guidance, the gitmoji suffix, and mistakes to avoid.
+description: Conventional commit message style. Use when writing a commit message, squashing/merging a PR, or amending history. Covers the format, types, scope guidance, the gitmoji suffix, and mistakes to avoid.
 ---
 
 # Writing commit messages

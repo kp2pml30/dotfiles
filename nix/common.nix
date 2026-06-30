@@ -10,7 +10,7 @@ let
 	groupToLines = lib.mapAttrsToList (ip: domains: "${ip} ${lib.concatStringsSep " " domains}");
 in
 {
-	imports = [ ./secrets ];
+	imports = [ ./secrets ./oom-killer.nix ];
 
 	options.kp2pml30 = {
 		short-hostname = lib.mkOption {
@@ -86,6 +86,8 @@ in
 		};
 		environment.systemPackages = with pkgs; [
 			curl
+			(writers.writePython3Bin "download" { flakeIgnore = [ "E501" ]; }
+				(builtins.readFile ./download.py))
 			neovim
 			bash
 			git

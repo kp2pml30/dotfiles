@@ -40,6 +40,7 @@ in {
 	config = {
 
 		kp2pml30.machine-kind = "personal";
+		kp2pml30.oom-killer = true;
 
 		boot.supportedFilesystems = [ "exfat" ] ++ lib.optional cfg.gayming "ntfs";
 		boot.loader.timeout = 30;
