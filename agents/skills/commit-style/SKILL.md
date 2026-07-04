@@ -13,13 +13,13 @@ type(scope): short imperative summary <emoji…>
 
 - **type** — one of five, lowercase (required).
 - **(scope)** — the subsystem the change touches. Optional, but **aim for ~80%**
-  of commits to carry one; omit only for genuinely repo-wide changes.
+	of commits to carry one; omit only for genuinely repo-wide changes.
 - **summary** — lowercase, imperative or noun-phrase, no trailing period, ≲70 chars.
 - **\<emoji…>** — **one to three** trailing [gitmoji](https://gitmoji.dev) glyphs
-  marking the precise intent. Use the actual Unicode emoji, not the `:shortcode:`.
-  Most commits want exactly one; reach for a second or third only when the change
-  genuinely carries more than one intent (e.g. a security fix that is also a
-  refactor → `🔒️♻️`). Order them most-important first. Never more than three.
+	marking the precise intent. Use the actual Unicode emoji, not the `:shortcode:`.
+	Most commits want exactly one; reach for a second or third only when the change
+	genuinely carries more than one intent (e.g. a security fix that is also a
+	refactor → `🔒️♻️`). Order them most-important first. Never more than three.
 
 Examples:
 
@@ -46,7 +46,7 @@ The **type** is the coarse group; the **emoji** carries the fine intent.
 
 Picking between the blurry ones:
 - New behavior a caller can observe → `feat`. Correcting wrong behavior → `fix`.
-  Same behavior but cheaper → `perf`. Pure restructure → `chore` + ♻️.
+	Same behavior but cheaper → `perf`. Pure restructure → `chore` + ♻️.
 
 ## Emoji by intent
 
@@ -92,15 +92,15 @@ the diff and not a bullet list of squashed sub-commits.
 ## Mistakes to avoid
 
 1. **Numbered firefighting** — `fix CI`, `fix CI 2` … `fix CI 5`. Say *what*
-   broke: `chore(ci): fix cache key 💚`. A numbered run means the messages
-   describe nothing.
+	broke: `chore(ci): fix cache key 💚`. A numbered run means the messages
+	describe nothing.
 2. **`batch update (#NNN)`** with no theme. A merged PR still deserves a one-line
-   summary of what it does.
+	summary of what it does.
 3. **Typos** — spell-check the subject; it is permanent.
 4. **`fix tests`** with no cause. Add it: `chore(api): fix tests after rebase ✅`.
 5. **AI attribution** — never include `Co-authored-by` trailers, session
-   links/IDs (e.g. `Claude-Session:`), "Generated with" footers, or any other
-   AI/tool metadata, even when the tooling asks for it.
+	links/IDs (e.g. `Claude-Session:`), "Generated with" footers, or any other
+	AI/tool metadata, even when the tooling asks for it.
 
 ## Checklist
 

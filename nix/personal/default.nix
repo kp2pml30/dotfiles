@@ -1,99 +1,105 @@
-{ config
-, pkgs
-, inputs
-, lib
-, ...
+{
+  config,
+  pkgs,
+  inputs,
+  lib,
+  ...
 }@args:
 let
-	cfg = config.kp2pml30;
-	startsWith = prefix: str:
-		builtins.substring 0 (builtins.stringLength prefix) str == prefix;
-in {
-	options.kp2pml30 = {
-		username = lib.mkOption {
-			type = lib.types.str;
-			default = "kp2pml30";
-		};
-		xserver = lib.mkEnableOption "";
-		agent = lib.mkEnableOption "";
-		vscode = lib.mkEnableOption "";
-		kitty = lib.mkEnableOption "";
-		opera = lib.mkEnableOption "";
-		gayming = lib.mkEnableOption "";
-		messengers = {
-			personal = lib.mkEnableOption "";
-			work = lib.mkEnableOption "";
-		};
-	};
+  cfg = config.kp2pml30;
+  startsWith = prefix: str: builtins.substring 0 (builtins.stringLength prefix) str == prefix;
+in
+{
+  options.kp2pml30 = {
+    username = lib.mkOption {
+      type = lib.types.str;
+      default = "kp2pml30";
+    };
+    xserver = lib.mkEnableOption "";
+    agent = lib.mkEnableOption "";
+    vscode = lib.mkEnableOption "";
+    kitty = lib.mkEnableOption "";
+    opera = lib.mkEnableOption "";
+    gayming = lib.mkEnableOption "";
+    messengers = {
+      personal = lib.mkEnableOption "";
+      work = lib.mkEnableOption "";
+    };
+  };
 
-	imports = [
-		./graphical
-		./home.nix
-		./user.nix
-		./neovim.nix
-		./tui.nix
-		./agent.nix
-		./wireless.nix
-		./audio.nix
-	];
+  imports = [
+    ./graphical
+    ./home.nix
+    ./user.nix
+    ./neovim.nix
+    ./tui.nix
+    ./agent.nix
+    ./wireless.nix
+    ./audio.nix
+  ];
 
-	config = {
+  config = {
 
-		kp2pml30.machine-kind = "personal";
-		kp2pml30.oom-killer = true;
+    kp2pml30.machine-kind = "personal";
+    kp2pml30.oom-killer = true;
 
-		boot.supportedFilesystems = [ "exfat" ] ++ lib.optional cfg.gayming "ntfs";
-		boot.loader.timeout = 30;
+    boot.supportedFilesystems = [ "exfat" ] ++ lib.optional cfg.gayming "ntfs";
+    boot.loader.timeout = 30;
 
-		documentation.doc.enable = false;
-		# [ "zfs" ]
-		# boot.zfs.forceImportRoot = false;
+    documentation.doc.enable = false;
+    # [ "zfs" ]
+    # boot.zfs.forceImportRoot = false;
 
-		services.logind.settings.Login = {
-			HandlePowerKey = "poweroff";
-			HandleLidSwitch = "hibernate";
-		};
+    services.logind.settings.Login = {
+      HandlePowerKey = "poweroff";
+      HandleLidSwitch = "hibernate";
+    };
 
-		services.pcscd = {
-			enable = true;
-		};
+    services.pcscd = {
+      enable = true;
+    };
 
-		programs.gnupg.agent = {
-			enable = true;
-			enableSSHSupport = true;
-		};
+    programs.gnupg.agent = {
+      enable = true;
+      enableSSHSupport = true;
+    };
 
-		i18n.supportedLocales = [
-			"C.UTF-8/UTF-8"
-			"en_US.UTF-8/UTF-8"
-			"ru_RU.UTF-8/UTF-8"
-			"ja_JP.UTF-8/UTF-8"
-		];
+    i18n.supportedLocales = [
+      "C.UTF-8/UTF-8"
+      "en_US.UTF-8/UTF-8"
+      "ru_RU.UTF-8/UTF-8"
+      "ja_JP.UTF-8/UTF-8"
+    ];
 
-		programs = {
-			fish.enable = true;
-		};
+    programs = {
+      fish.enable = true;
+    };
 
-		environment.systemPackages = with pkgs; [
-			fish
-			fishPlugins.grc
-			fishPlugins.bass
-			nushell
-			carapace
+    environment.systemPackages = with pkgs; [
+      fish
+      fishPlugins.grc
+      fishPlugins.bass
+      nushell
+      carapace
 
-			python312 # needed for bass
-			grc
-		];
+      python312 # needed for bass
+      grc
+    ];
 
-		nixpkgs.config.allowUnfreePredicate = pkg:
-			builtins.any (x: startsWith x (pkgs.lib.getName pkg)) [ "vscode" "steam" "nvidia" ] ||
-			builtins.elem (pkgs.lib.getName pkg) [
-				"anytype-heart"
-				"opera"
-				"discord"
-				"slack"
-				"anytype"
-				"claude-code"
-			];
-	};
+    nixpkgs.config.allowUnfreePredicate =
+      pkg:
+      builtins.any (x: startsWith x (pkgs.lib.getName pkg)) [
+        "vscode"
+        "steam"
+        "nvidia"
+      ]
+      || builtins.elem (pkgs.lib.getName pkg) [
+        "anytype-heart"
+        "opera"
+        "discord"
+        "slack"
+        "anytype"
+        "claude-code"
+      ];
+  };
 }

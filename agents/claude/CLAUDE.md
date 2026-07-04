@@ -6,9 +6,9 @@
 When asked to propose, research, or think — not implement:
 - Edit nothing.
 - Answer in one titled line or mini paragraph each
-    - size of change: approximate lines / files / effort / time
-    - proposal: solution in short
-    - not solved: what part of the request is solved and what is not; sharp edges you see. put explicit none if none
+	- size of change: approximate lines / files / effort / time
+	- proposal: solution in short
+	- not solved: what part of the request is solved and what is not; sharp edges you see. put explicit none if none
 
 # Code
 - Write idiomatic code. If something looks bad — mine or yours — say so.

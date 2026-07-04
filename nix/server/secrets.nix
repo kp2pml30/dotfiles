@@ -1,21 +1,28 @@
-{ config
-, pkgs
-, lib
-, data
-, ...
+{
+  config,
+  pkgs,
+  lib,
+  data,
+  ...
 }:
 let
   cfg = config.kp2pml30.server;
 
-  xray-config-base = builtins.toFile "xray.json" (builtins.toJSON (
-    let base = builtins.fromJSON (builtins.readFile ./xray.json);
-    in base // {
-      inbounds = map (ib: ib // { port = config.kp2pml30.server.ports.xray-main; }) base.inbounds;
-    }
-  ));
+  xray-config-base = builtins.toFile "xray.json" (
+    builtins.toJSON (
+      let
+        base = builtins.fromJSON (builtins.readFile ./xray.json);
+      in
+      base
+      // {
+        inbounds = map (ib: ib // { port = config.kp2pml30.server.ports.xray-main; }) base.inbounds;
+      }
+    )
+  );
 
   uidsDir = "/run/secrets/xray-uids";
-in {
+in
+{
   config = lib.mkIf cfg.xray {
     users.users.xray = {
       isSystemUser = true;
@@ -23,7 +30,9 @@ in {
       group = "xray";
     };
 
-    users.groups.xray = { gid = data.gids.xray; };
+    users.groups.xray = {
+      gid = data.gids.xray;
+    };
 
     systemd.services.xray-secrets = {
       description = "Generate Xray server configuration from decrypted UIDs";
@@ -38,7 +47,10 @@ in {
         User = "root";
       };
 
-      path = [ pkgs.jq pkgs.coreutils ];
+      path = [
+        pkgs.jq
+        pkgs.coreutils
+      ];
 
       script = ''
         set -euo pipefail

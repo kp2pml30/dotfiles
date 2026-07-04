@@ -1,12 +1,14 @@
-{ config
-, pkgs
-, lib
-, ...
+{
+  config,
+  pkgs,
+  lib,
+  ...
 }:
 let
   cfg = config.kp2pml30.server;
   ports = config.kp2pml30.server.ports;
-in lib.mkIf cfg.xray {
+in
+lib.mkIf cfg.xray {
   services.xray = {
     enable = true;
     settingsFile = "/run/secrets/xray-config.json";

@@ -1,252 +1,328 @@
 {
-	inputs = {
-		nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+  inputs = {
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
 
-		# canonical leaves so consumers below dedupe to a single node each
-		systems.url = "github:nix-systems/default";
-		flake-utils = {
-			url = "github:numtide/flake-utils";
-			inputs.systems.follows = "systems";
-		};
+    # canonical leaves so consumers below dedupe to a single node each
+    systems.url = "github:nix-systems/default";
+    flake-utils = {
+      url = "github:numtide/flake-utils";
+      inputs.systems.follows = "systems";
+    };
 
-		home-manager = {
-			url = "github:nix-community/home-manager/master";
-			inputs.nixpkgs.follows = "nixpkgs";
-		};
-		nixos-generators = {
-			url = "github:nix-community/nixos-generators";
-			inputs.nixpkgs.follows = "nixpkgs";
-		};
-		kp2pml30-moe = {
-			url = "github:kp2pml30/kp2pml30.github.io";
-			inputs.nixpkgs.follows = "nixpkgs";
-			inputs.flake-utils.follows = "flake-utils";
-			inputs.systems.follows = "systems";
-		};
+    home-manager = {
+      url = "github:nix-community/home-manager/master";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    nixos-generators = {
+      url = "github:nix-community/nixos-generators";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    kp2pml30-moe = {
+      url = "github:kp2pml30/kp2pml30.github.io";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.flake-utils.follows = "flake-utils";
+      inputs.systems.follows = "systems";
+    };
 
-		code-flake = {
-			url = "github:kp2pml30/code-flake";
-			inputs.nixpkgs.follows = "nixpkgs";
-		};
+    code-flake = {
+      url = "github:kp2pml30/code-flake";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
-		claude-code = {
-			url = "github:sadjow/claude-code-nix";
-			inputs.nixpkgs.follows = "nixpkgs";
-			inputs.flake-utils.follows = "flake-utils";
-		};
+    claude-code = {
+      url = "github:sadjow/claude-code-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.flake-utils.follows = "flake-utils";
+    };
 
-		pi = {
-			url = "github:lukasl-dev/pi.nix";
-			inputs.nixpkgs.follows = "nixpkgs";
-			inputs.systems.follows = "systems";
-		};
+    pi = {
+      url = "github:lukasl-dev/pi.nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.systems.follows = "systems";
+    };
 
-		herdr = {
-			url = "github:ogulcancelik/herdr";
-			inputs.nixpkgs.follows = "nixpkgs";
-		};
-	};
+    herdr = {
+      url = "github:ogulcancelik/herdr";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
-	outputs = inputs@{ self, nixpkgs, home-manager, nixos-generators, kp2pml30-moe, code-flake, claude-code, ... }:
-		let
-			rootPath = self;
-			data = {
-				uids = import ./nix/data/uids.nix;
-				gids = import ./nix/data/gids.nix;
-				ssh-keys = import ./nix/data/ssh-keys.nix;
-			};
-			additionalArgs = { inherit inputs rootPath data; };
-			lib = nixpkgs.lib;
-		in
-		{
-			nixosConfigurations = {
-				vdsina = nixpkgs.lib.nixosSystem {
-					system = "x86_64-linux";
+    git-hooks = {
+      url = "github:cachix/git-hooks.nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+  };
 
-					modules = [
-						{
-							networking.hostId = "e31a5cc1";
-							time.timeZone = "Asia/Tokyo";
+  outputs =
+    inputs@{
+      self,
+      nixpkgs,
+      home-manager,
+      nixos-generators,
+      kp2pml30-moe,
+      code-flake,
+      claude-code,
+      ...
+    }:
+    let
+      rootPath = self;
+      data = {
+        uids = import ./nix/data/uids.nix;
+        gids = import ./nix/data/gids.nix;
+        ssh-keys = import ./nix/data/ssh-keys.nix;
+      };
+      additionalArgs = { inherit inputs rootPath data; };
+      lib = nixpkgs.lib;
+      forEachSystem = lib.genAttrs (import inputs.systems);
+    in
+    {
+      nixosConfigurations = {
+        vdsina = nixpkgs.lib.nixosSystem {
+          system = "x86_64-linux";
 
-							kp2pml30.short-hostname = "vdsina";
+          modules = [
+            {
+              networking.hostId = "e31a5cc1";
+              time.timeZone = "Asia/Tokyo";
 
-							kp2pml30.server = {
-								hostname = "kp2pml30.moe";
-								nginx = true;
-								forgejo = true;
-								nix-cache = true;
-								xray = true;
-								headscale = true;
-							};
+              kp2pml30.short-hostname = "vdsina";
 
-							kp2pml30.headscale-client.enable = true;
-						}
+              kp2pml30.server = {
+                hostname = "kp2pml30.moe";
+                nginx = true;
+                forgejo = true;
+                nix-cache = true;
+                xray = true;
+                headscale = true;
+              };
 
-						./nix/common.nix
+              kp2pml30.headscale-client.enable = true;
+            }
 
-						./nix/server
+            ./nix/common.nix
 
-						./nix/headscale-client.nix
+            ./nix/server
 
-						./nix/hardware/vdsina.nix
+            ./nix/headscale-client.nix
 
-						nixos-generators.nixosModules.all-formats
-					];
+            ./nix/hardware/vdsina.nix
 
-					specialArgs = { inherit kp2pml30-moe data; system = "x86_64-linux"; };
-				};
+            nixos-generators.nixosModules.all-formats
+          ];
 
-				mini = nixpkgs.lib.nixosSystem rec {
-					system = "x86_64-linux";
-					modules = [
-						({ pkgs, ...}: {
-							networking.hostName = "kp2pml30-personal-pc";
-							networking.hostId = "e31a5cc2";
+          specialArgs = {
+            inherit kp2pml30-moe data;
+            system = "x86_64-linux";
+          };
+        };
 
-							time.timeZone = "Asia/Tokyo";
+        mini = nixpkgs.lib.nixosSystem rec {
+          system = "x86_64-linux";
+          modules = [
+            ({ pkgs, ... }: {
+              networking.hostName = "kp2pml30-personal-pc";
+              networking.hostId = "e31a5cc2";
 
-							nixpkgs.overlays = [ claude-code.overlays.default code-flake.overlays.default ];
+              time.timeZone = "Asia/Tokyo";
 
-							boot.binfmt.emulatedSystems = [ "aarch64-linux" ];
-						})
+              nixpkgs.overlays = [
+                claude-code.overlays.default
+                code-flake.overlays.default
+              ];
 
-						./nix/hardware/mini.nix
+              boot.binfmt.emulatedSystems = [ "aarch64-linux" ];
+            })
 
-						./nix/common.nix
+            ./nix/hardware/mini.nix
 
-						./nix/personal
+            ./nix/common.nix
 
-						./nix/qemu.nix
+            ./nix/personal
 
-						./nix/xray.nix
+            ./nix/qemu.nix
 
-						./nix/headscale-client.nix
+            ./nix/xray.nix
 
-						{
-							kp2pml30 = {
-								short-hostname = "mini";
+            ./nix/headscale-client.nix
 
-								xserver = true;
-								vscode = true;
-								kitty = true;
-								opera = true;
-								gayming = true;
-								agent = true;
+            {
+              kp2pml30 = {
+                short-hostname = "mini";
 
-								qemu = true;
+                xserver = true;
+                vscode = true;
+                kitty = true;
+                opera = true;
+                gayming = true;
+                agent = true;
 
-								xray-client = true;
-								xray-client-id = "mini";
+                qemu = true;
 
-								headscale-client.enable = true;
+                xray-client = true;
+                xray-client-id = "mini";
 
-								boot.efiGrub = true;
+                headscale-client.enable = true;
 
-								hardware.wireless = true;
-								hardware.audio = true;
+                boot.efiGrub = true;
 
-								messengers.personal = true;
-								messengers.work = true;
-							};
-						}
-					];
-					specialArgs = additionalArgs // { inherit system; };
-				};
-				ideapad = nixpkgs.lib.nixosSystem rec {
-					system = "x86_64-linux";
-					modules = [
-						{
-							networking.hostName = "kp2pml30-personal-laptop";
-							networking.hostId = "e31a5cc0";
+                hardware.wireless = true;
+                hardware.audio = true;
 
-							nixpkgs.overlays = [ code-flake.overlays.default ];
-							time.timeZone = "Asia/Tokyo";
-						}
+                messengers.personal = true;
+                messengers.work = true;
+              };
+            }
+          ];
+          specialArgs = additionalArgs // {
+            inherit system;
+          };
+        };
+        ideapad = nixpkgs.lib.nixosSystem rec {
+          system = "x86_64-linux";
+          modules = [
+            {
+              networking.hostName = "kp2pml30-personal-laptop";
+              networking.hostId = "e31a5cc0";
 
-						./nix/hardware/ideapad.nix
+              nixpkgs.overlays = [ code-flake.overlays.default ];
+              time.timeZone = "Asia/Tokyo";
+            }
 
-						./nix/common.nix
+            ./nix/hardware/ideapad.nix
 
-						./nix/personal
+            ./nix/common.nix
 
-						./nix/headscale-client.nix
+            ./nix/personal
 
-						{
-							kp2pml30 = {
-								short-hostname = "ideapad";
+            ./nix/headscale-client.nix
 
-								xserver = true;
-								vscode = true;
-								kitty = true;
-								opera = true;
-								gayming = true;
-								agent = true;
+            {
+              kp2pml30 = {
+                short-hostname = "ideapad";
 
-								boot.efiGrub = true;
+                xserver = true;
+                vscode = true;
+                kitty = true;
+                opera = true;
+                gayming = true;
+                agent = true;
 
-								hardware.wireless = true;
-								hardware.audio = true;
+                boot.efiGrub = true;
 
-								messengers.personal = true;
+                hardware.wireless = true;
+                hardware.audio = true;
 
-								headscale-client.enable = true;
-								messengers.work = true;
-							};
-						}
-					];
-					specialArgs = additionalArgs // { inherit system; };
-				};
+                messengers.personal = true;
 
-				agent-vm = nixpkgs.lib.nixosSystem {
-					system = "x86_64-linux";
-					modules = [
-						{ networking.hostId = "c1a0de00"; }
-						./nix/common.nix
-						./nix/agent-vm
-						./nix/personal
-						./nix/hardware/agent-vm.nix
-					];
-					specialArgs = additionalArgs;
-				};
+                headscale-client.enable = true;
+                messengers.work = true;
+              };
+            }
+          ];
+          specialArgs = additionalArgs // {
+            inherit system;
+          };
+        };
 
-				nanopi-m5 = nixpkgs.lib.nixosSystem {
-					modules = [
-						{
-							networking.hostName = "kp2pml30-nanopi-m5";
-							networking.hostId = "0fe2738b";
+        agent-vm = nixpkgs.lib.nixosSystem {
+          system = "x86_64-linux";
+          modules = [
+            { networking.hostId = "c1a0de00"; }
+            ./nix/common.nix
+            ./nix/agent-vm
+            ./nix/personal
+            ./nix/hardware/agent-vm.nix
+          ];
+          specialArgs = additionalArgs;
+        };
 
-							time.timeZone = "Asia/Tokyo";
+        nanopi-m5 = nixpkgs.lib.nixosSystem {
+          modules = [
+            {
+              networking.hostName = "kp2pml30-nanopi-m5";
+              networking.hostId = "0fe2738b";
 
-							nixpkgs.hostPlatform = "aarch64-linux";
-						}
+              time.timeZone = "Asia/Tokyo";
 
-						./nix/common.nix
-						./nix/server
-						./nix/hardware/nanopi-m5-homeserver
-						./nix/headscale-client.nix
+              nixpkgs.hostPlatform = "aarch64-linux";
+            }
 
-						{
-							kp2pml30 = {
-								short-hostname = "nanopi-m5";
+            ./nix/common.nix
+            ./nix/server
+            ./nix/hardware/nanopi-m5-homeserver
+            ./nix/headscale-client.nix
 
-								headscale-client.enable = true;
-							};
-						}
-					];
-					# nix/server submodules take these as module args even with all
-					# services off.
-					specialArgs = additionalArgs // {
-						inherit self nixpkgs kp2pml30-moe;
-						system = "aarch64-linux";
-					};
-				};
-			};
+            {
+              kp2pml30 = {
+                short-hostname = "nanopi-m5";
 
-			packages.aarch64-linux = {
-				nanopi-m5-sd =
-					self.nixosConfigurations.nanopi-m5.config.system.build.sdImage;
-				nanopi-m5-toplevel =
-					self.nixosConfigurations.nanopi-m5.config.system.build.toplevel;
-			};
-		};
+                headscale-client.enable = true;
+              };
+            }
+          ];
+          # nix/server submodules take these as module args even with all
+          # services off.
+          specialArgs = additionalArgs // {
+            inherit self nixpkgs kp2pml30-moe;
+            system = "aarch64-linux";
+          };
+        };
+      };
+
+      packages.aarch64-linux = {
+        nanopi-m5-sd = self.nixosConfigurations.nanopi-m5.config.system.build.sdImage;
+        nanopi-m5-toplevel = self.nixosConfigurations.nanopi-m5.config.system.build.toplevel;
+      };
+
+      formatter = forEachSystem (
+        system:
+        let
+          pkgs = import nixpkgs { inherit system; };
+          config = self.checks.${system}.pre-commit-check.config;
+          inherit (config) package configFile;
+          script = ''
+            ${pkgs.lib.getExe package} run --all-files --config ${configFile}
+          '';
+        in
+        pkgs.writeShellScriptBin "pre-commit-run" script
+      );
+
+      checks = forEachSystem (
+        system:
+        let
+          pkgs = import nixpkgs { inherit system; };
+        in
+        {
+          pre-commit-check = inputs.git-hooks.lib.${system}.run {
+            src = ./.;
+            excludes = [ "\.lock$" ];
+            hooks = {
+              trim-trailing-whitespace.enable = true;
+              end-of-file-fixer.enable = true;
+              detect-private-keys.enable = true;
+
+              nixfmt.enable = true;
+              ruff.enable = true;
+              ruff-format.enable = true;
+              taplo.enable = true;
+              stylua.enable = true;
+              editorconfig-checker.enable = true;
+            };
+          };
+        }
+      );
+
+      devShells = forEachSystem (
+        system:
+        let
+          pkgs = import nixpkgs { inherit system; };
+          inherit (self.checks.${system}.pre-commit-check) shellHook enabledPackages;
+        in
+        {
+          default = pkgs.mkShell {
+            inherit shellHook;
+            buildInputs = enabledPackages;
+          };
+        }
+      );
+    };
 }

@@ -1,26 +1,31 @@
-{ pkgs
-, lib
-, rootPath
-, config
-, ...
+{
+  pkgs,
+  lib,
+  rootPath,
+  config,
+  ...
 }:
 let
-	cfg = config.kp2pml30;
-in lib.mkIf cfg.hardware.wireless {
-	networking = {
-		networkmanager.enable = false;
-		wireless.iwd = {
-			enable = true;
-			settings = {
-				Settings.AutoConnect = true;
-			};
-		};
-	};
+  cfg = config.kp2pml30;
+in
+lib.mkIf cfg.hardware.wireless {
+  networking = {
+    networkmanager.enable = false;
+    wireless.iwd = {
+      enable = true;
+      settings = {
+        Settings.AutoConnect = true;
+      };
+    };
+  };
 
-	hardware.bluetooth = {
-		enable = true;
-		powerOnBoot = true;
-	};
+  hardware.bluetooth = {
+    enable = true;
+    powerOnBoot = true;
+  };
 
-	environment.systemPackages = with pkgs; [ bluetui impala ];
+  environment.systemPackages = with pkgs; [
+    bluetui
+    impala
+  ];
 }

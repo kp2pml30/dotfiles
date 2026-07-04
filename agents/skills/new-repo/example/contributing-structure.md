@@ -4,20 +4,20 @@ Lay out `docs/contributing/` like this. Only create directories that are needed 
 
 ```
 docs/contributing/
-  README.md                ← top-level: PR process, code of conduct link
-  howto/
-    README.md              ← index: one-line description of every guide
-    setup.md               ← first-time clone: deps, dev shell, env
-    building/
-      build.md             ← how to compile / build
-    testing/
-      README.md            ← how to run the full test suite
-    committing/
-      README.md            ← branching model, commit style, pre-commit hook
-    releasing/
-      versioning.md
-      release-build.md
-    extending/             ← add when the project has extension points
+	README.md                ← top-level: PR process, code of conduct link
+	howto/
+		README.md              ← index: one-line description of every guide
+		setup.md               ← first-time clone: deps, dev shell, env
+		building/
+			build.md             ← how to compile / build
+		testing/
+			README.md            ← how to run the full test suite
+		committing/
+			README.md            ← branching model, commit style, pre-commit hook
+		releasing/
+			versioning.md
+			release-build.md
+		extending/             ← add when the project has extension points
 ```
 
 ## Rules

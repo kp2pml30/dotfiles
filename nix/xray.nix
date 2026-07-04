@@ -1,17 +1,19 @@
-{ config
-, pkgs
-, lib
-, ...
+{
+  config,
+  pkgs,
+  lib,
+  ...
 }:
 let
   cfg = config.kp2pml30;
 
-  xray-config-base = builtins.toFile "xray-client.json" (builtins.toJSON
-    (builtins.fromJSON (builtins.readFile ./server/xray-client.json))
+  xray-config-base = builtins.toFile "xray-client.json" (
+    builtins.toJSON (builtins.fromJSON (builtins.readFile ./server/xray-client.json))
   );
 
   uuidFile = "/run/secrets/xray-uids/${cfg.xray-client-id}";
-in {
+in
+{
   options.kp2pml30.xray-client = lib.mkEnableOption "";
   options.kp2pml30.xray-client-id = lib.mkOption {
     type = lib.types.str;

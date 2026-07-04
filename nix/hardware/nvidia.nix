@@ -1,20 +1,21 @@
-{ pkgs
-, inputs
-, lib
-, config
-, ...
+{
+  pkgs,
+  inputs,
+  lib,
+  config,
+  ...
 }:
 {
-	services.xserver.videoDrivers = ["nvidia"];
+  services.xserver.videoDrivers = [ "nvidia" ];
 
-	hardware.nvidia = {
-		package = config.boot.kernelPackages.nvidiaPackages.beta;
-		modesetting.enable = true;
-		open = true;
-		powerManagement.enable = true;
-		powerManagement.finegrained = false;
-		nvidiaSettings = true;
-	};
+  hardware.nvidia = {
+    package = config.boot.kernelPackages.nvidiaPackages.beta;
+    modesetting.enable = true;
+    open = true;
+    powerManagement.enable = true;
+    powerManagement.finegrained = false;
+    nvidiaSettings = true;
+  };
 
-	hardware.nvidia-container-toolkit.enable = true;
+  hardware.nvidia-container-toolkit.enable = true;
 }

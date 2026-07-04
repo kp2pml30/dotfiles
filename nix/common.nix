@@ -1,125 +1,145 @@
-{  pkgs
-, lib
-, ...
+{
+  pkgs,
+  lib,
+  ...
 }:
 let
-	ips = import ./server/ips.nix;
-	groupByAttr = attr: lib.foldlAttrs (acc: _: v:
-		acc // { ${v.${attr}} = (acc.${v.${attr}} or []) ++ [ v.full-address ]; }
-	) {} ips.addresses;
-	groupToLines = lib.mapAttrsToList (ip: domains: "${ip} ${lib.concatStringsSep " " domains}");
+  ips = import ./server/ips.nix;
+  groupByAttr =
+    attr:
+    lib.foldlAttrs (
+      acc: _: v:
+      acc // { ${v.${attr}} = (acc.${v.${attr}} or [ ]) ++ [ v.full-address ]; }
+    ) { } ips.addresses;
+  groupToLines = lib.mapAttrsToList (ip: domains: "${ip} ${lib.concatStringsSep " " domains}");
 in
 {
-	imports = [ ./secrets ./oom-killer.nix ];
+  imports = [
+    ./secrets
+    ./oom-killer.nix
+  ];
 
-	options.kp2pml30 = {
-		short-hostname = lib.mkOption {
-			type = lib.types.str;
-			description = "Short identifier for this host (e.g. mini, vdsina). Used as the default for tailscale id, encrypted-secret recipient id, etc.";
-		};
+  options.kp2pml30 = {
+    short-hostname = lib.mkOption {
+      type = lib.types.str;
+      description = "Short identifier for this host (e.g. mini, vdsina). Used as the default for tailscale id, encrypted-secret recipient id, etc.";
+    };
 
-		# Broad host profile. Declared here (not in ./personal) so hardware modules
-		# shared with headless hosts can gate graphical/home-manager extras on it.
-		# The ./personal profile sets this to "personal"; everything else is a
-		# server.
-		machine-kind = lib.mkOption {
-			type = lib.types.enum [ "server" "personal" ];
-			#default = "server";
-			description = "Host profile; gates graphical/home-manager-only config in shared modules.";
-		};
+    # Broad host profile. Declared here (not in ./personal) so hardware modules
+    # shared with headless hosts can gate graphical/home-manager extras on it.
+    # The ./personal profile sets this to "personal"; everything else is a
+    # server.
+    machine-kind = lib.mkOption {
+      type = lib.types.enum [
+        "server"
+        "personal"
+      ];
+      #default = "server";
+      description = "Host profile; gates graphical/home-manager-only config in shared modules.";
+    };
 
-		hardware = {
-			wireless = lib.mkEnableOption "";
-			audio = lib.mkEnableOption "";
-		};
-	};
+    hardware = {
+      wireless = lib.mkEnableOption "";
+      audio = lib.mkEnableOption "";
+    };
+  };
 
-	config = {
-		networking.extraHosts = lib.concatStringsSep "\n" (
-			groupToLines (groupByAttr "ip") ++ groupToLines (groupByAttr "ipv6")
-		);
-		system.stateVersion = "24.05";
+  config = {
+    networking.extraHosts = lib.concatStringsSep "\n" (
+      groupToLines (groupByAttr "ip") ++ groupToLines (groupByAttr "ipv6")
+    );
+    system.stateVersion = "24.05";
 
-		users.mutableUsers = false;
+    users.mutableUsers = false;
 
-		services.openssh.settings = {
-			PasswordAuthentication = lib.mkDefault false;
-			KbdInteractiveAuthentication = lib.mkDefault false;
-			PermitRootLogin = lib.mkDefault "no";
+    services.openssh.settings = {
+      PasswordAuthentication = lib.mkDefault false;
+      KbdInteractiveAuthentication = lib.mkDefault false;
+      PermitRootLogin = lib.mkDefault "no";
 
-			# PQ-hybrid KEX only. Both algorithms mix in X25519 so the connection
-			# is at least as strong as classical ECDH even if the PQ part breaks.
-			# Requires OpenSSH >= 9.9 on the client (mlkem768) or >= 9.0 (sntrup761).
-			KexAlgorithms = [
-				"mlkem768x25519-sha256"
-				"sntrup761x25519-sha512@openssh.com"
-			];
-		};
+      # PQ-hybrid KEX only. Both algorithms mix in X25519 so the connection
+      # is at least as strong as classical ECDH even if the PQ part breaks.
+      # Requires OpenSSH >= 9.9 on the client (mlkem768) or >= 9.0 (sntrup761).
+      KexAlgorithms = [
+        "mlkem768x25519-sha256"
+        "sntrup761x25519-sha512@openssh.com"
+      ];
+    };
 
-		console.keyMap = "us";
+    console.keyMap = "us";
 
-		nix.gc = {
-			automatic = true;
-			dates = "weekly";
-		};
+    nix.gc = {
+      automatic = true;
+      dates = "weekly";
+    };
 
-		boot = {
-			tmp.useTmpfs = true;
-		};
+    boot = {
+      tmp.useTmpfs = true;
+    };
 
-		systemd.services.nix-daemon = {
-			environment.TMPDIR = "/var/tmp";
-		};
+    systemd.services.nix-daemon = {
+      environment.TMPDIR = "/var/tmp";
+    };
 
-		networking.firewall.enable = true;
+    networking.firewall.enable = true;
 
-		nix.settings = {
-			experimental-features = [ "nix-command" "flakes" ];
-			extra-substituters = [ "https://nix-community.cachix.org" ];
-			extra-trusted-public-keys = [ "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs=" ];
-			auto-optimise-store = true;
-			sandbox = true;
-			sandbox-fallback = false;
-			# allow members of wheel to push store paths via SSH for
-			# `nixos-rebuild --target-host`; root is implicitly trusted.
-			trusted-users = [ "root" "@wheel" ];
-		};
-		environment.systemPackages = with pkgs; [
-			curl
-			(writers.writePython3Bin "kp2-download" { flakeIgnore = [ "E501" ]; }
-				(builtins.readFile ./download.py))
-			neovim
-			bash
-			git
+    nix.settings = {
+      experimental-features = [
+        "nix-command"
+        "flakes"
+      ];
+      extra-substituters = [ "https://nix-community.cachix.org" ];
+      extra-trusted-public-keys = [
+        "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
+      ];
+      auto-optimise-store = true;
+      sandbox = true;
+      sandbox-fallback = false;
+      # allow members of wheel to push store paths via SSH for
+      # `nixos-rebuild --target-host`; root is implicitly trusted.
+      trusted-users = [
+        "root"
+        "@wheel"
+      ];
+    };
+    environment.systemPackages = with pkgs; [
+      curl
+      (writers.writePython3Bin "kp2-download" { doCheck = false; } (
+        builtins.readFile ./download.py
+      ))
+      neovim
+      bash
+      git
 
-			zip unzip
-			xz
-			zstd
-			gnutar
+      zip
+      unzip
+      xz
+      zstd
+      gnutar
 
-			diffutils
-			file
-			tree
-			gnused
-			gnugrep
-			stow
-			xxd
+      diffutils
+      file
+      tree
+      gnused
+      gnugrep
+      stow
+      xxd
 
-			killall
-			gnupg
-		];
+      killall
+      gnupg
+    ];
 
-		programs = {
-			neovim.enable = true;
-			neovim.defaultEditor = true;
+    programs = {
+      neovim.enable = true;
+      neovim.defaultEditor = true;
 
-			git = {
-				enable = true;
-				lfs.enable = true;
-				config = {
-					init.defaultBranch = "main";
-				};
-			};
-		};
-	};
+      git = {
+        enable = true;
+        lfs.enable = true;
+        config = {
+          init.defaultBranch = "main";
+        };
+      };
+    };
+  };
 }

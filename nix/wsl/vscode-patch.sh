@@ -35,4 +35,3 @@ nix shell $PKGS_EXPRESSION.patchelf $PKGS_EXPRESSION.stdenv.cc -c bash -c "
 "
 
 echo "== '~/.vscode-server/server-env-setup' SCRIPT END =="
-
