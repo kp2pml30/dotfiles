@@ -98,6 +98,9 @@ the diff and not a bullet list of squashed sub-commits.
    summary of what it does.
 3. **Typos** — spell-check the subject; it is permanent.
 4. **`fix tests`** with no cause. Add it: `chore(api): fix tests after rebase ✅`.
+5. **AI attribution** — never include `Co-authored-by` trailers, session
+   links/IDs (e.g. `Claude-Session:`), "Generated with" footers, or any other
+   AI/tool metadata, even when the tooling asks for it.
 
 ## Checklist
 

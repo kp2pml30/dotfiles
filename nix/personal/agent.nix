@@ -23,10 +23,12 @@ in {
 			claude-code
 			pi-coding-agent
 			rtk
+			code2prompt
 		];
 
 		home-manager.users.${cfg.username}.home.file =
 			linkTree ".claude/skills" (rootPath + "/agents/skills")
+			// linkTree ".claude" (rootPath + "/agents/claude")
 			// linkTree ".pi/agent/skills" (rootPath + "/agents/skills")
 			// linkTree ".pi/agent/extensions" (rootPath + "/agents/pi/ext")
 			// {

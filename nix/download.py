@@ -1,3 +1,4 @@
+import argparse
 import json
 import os
 import subprocess
@@ -33,23 +34,33 @@ def show_error(body):
 
 
 def main():
-    overwrite = False
-    args = []
-    for arg in sys.argv[1:]:
-        if arg == "--overwrite":
-            overwrite = True
-        else:
-            args.append(arg)
-    if not args or len(args) > 2:
-        fail("usage: download [--overwrite] URL [OUTPUT]")
+    parser = argparse.ArgumentParser(
+        prog="download",
+        description="Download a file from a URL with retry logic",
+    )
+    parser.add_argument(
+        "url",
+        help="URL to download from (must be http or https)",
+    )
+    parser.add_argument(
+        "output",
+        nargs="?",
+        help="output filename (derived from URL if not provided)",
+    )
+    parser.add_argument(
+        "--overwrite",
+        action="store_true",
+        help="overwrite existing files",
+    )
+    args = parser.parse_args()
 
-    url = args[0]
+    url = args.url
     scheme = urlparse(url).scheme
     if scheme not in ("http", "https"):
         fail(f"unsupported URL scheme: {scheme or '(none)'}")
 
-    out = safe_name(url, args[1] if len(args) == 2 else None)
-    if os.path.exists(out) and not overwrite:
+    out = safe_name(url, args.output)
+    if os.path.exists(out) and not args.overwrite:
         fail(f"refusing to overwrite existing file (pass --overwrite): {out}")
 
     proc = subprocess.run(
@@ -84,4 +95,5 @@ def main():
     print(f"download: saved {out}", file=sys.stderr)
 
 
-main()
+if __name__ == "__main__":
+    main()

@@ -86,7 +86,7 @@ in
 		};
 		environment.systemPackages = with pkgs; [
 			curl
-			(writers.writePython3Bin "download" { flakeIgnore = [ "E501" ]; }
+			(writers.writePython3Bin "kp2-download" { flakeIgnore = [ "E501" ]; }
 				(builtins.readFile ./download.py))
 			neovim
 			bash
