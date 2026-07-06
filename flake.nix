@@ -22,6 +22,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.flake-utils.follows = "flake-utils";
       inputs.systems.follows = "systems";
+      inputs.git-hooks.follows = "git-hooks";
     };
 
     code-flake = {
@@ -152,7 +153,12 @@
                 vscode = true;
                 kitty = true;
                 opera = true;
-                gayming = true;
+                gayming = {
+                  enable = true;
+                  width = 1920;
+                  height = 1080;
+                  refreshRate = 144;
+                };
                 agent = true;
 
                 qemu = true;
@@ -203,7 +209,12 @@
                 vscode = true;
                 kitty = true;
                 opera = true;
-                gayming = true;
+                gayming = {
+                  enable = true;
+                  width = 1920;
+                  height = 1080;
+                  refreshRate = 60;
+                };
                 agent = true;
 
                 boot.efiGrub = true;
@@ -296,6 +307,15 @@
             src = ./.;
             excludes = [ "\.lock$" ];
             hooks = {
+              check-commit-message = {
+                enable = true;
+                name = "check commit message";
+                description = "Validate the commit message against conventional-commit rules.";
+                entry = "${pkgs.python3}/bin/python3 ${./agents/skills/new-repo/example/support/scripts/check-commit-message.py} --message-file";
+                language = "system";
+                stages = [ "commit-msg" ];
+              };
+
               trim-trailing-whitespace.enable = true;
               end-of-file-fixer.enable = true;
               detect-private-keys.enable = true;

@@ -50,9 +50,7 @@ core.[0-9]*
 /hooks
 /objects
 /refs
-.claude/agents
-.claude/commands
-.claude/settings.json
+.claude/*
 
 .agents/plans
 .agents/settings.local.json

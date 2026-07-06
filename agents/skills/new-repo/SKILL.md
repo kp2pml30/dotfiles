@@ -1,3 +1,7 @@
+---
+name: new-repo
+description: Skill to use when creating a new repository. Covers the root files, README, docs layout, .gitattributes, and Nix flake.nix.
+---
 # New Repo Skill
 
 Bootstrap a new repository from scratch. Work through the checklist below in order.
@@ -22,6 +26,27 @@ Optional starter configs from `example/` when relevant:
 - [`ruff.toml`](./example/ruff.toml)
 - [`.clang-format`](./example/.clang-format)
 - [`.pre-commit-config.yaml`](./example/.pre-commit-config.yaml) for repos that use pre-commit directly instead of generating hooks from Nix
+
+## Support files
+
+Keep all supporting material (scripts, helper data, hook implementations) under a
+single `support/` directory — e.g. `support/scripts/check-commit-message.py`.
+The only exception is config dotfiles that tools look up by a fixed name and can
+only find at the repo root (`.gitignore`, `.gitattributes`, `.editorconfig`,
+`.clang-format`, `ruff.toml`, `flake.nix`, …) — those must stay at the root.
+
+The [`example/`](./example/) tree follows this: config dotfiles at the root,
+everything else under [`example/support/`](./example/support/).
+
+### Commit-message hook
+
+[`example/support/scripts/check-commit-message.py`](./example/support/scripts/check-commit-message.py)
+validates commit messages against conventional-commit rules. Wire it as a
+`commit-msg` hook in every repo. See [`example/flake.nix`](./example/flake.nix)
+(the `check-commit-message` hook) for the `git-hooks.nix` wiring, or
+[`example/.pre-commit-config.yaml`](./example/.pre-commit-config.yaml) for the
+plain-pre-commit `repo: local` variant. Because it runs on the `commit-msg`
+stage it is skipped by `nix flake check` / `pre-commit run --all-files`.
 
 ## README
 

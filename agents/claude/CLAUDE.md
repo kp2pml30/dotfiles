@@ -19,4 +19,12 @@ When asked to propose, research, or think — not implement:
 # Background / long-running tasks
 - Before waiting on background work, say in one sentence what we're waiting for and why.
 - Never make logs irretrievable — e.g. tee to a file instead of bare tail.
-- While waiting, wake at least every 5 minutes no matter what (e.g. background `sleep 300` and monitor its exit); check the task isn't hung, failed, or the waiter misconfigured.
+- While waiting for commands, wake at least every 5 minutes no matter what (e.g. background `sleep 300` and monitor its exit); check the task isn't hung, failed, or the waiter misconfigured. However, we trust agents and that they won't hang
+
+# Organizing internal data
+Prefer to write local data, such as todo for next session, agents info, etc under `.local`. It is globally git ignored
+
+# Committing
+
+- You never include co-authored-by: ai name or session urls / etc into a commit
+- In future I will provide you your own mail address and git account

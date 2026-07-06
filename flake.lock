@@ -129,6 +129,24 @@
         "type": "github"
       }
     },
+    "flake-utils_2": {
+      "inputs": {
+        "systems": "systems"
+      },
+      "locked": {
+        "lastModified": 1731533236,
+        "narHash": "sha256-l0KFg5HjrsfsO/JpG+r7fRrqm12kzFHyUHqHCVpMMbI=",
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "rev": "11707dc2f618dd54ca8739b309ec4fc024de578b",
+        "type": "github"
+      },
+      "original": {
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "type": "github"
+      }
+    },
     "git-hooks": {
       "inputs": {
         "flake-compat": "flake-compat",
@@ -196,20 +214,24 @@
         "flake-utils": [
           "flake-utils"
         ],
+        "git-hooks": [
+          "git-hooks"
+        ],
         "nixpkgs": [
           "nixpkgs"
         ],
         "rust-overlay": "rust-overlay",
         "systems": [
           "systems"
-        ]
+        ],
+        "yamd": "yamd"
       },
       "locked": {
-        "lastModified": 1782141341,
-        "narHash": "sha256-07xHhYPGQ3bgMQHxnhbaWptfhEFbsHLdDRHP47sY+H0=",
+        "lastModified": 1783267194,
+        "narHash": "sha256-0iay+gIH/0QE9+FwbTT6LeR0mEskt9JWpri8FcHIfY0=",
         "owner": "kp2pml30",
         "repo": "kp2pml30.github.io",
-        "rev": "fcc25923b6e01bbb580300dc898ffa80b1c7aac1",
+        "rev": "58a670d7504fee1d4655363f5f15c06b7febc337",
         "type": "github"
       },
       "original": {
@@ -306,7 +328,7 @@
         "nixos-generators": "nixos-generators",
         "nixpkgs": "nixpkgs",
         "pi": "pi",
-        "systems": "systems"
+        "systems": "systems_2"
       }
     },
     "rust-overlay": {
@@ -346,6 +368,21 @@
         "type": "github"
       }
     },
+    "systems_2": {
+      "locked": {
+        "lastModified": 1681028828,
+        "narHash": "sha256-Vy1rq5AaRuLzOxct8nz4T6wlgyUR7zLU309k9mBC768=",
+        "owner": "nix-systems",
+        "repo": "default",
+        "rev": "da67096a3b9bf56a91d16901293e51ba5b49a27e",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nix-systems",
+        "repo": "default",
+        "type": "github"
+      }
+    },
     "treefmt-nix": {
       "inputs": {
         "nixpkgs": [
@@ -366,6 +403,32 @@
         "owner": "numtide",
         "repo": "treefmt-nix",
         "type": "github"
+      }
+    },
+    "yamd": {
+      "inputs": {
+        "flake-utils": "flake-utils_2",
+        "git-hooks": [
+          "kp2pml30-moe",
+          "git-hooks"
+        ],
+        "nixpkgs": [
+          "kp2pml30-moe",
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1783264241,
+        "narHash": "sha256-//0nnRKjUNnb7+RpoDmQtOHiV/MblpD3VWcnCI48nm4=",
+        "ref": "refs/heads/main",
+        "rev": "deec4e8c492708b834becc0f8ce3a0aa528b5c16",
+        "revCount": 4,
+        "type": "git",
+        "url": "https://git.kp2pml30.moe/ya/yamd.git"
+      },
+      "original": {
+        "type": "git",
+        "url": "https://git.kp2pml30.moe/ya/yamd.git"
       }
     }
   },

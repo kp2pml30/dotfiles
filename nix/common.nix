@@ -104,9 +104,7 @@ in
     };
     environment.systemPackages = with pkgs; [
       curl
-      (writers.writePython3Bin "kp2-download" { doCheck = false; } (
-        builtins.readFile ./download.py
-      ))
+      (writers.writePython3Bin "kp2-download" { doCheck = false; } (builtins.readFile ./download.py))
       neovim
       bash
       git
@@ -138,6 +136,9 @@ in
         lfs.enable = true;
         config = {
           init.defaultBranch = "main";
+          core.excludesFile = pkgs.writeText "gitignore-global" ''
+            .local
+          '';
         };
       };
     };

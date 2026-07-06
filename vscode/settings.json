@@ -1,4 +1,5 @@
 {
+  "$schema": "vscode://schemas/settings/user",
   "window.titleBarStyle": "custom",
 
   "editor.fontFamily": "Fira Code, FiraCode, Consolas, 'monospace', monospace",
@@ -6,6 +7,12 @@
 
   "files.trimTrailingWhitespace": true,
   "files.insertFinalNewline": true,
+  "files.watcherExclude": {
+    "**/.direnv/**": true,
+    "**/node_modules/**": true,
+    "**/.git/objects/**": true,
+    "**/.git/subtree-cache/**": true
+  },
   "files.trimFinalNewlines": true,
   "editor.padding.top": 64,
   "editor.renderWhitespace": "all",

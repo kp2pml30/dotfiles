@@ -1,4 +1,13 @@
 repos:
+  # Universal — keep in every repo. Validates the commit message.
+  - repo: local
+    hooks:
+      - id: check-commit-message
+        name: check commit message
+        entry: python3 support/scripts/check-commit-message.py --message-file
+        language: system
+        stages: [commit-msg]
+
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.6.0
     hooks:

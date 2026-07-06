@@ -34,7 +34,7 @@ in
         message = "kp2pml30.opera requires kp2pml30.xserver";
       }
       {
-        assertion = cfg.gayming -> cfg.xserver;
+        assertion = cfg.gayming.enable -> cfg.xserver;
         message = "kp2pml30.gayming requires kp2pml30.xserver";
       }
       {

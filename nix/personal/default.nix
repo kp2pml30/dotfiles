@@ -20,7 +20,21 @@ in
     vscode = lib.mkEnableOption "";
     kitty = lib.mkEnableOption "";
     opera = lib.mkEnableOption "";
-    gayming = lib.mkEnableOption "";
+    gayming = {
+      enable = lib.mkEnableOption "gaming setup (Steam, gamescope, game-wrapper)";
+      width = lib.mkOption {
+        type = lib.types.int;
+        description = "gamescope output width used by game-wrapper";
+      };
+      height = lib.mkOption {
+        type = lib.types.int;
+        description = "gamescope output height used by game-wrapper";
+      };
+      refreshRate = lib.mkOption {
+        type = lib.types.int;
+        description = "gamescope output refresh rate (Hz) used by game-wrapper";
+      };
+    };
     messengers = {
       personal = lib.mkEnableOption "";
       work = lib.mkEnableOption "";
@@ -43,7 +57,7 @@ in
     kp2pml30.machine-kind = "personal";
     kp2pml30.oom-killer = true;
 
-    boot.supportedFilesystems = [ "exfat" ] ++ lib.optional cfg.gayming "ntfs";
+    boot.supportedFilesystems = [ "exfat" ] ++ lib.optional cfg.gayming.enable "ntfs";
     boot.loader.timeout = 30;
 
     documentation.doc.enable = false;

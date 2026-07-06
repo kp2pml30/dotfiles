@@ -9,7 +9,22 @@
 let
   cfg = config.kp2pml30;
 in
-lib.mkIf cfg.gayming {
+lib.mkIf cfg.gayming.enable {
+  assertions = [
+    {
+      assertion = cfg.gayming.width > 0;
+      message = "kp2pml30.gayming.width must be positive (got ${toString cfg.gayming.width})";
+    }
+    {
+      assertion = cfg.gayming.height > 0;
+      message = "kp2pml30.gayming.height must be positive (got ${toString cfg.gayming.height})";
+    }
+    {
+      assertion = cfg.gayming.refreshRate > 0;
+      message = "kp2pml30.gayming.refreshRate must be positive (got ${toString cfg.gayming.refreshRate})";
+    }
+  ];
+
   programs.steam = {
     enable = true;
     remotePlay.openFirewall = true;
@@ -38,5 +53,18 @@ lib.mkIf cfg.gayming {
 
   environment.systemPackages = with pkgs; [
     prismlauncher
+
+    # Wraps a game in gamescope (nested compositor, so it can't stall picom)
+    # and enables DXVK async pipeline compilation. Steam launch options:
+    #   game-wrapper %command%
+    (writeShellApplication {
+      name = "game-wrapper";
+      runtimeInputs = [ gamescope ];
+      text = ''
+        export DXVK_ASYNC=1            # legacy dxvk-async (DXVK < 2.x / async-patched builds)
+        export DXVK_GPLASYNCCACHE=1    # modern dxvk-gplasync (DXVK >= 2.x)
+        exec gamescope -W ${toString cfg.gayming.width} -H ${toString cfg.gayming.height} -r ${toString cfg.gayming.refreshRate} -f -- "$@"
+      '';
+    })
   ];
 }
