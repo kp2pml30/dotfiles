@@ -20,6 +20,31 @@ in
     vscode = lib.mkEnableOption "";
     kitty = lib.mkEnableOption "";
     opera = lib.mkEnableOption "";
+    sync-files = {
+      enable = lib.mkEnableOption "personal notes and password sync";
+      syncthing.devices = lib.mkOption {
+        type = lib.types.attrsOf (
+          lib.types.submodule (
+            { name, ... }:
+            {
+              options = {
+                id = lib.mkOption {
+                  type = lib.types.str;
+                  description = "Syncthing device ID.";
+                };
+                addresses = lib.mkOption {
+                  type = lib.types.listOf lib.types.str;
+                  default = [ "tcp://${name}.ts.kp2pml30.moe:22000" ];
+                  description = "Syncthing device addresses. Defaults to this host name under Headscale MagicDNS.";
+                };
+              };
+            }
+          )
+        );
+        default = { };
+        description = "Known tailnet Syncthing peers. Leave empty until device IDs are known.";
+      };
+    };
     gayming = {
       enable = lib.mkEnableOption "gaming setup (Steam, gamescope, game-wrapper)";
       width = lib.mkOption {
@@ -50,6 +75,7 @@ in
     ./agent.nix
     ./wireless.nix
     ./audio.nix
+    ./sync-files.nix
   ];
 
   config = {
@@ -114,6 +140,7 @@ in
         "slack"
         "anytype"
         "claude-code"
+        "obsidian"
       ];
   };
 }

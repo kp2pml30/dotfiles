@@ -43,6 +43,7 @@ Setting up a recipient
 
 import argparse
 import os
+import shutil
 import subprocess
 import sys
 from pathlib import Path
@@ -94,26 +95,42 @@ def write_recipients(name: str, ids: list[str]) -> None:
 	rp.write_text('\n'.join(ids) + '\n')
 
 
+def require_exe(name: str) -> str:
+	exe = shutil.which(name)
+	if not exe:
+		sys.exit(f'{name} not found in PATH')
+	return exe
+
+
+def preferred_editor() -> str:
+	return shutil.which('nvim-secret') or require_exe('nvim')
+
+
 def decrypt(name: str) -> bytes:
 	dp = data_path(name)
 	if not dp.is_file():
 		sys.exit(f'missing {dp}')
 	ident = identity_file()
-	cmd = ['age', '-d', '-i', str(ident), str(dp)]
+	cmd = [require_exe('age'), '-d', '-i', str(ident), str(dp)]
 	if not os.access(ident, os.R_OK):
 		print(f'{ident} not readable; prefixing with sudo', file=sys.stderr)
 		cmd = ['sudo', '--'] + cmd
-	return subprocess.run(cmd, check=True, stdout=subprocess.PIPE).stdout
+	result = subprocess.run(cmd, stdout=subprocess.PIPE)
+	if result.returncode:
+		sys.exit(f'decrypt failed with status {result.returncode}')
+	return result.stdout
 
 
 def encrypt(name: str, plaintext: bytes, ids: list[str]) -> None:
 	dp = data_path(name)
 	dp.parent.mkdir(parents=True, exist_ok=True)
-	args = ['age', '-e', '-a']
+	args = [require_exe('age'), '-e', '-a']
 	for rid in ids:
 		args += ['-R', str(key_path(rid))]
 	args += ['-o', str(dp)]
-	subprocess.run(args, check=True, input=plaintext)
+	result = subprocess.run(args, input=plaintext)
+	if result.returncode:
+		sys.exit(f'encrypt failed with status {result.returncode}')
 
 
 def cmd_show(args: argparse.Namespace) -> None:
@@ -145,13 +162,24 @@ def cmd_edit(args: argparse.Namespace) -> None:
 		dp.parent.mkdir(parents=True, exist_ok=True)
 
 	ident = identity_file()
-	decrypt_cmd = f'age -d -i {shquote(str(ident))}'
+	age = require_exe('age')
+	decrypt_cmd = f'{shquote(age)} -d -i {shquote(str(ident))}'
 	prefix = []
 	if not os.access(ident, os.R_OK):
 		print(f'{ident} not readable', file=sys.stderr)
 
-	encrypt_cmd = 'age -e -a ' + ' '.join(
-		f'-R {shquote(str(key_path(rid)))}' for rid in ids
+	if dp.is_file():
+		check = subprocess.run(
+			[age, '-d', '-i', str(ident), str(dp)],
+			stdout=subprocess.DEVNULL,
+		)
+		if check.returncode:
+			sys.exit(f'decrypt preflight failed with status {check.returncode}')
+
+	encrypt_cmd = (
+		shquote(age)
+		+ ' -e -a '
+		+ ' '.join(f'-R {shquote(str(key_path(rid)))}' for rid in ids)
 	)
 
 	env = os.environ.copy()
@@ -159,11 +187,20 @@ def cmd_edit(args: argparse.Namespace) -> None:
 	env['PASS_DECRYPT_CMD'] = decrypt_cmd
 	env['PASS_ENCRYPT_CMD'] = encrypt_cmd
 	before = dp.stat().st_mtime_ns if dp.is_file() else 0
-	subprocess.run(
-		prefix + ['nvim', '--clean', '-n', '-u', str(NVIM_INIT), str(dp)],
-		check=True,
+	cmd = [
+		preferred_editor(),
+		'--clean',
+		'-n',
+		'-u',
+		str(NVIM_INIT),
+		str(dp),
+	]
+	result = subprocess.run(
+		prefix + cmd,
 		env=env,
 	)
+	if result.returncode:
+		sys.exit(f'edit failed: nvim exited with status {result.returncode}')
 	after = dp.stat().st_mtime_ns if dp.is_file() else 0
 
 	if after == before:

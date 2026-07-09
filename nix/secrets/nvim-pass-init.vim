@@ -6,10 +6,10 @@ silent echom "[pass] PASS_ENCRYPT_CMD=" . $PASS_ENCRYPT_CMD
 
 function! s:Decrypt() abort
 	silent echom "[pass] Decrypt fired for " . expand("<afile>")
-	silent execute "0,$!" . $PASS_DECRYPT_CMD
+	execute "0,$!" . $PASS_DECRYPT_CMD
 	silent echom "[pass] Decrypt shell_error=" . v:shell_error
 	if v:shell_error
-		echohl ErrorMsg | echom "age decrypt failed" | echohl None
+		echohl ErrorMsg | echom "age decrypt failed with exit code " . v:shell_error | echohl None
 		cquit!
 	endif
 	setlocal nomodified
@@ -17,10 +17,11 @@ endfunction
 
 function! s:Encrypt() abort
 	silent echom "[pass] Encrypt fired for " . expand("<afile>")
-	silent execute "0,$!" . $PASS_ENCRYPT_CMD
+	execute "0,$!" . $PASS_ENCRYPT_CMD
 	silent echom "[pass] Encrypt shell_error=" . v:shell_error
 	if v:shell_error
-		echohl ErrorMsg | echom "age encrypt failed" | echohl None
+		echohl ErrorMsg | echom "age encrypt failed with exit code " . v:shell_error | echohl None
+		cquit!
 	endif
 endfunction
 

@@ -3,8 +3,8 @@ local theme_assets = require("beautiful.theme_assets")
 local xresources = require("beautiful.xresources")
 local dpi = xresources.apply_dpi
 
-local gfs = require("gears.filesystem")
-local themes_path = gfs.get_themes_dir()
+local gears = require("gears")
+local themes_path = gears.filesystem.get_themes_dir()
 
 local theme = {}
 -- theme.dir                                       = os.getenv("HOME") .. "/.config/awesome/"
@@ -37,6 +37,14 @@ theme.taglist_squares_unsel = theme_assets.taglist_squares_unsel(taglist_square_
 -- notification_[bg|fg]
 -- notification_[width|height|margin]
 -- notification_[border_color|border_width|shape|opacity]
+theme.notification_width = dpi(360)
+theme.notification_margin = dpi(12)
+theme.notification_icon_size = dpi(48)
+theme.notification_border_width = dpi(1)
+theme.notification_border_color = theme.bg_focus
+theme.notification_shape = function(cr, w, h)
+	gears.shape.rounded_rect(cr, w, h, dpi(6))
+end
 
 -- Variables set for theming the menu:
 -- menu_[bg|fg]_[normal|focus]

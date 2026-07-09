@@ -157,9 +157,10 @@
                   enable = true;
                   width = 1920;
                   height = 1080;
-                  refreshRate = 144;
+                  refreshRate = 60;
                 };
                 agent = true;
+                sync-files.enable = true;
 
                 qemu = true;
 
@@ -216,6 +217,7 @@
                   refreshRate = 60;
                 };
                 agent = true;
+                sync-files.enable = true;
 
                 boot.efiGrub = true;
 

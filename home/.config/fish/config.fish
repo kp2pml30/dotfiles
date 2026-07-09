@@ -4,6 +4,9 @@ if test -f ~/.bashrc
 end
 
 if status is-interactive
+	if test "$TERM" = xterm-kitty; and command -v kitty > /dev/null
+		alias ssh="kitty +kitten ssh"
+	end
 	if command -v zoxide > /dev/null
 		zoxide init fish | source
 	end

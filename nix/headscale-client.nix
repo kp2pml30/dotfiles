@@ -40,17 +40,22 @@ in
         "tailscaled.service"
         "network-online.target"
         "decrypt-secrets.service"
-      ];
+      ]
+      ++ lib.optional config.services.headscale.enable "headscale.service"
+      ++ lib.optional config.services.nginx.enable "nginx.service";
       wants = [
         "tailscaled.service"
         "network-online.target"
-      ];
+      ]
+      ++ lib.optional config.services.headscale.enable "headscale.service"
+      ++ lib.optional config.services.nginx.enable "nginx.service";
       requires = [ "decrypt-secrets.service" ];
       unitConfig.ConditionPathExists = preauthFile;
       serviceConfig = {
         Type = "oneshot";
         User = "root";
         RemainAfterExit = true;
+        TimeoutStartSec = "60s";
       };
       path = [
         pkgs.jq
@@ -68,8 +73,7 @@ in
           exit 0
         fi
 
-        KEY=$(tr -d '[:space:]' < ${preauthFile})
-        if [ -z "$KEY" ]; then
+        if [ ! -s ${preauthFile} ]; then
           echo "No pre-auth key in ${preauthFile}" >&2
           exit 1
         fi
@@ -82,15 +86,18 @@ in
         # default 100.64.0.0/10) gets installed as a kernel route via
         # tailscale0; without it the per-node IPs leak to the default route.
         # --reset clears any of these flags left over from a previous run.
+        # Pass the auth key by file so it never appears in process arguments or
+        # systemd status output.
         tailscale up \
           --login-server="${loginServer}" \
-          --authkey="$KEY" \
+          --auth-key="file:${preauthFile}" \
           --hostname="${cfg.id}" \
           --accept-dns=true \
           --accept-routes=true \
           --ssh=${lib.boolToString cfg.ssh.enable} \
           --exit-node= \
-          --reset
+          --reset \
+          --timeout=45s
       '';
     };
   };

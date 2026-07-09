@@ -15,6 +15,7 @@ lib.mkIf cfg.kitty {
   home-manager.users.${cfg.username} = {
     programs.kitty = {
       enable = true;
+      settings.auto_reload_config = -1;
       extraConfig = builtins.readFile (rootPath + "/home/.config/kitty/kitty.conf");
     };
 

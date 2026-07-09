@@ -105,9 +105,37 @@ in
     environment.systemPackages = with pkgs; [
       curl
       (writers.writePython3Bin "kp2-download" { doCheck = false; } (builtins.readFile ./download.py))
+      (writeShellApplication {
+        name = "nvim-secret";
+        runtimeInputs = [
+          coreutils
+          neovim
+        ];
+        text = ''
+          runtime_dir="$(mktemp -d /dev/shm/nvim-secret.XXXXXX)"
+          cleanup() {
+            rm -rf "$runtime_dir"
+          }
+          trap cleanup EXIT HUP INT TERM
+
+          export TMPDIR="$runtime_dir/tmp"
+          export XDG_CACHE_HOME="$runtime_dir/cache"
+          export XDG_STATE_HOME="$runtime_dir/state"
+          mkdir -p "$TMPDIR" "$XDG_CACHE_HOME" "$XDG_STATE_HOME"
+
+          nvim \
+            -n \
+            -i NONE \
+            -u NONE \
+            -U NONE \
+            --cmd 'set noswapfile nobackup nowritebackup noundofile noshelltemp secure nomodeline modelines=0 viminfo= shada= history=0 directory=/dev/shm// backupdir=/dev/shm// undodir=/dev/shm// viewdir=/dev/shm//' \
+            "$@"
+        '';
+      })
       neovim
       bash
       git
+      kitty.terminfo
 
       zip
       unzip
@@ -125,6 +153,7 @@ in
 
       killall
       gnupg
+      age
     ];
 
     programs = {
