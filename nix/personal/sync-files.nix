@@ -14,7 +14,13 @@ let
   gid = toString config.users.groups.users.gid;
   tailscaleEnabled = config.services.tailscale.enable;
   tailscaleInterface = config.services.tailscale.interfaceName;
-  deviceNames = builtins.attrNames syncCfg.syncthing.devices;
+  nixDevices = lib.mapAttrs (_: device: { inherit (device) id addresses; }) syncCfg.syncthing.devices;
+  offNixDevices = lib.mapAttrs (_: dev: {
+    id = dev.syncthing;
+    addresses = [ "dynamic" ]; # roaming clients dial mini; never dialed by us
+  }) (import ./off-nix-devices.nix);
+  allDevices = nixDevices // offNixDevices;
+  deviceNames = builtins.attrNames allDevices;
   hasDevices = deviceNames != [ ];
   stignore = pkgs.writeText "sync-stignore" ''
     /notes/decrypted/
@@ -69,9 +75,7 @@ in
       overrideDevices = hasDevices;
       overrideFolders = hasDevices;
       settings = {
-        devices = lib.mapAttrs (_: device: {
-          inherit (device) id addresses;
-        }) syncCfg.syncthing.devices;
+        devices = allDevices;
         folders = lib.mkIf hasDevices {
           sync = {
             label = "sync";

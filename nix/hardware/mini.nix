@@ -33,6 +33,10 @@
       "users"
       "exec"
       "nofail"
+      # wine checks prefix owner UID, ntfs has no on-disk owner -> map to the user
+      "uid=${toString config.users.users.${config.kp2pml30.username}.uid}"
+      "gid=${toString config.ids.gids.users}"
+      "umask=022"
     ];
   };
 

@@ -31,6 +31,15 @@ in
       pi-coding-agent
       rtk
       code2prompt
+      diffutils
+      gawk
+      gh
+      gnused
+      patch
+      patchutils
+      ripgrep
+      yj
+      yq
     ];
 
     home-manager.users.${cfg.username}.home.file =

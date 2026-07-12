@@ -58,6 +58,7 @@ lib.mkIf cfg.gayming.enable {
     # and enables DXVK async pipeline compilation by default. Steam launch options:
     #   game-wrapper %command%
     #   game-wrapper --async=false %command%
+    #   game-wrapper --runtime-cache=true --async=false %command%
     (symlinkJoin {
       name = "game-wrapper";
       paths = [
