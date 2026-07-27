@@ -64,6 +64,24 @@ in
       personal = lib.mkEnableOption "";
       work = lib.mkEnableOption "";
     };
+    damn-rust = {
+      enable = lib.mkEnableOption "file-backed btrfs store for rust build directories";
+      mountPoint = lib.mkOption {
+        type = lib.types.str;
+        default = "/damn-rust";
+        description = "Where the store is mounted.";
+      };
+      image = lib.mkOption {
+        type = lib.types.str;
+        default = "/var/lib/damn-rust/store.img";
+        description = "Sparse file backing the store.";
+      };
+      size = lib.mkOption {
+        type = lib.types.str;
+        default = "128G";
+        description = "Apparent size of the sparse image; it only ever allocates what is written.";
+      };
+    };
   };
 
   imports = [
@@ -76,6 +94,7 @@ in
     ./wireless.nix
     ./audio.nix
     ./sync-files.nix
+    ./damn-rust.nix
   ];
 
   config = {

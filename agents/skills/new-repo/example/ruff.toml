@@ -8,3 +8,8 @@ quote-style = "single"
 
 docstring-code-format = true
 skip-magic-trailing-comma = false
+
+[lint]
+ignore = ["E741"]
+
+extend-select = ["I"]

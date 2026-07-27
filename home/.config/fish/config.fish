@@ -4,6 +4,12 @@ if test -f ~/.bashrc
 end
 
 if status is-interactive
+	# fish 4 defaults ctrl-backspace/ctrl-delete to killing a whole token (argument); swap with alt-
+	bind ctrl-backspace backward-kill-word
+	bind alt-backspace backward-kill-token
+	bind ctrl-delete kill-word
+	bind alt-delete kill-token
+
 	if test "$TERM" = xterm-kitty; and command -v kitty > /dev/null
 		alias ssh="kitty +kitten ssh"
 	end

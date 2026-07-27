@@ -28,3 +28,8 @@ Prefer to write local data, such as todo for next session, agents info, etc unde
 
 - You never include co-authored-by: ai name or session urls / etc into a commit
 - In future I will provide you your own mail address and git account
+
+# Running commands
+
+- if you run a long running command, i.e. tests, never do a bare `tail`. Always do `tee $TMPDIR/testrun.rnd | tail`
+- if tests failed, before rerunning them all firstly rerun only failed ones

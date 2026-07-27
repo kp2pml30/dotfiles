@@ -1,9 +1,0 @@
-{
-  "packages": [
-    "npm:@juicesharp/rpiv-todo",
-    "npm:pi-web-access",
-    "npm:pi-mcp-adapter",
-    "git:github.com/cgxeiji/pi-emote"
-  ],
-  "skills": ["~/.pi/agent/skills"]
-}

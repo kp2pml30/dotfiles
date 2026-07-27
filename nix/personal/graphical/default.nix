@@ -12,6 +12,7 @@ in
     ./x.nix
     ./kitty.nix
     ./vscode.nix
+    ./zen.nix
 
     ./gayming.nix
 

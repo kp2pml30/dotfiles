@@ -28,10 +28,10 @@ in
     environment.systemPackages = with pkgs; [
       claude-code
       codex
-      pi-coding-agent
       rtk
       code2prompt
       diffutils
+      forgejo-cli # `fj`, gh for forgejo
       gawk
       gh
       gnused
@@ -45,11 +45,6 @@ in
     home-manager.users.${cfg.username}.home.file =
       linkTree ".claude/skills" (rootPath + "/agents/skills")
       // linkTree ".claude" (rootPath + "/agents/claude")
-      // linkTree ".codex/skills" (rootPath + "/agents/skills")
-      // linkTree ".pi/agent/skills" (rootPath + "/agents/skills")
-      // linkTree ".pi/agent/extensions" (rootPath + "/agents/pi/ext")
-      // {
-        ".pi/agent/settings.json".source = rootPath + "/agents/pi/settings.json";
-      };
+      // linkTree ".codex/skills" (rootPath + "/agents/skills");
   };
 }

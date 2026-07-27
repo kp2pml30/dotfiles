@@ -1,0 +1,37 @@
+of_gpio.h and of_get_named_gpio() were removed from mainline (of_gpio API
+cleanup). NVIDIA 595.x still includes the header and calls the function from its
+Tegra GPIO / DSI-panel code, which is compiled unconditionally. Guard the legacy
+include by kernel version and provide a gpiod-based compat wrapper so the module
+builds on new kernels. Remove once NVIDIA guards this upstream.
+
+--- a/kernel-open/common/inc/nv-linux.h
++++ b/kernel-open/common/inc/nv-linux.h
+@@ -1727,7 +1727,29 @@
+ #include <linux/reset.h>
+ #include <linux/dma-buf.h>
+ #include <linux/gpio.h>
++#if LINUX_VERSION_CODE < KERNEL_VERSION(6, 17, 0)
+ #include <linux/of_gpio.h>
++#else
++/*
++ * <linux/of_gpio.h> and of_get_named_gpio() were removed from mainline. Provide
++ * a compat wrapper over the modern gpiod API so the Tegra GPIO/DSI-panel code
++ * compiles. On systems without a device tree (x86 desktop GPUs) of_node is NULL
++ * and this returns an error, matching the original behavior; faithful Tegra DT
++ * panel-gpio lookup is NOT provided (property-suffix semantics differ).
++ */
++#include <linux/gpio/consumer.h>
++#include <linux/of.h>
++static inline int of_get_named_gpio(const struct device_node *np,
++                                    const char *propname, int index)
++{
++    struct gpio_desc *desc = fwnode_gpiod_get_index(of_fwnode_handle(np),
++                                                    propname, index,
++                                                    GPIOD_ASIS, "nvidia-compat");
++    if (IS_ERR(desc))
++        return PTR_ERR(desc);
++    return desc_to_gpio(desc);
++}
++#endif
+ #include <linux/of_device.h>
+ #include <linux/of_platform.h>
