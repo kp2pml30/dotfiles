@@ -79,20 +79,30 @@ def cmd_symlink(args):
 def cmd_wipe(args):
 	require_mount()
 	store = store_path(args.path)
-	if not os.path.exists(store):
-		print(f'nothing under {store}')
-		return
 	# files only: the directory skeleton stays, so the symlinks pointing into it
 	# keep resolving
 	removed = 0
+	apparent = 0
+	allocated = 0
+	seen = set()
 	for dirpath, dirnames, filenames in os.walk(store, followlinks=False):
 		# a symlink to a directory is listed in dirnames but is still a file to us
 		for name in filenames + [
 			d for d in dirnames if os.path.islink(os.path.join(dirpath, d))
 		]:
-			os.remove(os.path.join(dirpath, name))
+			path = os.path.join(dirpath, name)
+			stat = os.lstat(path)
+			os.remove(path)
 			removed += 1
-	print(f'removed {removed} file(s) under {store}')
+			inode = (stat.st_dev, stat.st_ino)
+			if inode not in seen:
+				seen.add(inode)
+				apparent += stat.st_size
+				allocated += stat.st_blocks * 512
+	print(
+		f'removed {removed} file(s), {human(apparent)} apparent, '
+		f'{human(allocated)} allocated under {store}'
+	)
 
 
 def cmd_shrink(args):

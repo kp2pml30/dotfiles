@@ -28,7 +28,8 @@
 
   fileSystems."/mnt/g" = {
     device = "/dev/disk/by-uuid/A5B55E09BE187005";
-    fsType = "ntfs";
+    # "ntfs" is a read-only legacy alias in kernels >= 6.12
+    fsType = "ntfs3";
     options = [
       "users"
       "exec"

@@ -6,12 +6,8 @@
   data,
   ...
 }:
-let
-  uboot = pkgs.callPackage ./uboot.nix { };
-in
 {
   imports = [
-    "${modulesPath}/installer/sd-card/sd-image-aarch64.nix"
     ../common.nix
   ];
 
@@ -20,10 +16,9 @@ in
 
   nixpkgs.hostPlatform = "aarch64-linux";
 
-  boot.kernelPackages = pkgs.linuxPackages_latest;
-  # zfs is enabled by default in nixos-25.11's supportedFilesystems flag set
-  # and doesn't build against linuxPackages_latest; we don't need it here.
-  boot.supportedFilesystems.zfs = lib.mkForce false;
+  # Not linuxPackages_latest: zfs does not build against it. 6.18 carries
+  # rk3576-nanopi-m5.dts.
+  boot.kernelPackages = pkgs.linuxPackages;
 
   hardware.deviceTree.enable = true;
   hardware.deviceTree.name = "rockchip/rk3576-nanopi-m5.dtb";
@@ -34,14 +29,20 @@ in
     "console=ttyS0,1500000n8"
   ];
 
-  sdImage.firmwarePartitionOffset = 16;
-
-  sdImage.postBuildCommands = ''
-    dd if=${uboot}/u-boot-rockchip.bin \
-      of=$img \
-      bs=512 seek=64 \
-      conv=notrunc,fsync
-  '';
+  # SD/eMMC and both RGMII ports, needed in the initrd for zfs import and for
+  # the unlock sshd.
+  boot.initrd.availableKernelModules = [
+    "dw_mmc_rockchip"
+    "dw_mmc_pltfm"
+    "sdhci_of_dwcmshc"
+    "mmc_block"
+    "dwmac_rk"
+    "stmmac_platform"
+    "stmmac"
+    "realtek"
+    "motorcomm"
+    "phy_rockchip_naneng_combphy"
+  ];
 
   # hardware.enableRedistributableFirmware is set by ../common.nix.
 

@@ -47,16 +47,6 @@ in
     };
 
     programs = {
-      git = {
-        enable = true;
-        lfs.enable = true;
-        settings = {
-          user.name = cfg.username;
-          user.email = "kp2pml30@gmail.com";
-          init.defaultBranch = "main";
-        };
-      };
-
       fish = {
         enable = true;
         shellInitLast = builtins.readFile (rootPath + "/home/.config/fish/config.fish");
@@ -89,10 +79,10 @@ in
     };
 
     xdg.desktopEntries = lib.mkIf config.kp2pml30.xserver {
-      yazi = {
-        name = "Yazi";
+      joshuto = {
+        name = "Joshuto";
         comment = "Terminal file manager";
-        exec = "kitty -- yazi %u";
+        exec = "kitty -- joshuto %f";
         terminal = false;
         mimeType = [ "inode/directory" ];
         categories = [
@@ -128,7 +118,7 @@ in
       {
         enable = true;
         defaultApplications = {
-          "inode/directory" = [ "yazi.desktop" ];
+          "inode/directory" = [ "joshuto.desktop" ];
         }
         // mimeMap "nvim.desktop" [
           "text/plain"

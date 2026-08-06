@@ -17,6 +17,7 @@ in
   imports = [
     ./secrets
     ./oom-killer.nix
+    ./zfs.nix
   ];
 
   options.kp2pml30 = {
@@ -88,13 +89,23 @@ in
         "nix-command"
         "flakes"
       ];
-      extra-substituters = [ "https://nix-community.cachix.org" ];
+      extra-substituters = [
+        "https://nix-community.cachix.org"
+        "https://nix-cache.ygr.ai/genlayer"
+        "https://cache.nix.kp2pml30.moe"
+      ];
       extra-trusted-public-keys = [
         "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
+        "genlayer:hMvP8BkI2v8E3BtzMB9HQyIEZz/ahNdBZo/JEQ5hpVA="
+        "cache.nix.kp2pml30.moe:9izVvysdKza7+bjw2gI/etkDVfEQy+kne2aU/TZpA5o="
       ];
       auto-optimise-store = true;
       sandbox = true;
       sandbox-fallback = false;
+      fallback = true;
+      download-attempts = 10;
+      connect-timeout = 15;
+      stalled-download-timeout = 60;
       # allow members of wheel to push store paths via SSH for
       # `nixos-rebuild --target-host`; root is implicitly trusted.
       trusted-users = [

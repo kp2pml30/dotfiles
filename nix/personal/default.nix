@@ -16,7 +16,10 @@ in
       default = "kp2pml30";
     };
     xserver = lib.mkEnableOption "";
-    agent = lib.mkEnableOption "";
+    agent = {
+      enable = lib.mkEnableOption "";
+      local = lib.mkEnableOption "heavy weight local-only agent features (e.g. Ollama)";
+    };
     vscode = lib.mkEnableOption "";
     kitty = lib.mkEnableOption "";
     opera = lib.mkEnableOption "";
@@ -87,10 +90,11 @@ in
   imports = [
     ./graphical
     ./home.nix
+    ./git.nix
     ./user.nix
     ./neovim.nix
     ./tui.nix
-    ./agent.nix
+    ./agent
     ./wireless.nix
     ./audio.nix
     ./sync-files.nix

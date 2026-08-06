@@ -3,6 +3,7 @@
   config,
   lib,
   rootPath,
+  linkTree,
   ...
 }:
 let
@@ -79,23 +80,18 @@ lib.mkIf cfg.xserver {
       theme = "simple-tokyonight";
       location = "center";
     };
-    home.file.".config/rofi/simple-tokyonight.rasi" = {
-      source = rootPath + "/home/.config/rofi/simple-tokyonight.rasi";
-    };
-
-    home.file.".config/awesome/rc.lua" = {
-      source = rootPath + "/home/.config/awesome/rc.lua";
-    };
-    home.file.".config/awesome/theme.lua" = {
-      source = rootPath + "/home/.config/awesome/theme.lua";
-    };
-    home.file.".config/awesome/tui-menu.lua".text = tuiMenuLua;
-    home.file.".config/awesome/deficient" = {
-      source = builtins.fetchGit {
-        url = "https://github.com/deficient/deficient.git";
-        rev = "22ad2bea198f0c231afac0b7197d9b4eb6d80da3";
+    home.file = linkTree ".config/awesome" (rootPath + "/home/.config/awesome") // {
+      ".config/rofi/simple-tokyonight.rasi" = {
+        source = rootPath + "/home/.config/rofi/simple-tokyonight.rasi";
       };
-      recursive = true;
+      ".config/awesome/tui-menu.lua".text = tuiMenuLua;
+      ".config/awesome/deficient" = {
+        source = builtins.fetchGit {
+          url = "https://github.com/deficient/deficient.git";
+          rev = "22ad2bea198f0c231afac0b7197d9b4eb6d80da3";
+        };
+        recursive = true;
+      };
     };
   };
 }

@@ -5,6 +5,13 @@
 }:
 let
   cfg = config.kp2pml30;
+  # matched against /proc/comm, which is truncated to 15 chars, and anchored below
+  prefer-compiler = "cc1.*|gcc|clang|cargo|rust.*|ghc|go|zig|lto.*";
+  prefer-linker = ''ld|ld\..*|lld|mold|gold'';
+  prefer-lsp = "clangd|ccls|gopls|.*-language-serve|.*-lsp";
+  avoid-system = "systemd|systemd-.*|sshd|Xorg|sway|Hyprland";
+  avoid-shells = "emacs|vim|nvim|fish|bash|tmux|herdr";
+  avoid-browsers = ''zen|firefox|\.firefox-wrappe|opera|\.opera-wrapped'';
 in
 {
   options.kp2pml30.oom-killer = lib.mkEnableOption "earlyoom userspace OOM killer that prefers reaping dev tooling (LSP/cargo/compilers) before the kernel freezes the box";
@@ -16,12 +23,10 @@ in
       freeMemThreshold = 5;
       freeSwapThreshold = 5;
       extraArgs = [
-        # names are matched against /proc/comm (truncated to 15 chars)
         "--prefer"
-        "^(rust-analyzer|cargo|rustc|cc1|cc1plus|lto1|ld|clangd|ccls|gopls|.*-language-serve|.*-lsp)$"
-        # never target session-critical processes
+        "^(${prefer-compiler}|${prefer-linker}|${prefer-lsp})$"
         "--avoid"
-        "^(systemd|systemd-.*|sshd|Xorg|sway|Hyprland|nvim|fish|bash|tmux)$"
+        "^(${avoid-system}|${avoid-shells}|${avoid-browsers})$"
       ];
     };
   };

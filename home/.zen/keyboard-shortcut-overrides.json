@@ -1,0 +1,16 @@
+[
+  {
+    "id": "key_quitApplication",
+    "key": "",
+    "keycode": "",
+    "disabled": true
+  },
+  {
+    "id": "zen-close-tab-ctrl-q",
+    "key": "q",
+    "group": "windowAndTabManagement",
+    "modifiers": { "accel": true },
+    "action": "cmd_close",
+    "reserved": true
+  }
+]

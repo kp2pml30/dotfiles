@@ -119,6 +119,8 @@ mymainmenu = awful.menu {
 	},
 }
 
+require("xdg-menu")(mymainmenu, "applications")
+
 mylauncher = awful.widget.launcher {
 	image = beautiful.awesome_icon,
 	menu = mymainmenu,

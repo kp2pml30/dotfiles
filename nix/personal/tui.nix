@@ -10,17 +10,17 @@ let
 in
 {
   config = {
-    nixpkgs.overlays = lib.optionals cfg.agent [
+    nixpkgs.overlays = lib.optionals cfg.agent.enable [
       inputs.claude-code.overlays.default
       inputs.codex-cli.overlays.default
     ];
     programs = {
       tmux.enable = true;
-      yazi.enable = true;
       htop.enable = true;
     };
 
     environment.systemPackages = with pkgs; [
+      joshuto
       ncdu
       timewarrior
       p7zip

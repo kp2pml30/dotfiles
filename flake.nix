@@ -77,9 +77,44 @@
         gids = import ./nix/data/gids.nix;
         ssh-keys = import ./nix/data/ssh-keys.nix;
       };
-      additionalArgs = { inherit inputs rootPath data; };
+      linkTree = import ./nix/link-tree.nix lib;
+      additionalArgs = {
+        inherit
+          inputs
+          rootPath
+          data
+          linkTree
+          ;
+      };
       lib = nixpkgs.lib;
       forEachSystem = lib.genAttrs (import inputs.systems);
+
+      nanopi-m5-modules = [
+        {
+          networking.hostName = "kp2pml30-nanopi-m5";
+          networking.hostId = "0fe2738b";
+
+          time.timeZone = "Asia/Tokyo";
+        }
+
+        ./nix/common.nix
+        ./nix/server
+        ./nix/headscale-client.nix
+
+        {
+          kp2pml30 = {
+            short-hostname = "nanopi-m5";
+
+            headscale-client.enable = true;
+          };
+        }
+      ];
+      # nix/server submodules take these as module args even with all
+      # services off.
+      nanopi-m5-specialArgs = additionalArgs // {
+        inherit self nixpkgs kp2pml30-moe;
+        system = "aarch64-linux";
+      };
     in
     {
       nixosConfigurations = {
@@ -166,7 +201,8 @@
                   height = 1080;
                   refreshRate = 60;
                 };
-                agent = true;
+                agent.enable = true;
+                agent.local = true;
                 sync-files.enable = true;
                 damn-rust.enable = true;
 
@@ -224,7 +260,7 @@
                   height = 1080;
                   refreshRate = 60;
                 };
-                agent = true;
+                agent.enable = true;
                 sync-files.enable = true;
 
                 boot.efiGrub = true;
@@ -256,41 +292,37 @@
           specialArgs = additionalArgs;
         };
 
+        # Deployed system: root on encrypted zfs, unlocked over ssh from the
+        # initrd. Flashing/rescue happens from nanopi-m5-sd below.
         nanopi-m5 = nixpkgs.lib.nixosSystem {
-          modules = [
-            {
-              networking.hostName = "kp2pml30-nanopi-m5";
-              networking.hostId = "0fe2738b";
-
-              time.timeZone = "Asia/Tokyo";
-
-              nixpkgs.hostPlatform = "aarch64-linux";
-            }
-
-            ./nix/common.nix
-            ./nix/server
-            ./nix/hardware/nanopi-m5-homeserver
-            ./nix/headscale-client.nix
+          modules = nanopi-m5-modules ++ [
+            ./nix/hardware/nanopi-m5-homeserver/installed.nix
 
             {
-              kp2pml30 = {
-                short-hostname = "nanopi-m5";
-
-                headscale-client.enable = true;
+              kp2pml30.zfs = {
+                enable = true;
+                unlock = "initrd-ssh";
+                initrd-ssh.authorizedKeys = [
+                  data.ssh-keys.kp2pml30-personal-pc
+                  data.ssh-keys.kp2pml30-ideapad
+                ];
               };
             }
           ];
-          # nix/server submodules take these as module args even with all
-          # services off.
-          specialArgs = additionalArgs // {
-            inherit self nixpkgs kp2pml30-moe;
-            system = "aarch64-linux";
-          };
+          specialArgs = nanopi-m5-specialArgs;
+        };
+
+        # Bootable SD image, doubles as the installer for the config above.
+        nanopi-m5-sd = nixpkgs.lib.nixosSystem {
+          modules = nanopi-m5-modules ++ [
+            ./nix/hardware/nanopi-m5-homeserver/sd-image.nix
+          ];
+          specialArgs = nanopi-m5-specialArgs;
         };
       };
 
       packages.aarch64-linux = {
-        nanopi-m5-sd = self.nixosConfigurations.nanopi-m5.config.system.build.sdImage;
+        nanopi-m5-sd = self.nixosConfigurations.nanopi-m5-sd.config.system.build.sdImage;
         nanopi-m5-toplevel = self.nixosConfigurations.nanopi-m5.config.system.build.toplevel;
       };
 
