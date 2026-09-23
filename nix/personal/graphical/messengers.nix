@@ -13,5 +13,6 @@ lib.mkIf cfg.messengers.personal {
   users.users.${cfg.username}.packages = with pkgs; [
     discord
     telegram-desktop
+    wechat-uos
   ];
 }

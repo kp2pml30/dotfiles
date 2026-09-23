@@ -16,14 +16,17 @@ let
   codexLocal = "${config.users.users.${cfg.username}.home}/.codex/LOCAL.md";
   # one blank line between sections, regardless of how each file ends
 
-  text-to-prompt-part = path: t:
+  text-to-prompt-part =
+    path: t:
     let
       stripped = lib.removeSuffix "\n" t;
       splt = builtins.split "/" path;
       path-name = lib.removeSuffix ".md" (builtins.elemAt splt (builtins.length splt - 1));
-    in if builtins.substring 0 3 stripped == "---"
-    then stripped
-    else "---\nname: ${path-name}\n---\n\n" + stripped;
+    in
+    if builtins.substring 0 3 stripped == "---" then
+      stripped
+    else
+      "---\nname: ${path-name}\n---\n\n" + stripped;
 
   stitch =
     parts: lib.concatMapStringsSep "\n" (p: text-to-prompt-part p (builtins.readFile p)) parts + "\n";
@@ -69,7 +72,12 @@ in
               "${prompts}/PRELUDE.md"
               "${prompts}/CLAUDE.md"
             ];
-            ".codex/AGENTS.md".text = stitch [ "${prompts}/PRELUDE.md" "${output-styles}/brief.md" ] + "\n@${codexLocal}\n";
+            ".codex/AGENTS.md".text =
+              stitch [
+                "${prompts}/PRELUDE.md"
+                "${output-styles}/brief.md"
+              ]
+              + "\n@${codexLocal}\n";
           };
 
         # keep the import above from dangling on a machine that has no local notes yet

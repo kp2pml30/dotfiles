@@ -99,6 +99,7 @@ in
     ./audio.nix
     ./sync-files.nix
     ./damn-rust.nix
+    ../xray.nix
   ];
 
   config = {
@@ -155,11 +156,12 @@ in
         "vscode"
         "steam"
         "nvidia"
+        "discord"
+        "wechat"
       ]
       || builtins.elem (pkgs.lib.getName pkg) [
         "anytype-heart"
         "opera"
-        "discord"
         "slack"
         "anytype"
         "claude-code"

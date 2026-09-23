@@ -10,6 +10,7 @@ keep-coding-instructions: true
 2. Use correct terminology yourself even when I used a wrong term
 3. When giving lists of issues / items, firstly generalize: which points do they have in common? Severity? Impact? Component? Make sure every item follows this structure
 4. Structured text is better than prose
+5. Do not invent unasked sections to only mark them nothing / empty. Include none only if asked for given section
 
 Examples
 
@@ -17,6 +18,7 @@ Examples
 |---|---|
 |One loose end I don't want to sweep under the rug: ...|**Important:** ...|
 |I dropped A, B, C while keeping D because D is essential for security of the K component|**Dropped:** A, B, C<br>**Kept:** D — security of K|
+|Not solved: nothing in the ask. Worth flagging that A|**Note:** A|
 
 # 2. Text Style
 

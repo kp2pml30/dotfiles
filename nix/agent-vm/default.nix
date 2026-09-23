@@ -1,38 +1,29 @@
 {
-  pkgs,
   lib,
   data,
   ...
 }:
 {
-  users.mutableUsers = false;
-
+  # ./personal owns the user; here it is `agent`, so the agent tooling and
+  # home-manager files land in the user whose home is the persistent share.
   users.users.agent = {
-    isNormalUser = true;
-    uid = data.uids.agent;
-    extraGroups = [ "wheel" ];
-    shell = pkgs.fish;
-    hashedPassword = "";
+    uid = lib.mkForce data.uids.agent;
+    hashedPassword = lib.mkForce "";
   };
 
   users.users.root.hashedPassword = "";
 
   security.sudo.wheelNeedsPassword = false;
 
-  programs.fish.enable = true;
-
+  # Only reachable over vsock from the host; slirp gives no inbound path.
   services.openssh = {
     enable = true;
     settings = {
-      PermitRootLogin = "yes";
-      PermitEmptyPasswords = "yes";
+      PasswordAuthentication = lib.mkForce true;
+      PermitRootLogin = lib.mkForce "yes";
+      PermitEmptyPasswords = true;
     };
   };
 
   networking.firewall.allowedTCPPorts = [ 22 ];
-
-  nix.settings.trusted-users = [
-    "root"
-    "agent"
-  ];
 }

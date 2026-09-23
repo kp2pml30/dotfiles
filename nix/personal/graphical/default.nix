@@ -12,7 +12,9 @@ in
     ./x.nix
     ./kitty.nix
     ./vscode.nix
+    ./firefox.nix
     ./zen.nix
+    ./virtual-cam.nix
 
     ./gayming.nix
 
@@ -83,7 +85,6 @@ in
       #anytype
       flatpak
       gnome-software
-      firefox
       feh
       vlc
     ];

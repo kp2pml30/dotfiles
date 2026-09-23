@@ -6,11 +6,31 @@
     "disabled": true
   },
   {
+    "id": "key_closeWindow",
+    "key": "",
+    "keycode": "",
+    "disabled": true
+  },
+  {
     "id": "zen-close-tab-ctrl-q",
     "key": "q",
     "group": "windowAndTabManagement",
     "modifiers": { "accel": true },
     "action": "cmd_close",
+    "reserved": true
+  },
+  {
+    "id": "zen-new-unsynced-window",
+    "key": "",
+    "keycode": "",
+    "disabled": true
+  },
+  {
+    "id": "zen-private-browsing-ctrl-shift-n",
+    "key": "n",
+    "group": "navigation",
+    "modifiers": { "accel": true, "shift": true },
+    "action": "Tools:PrivateBrowsing",
     "reserved": true
   }
 ]

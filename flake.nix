@@ -56,6 +56,11 @@
       url = "github:cachix/git-hooks.nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    microvm = {
+      url = "github:microvm-nix/microvm.nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
@@ -183,7 +188,7 @@
 
             ./nix/qemu.nix
 
-            ./nix/xray.nix
+            ./nix/vm
 
             ./nix/headscale-client.nix
 
@@ -207,6 +212,8 @@
                 damn-rust.enable = true;
 
                 qemu = true;
+
+                vms.agent-vm = { };
 
                 xray-client = true;
                 xray-client-id = "mini";
@@ -280,16 +287,53 @@
           };
         };
 
-        agent-vm = nixpkgs.lib.nixosSystem {
+        # Guest of `mini`: no store of its own, builds through the host daemon.
+        # See ./nix/vm.
+        agent-vm = nixpkgs.lib.nixosSystem rec {
           system = "x86_64-linux";
           modules = [
-            { networking.hostId = "c1a0de00"; }
+            {
+              networking.hostId = "c1a0de00";
+              time.timeZone = "Asia/Tokyo";
+
+              nixpkgs.overlays = [
+                claude-code.overlays.default
+                codex-cli.overlays.default
+                code-flake.overlays.default
+              ];
+            }
+
+            inputs.microvm.nixosModules.microvm
+
             ./nix/common.nix
+
+            ./nix/vm/guest.nix
+
             ./nix/agent-vm
+
             ./nix/personal
-            ./nix/hardware/agent-vm.nix
+
+            {
+              kp2pml30 = {
+                short-hostname = "agent-vm";
+
+                username = "agent";
+
+                vm = {
+                  name = "agent-vm";
+                  user = "agent";
+                  cid = 42;
+                  mem = 12288;
+                  vcpu = 8;
+                };
+
+                agent.enable = true;
+              };
+            }
           ];
-          specialArgs = additionalArgs;
+          specialArgs = additionalArgs // {
+            inherit system;
+          };
         };
 
         # Deployed system: root on encrypted zfs, unlocked over ssh from the

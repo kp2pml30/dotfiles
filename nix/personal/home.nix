@@ -22,7 +22,7 @@ in
     home = {
       stateVersion = "25.11";
       username = cfg.username;
-      homeDirectory = "/home/${cfg.username}";
+      homeDirectory = config.users.users.${cfg.username}.home;
       packages = with pkgs; [
         jq
       ];

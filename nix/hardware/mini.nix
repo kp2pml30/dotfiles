@@ -75,6 +75,23 @@
   boot.kernelParams = [ "pcie_aspm=off" ];
   boot.kernelModules = [ "kvm-amd" ];
 
+  # the RTL9210B bridge behind /mnt/g stops answering after an idle period and
+  # then fails to re-enumerate: keep it out of runtime suspend and USB3 U1/U2
+  services.udev.extraRules =
+    let
+      noLpm = pkgs.writeShellScript "usb-no-u1u2" ''
+        dev=''${DEVPATH##*/}
+        case "$dev" in
+          *.*) hub=''${dev%.*} port=''${dev##*.} ;;
+          *) hub=usb''${dev%%-*} port=''${dev##*-} ;;
+        esac
+        echo 0 > "/sys/bus/usb/devices/$hub:1.0/$hub-port$port/usb3_lpm_permit"
+      '';
+    in
+    ''
+      ACTION=="add", SUBSYSTEM=="usb", ATTR{idVendor}=="0bda", ATTR{idProduct}=="9210", ATTR{power/control}="on", RUN+="${noLpm}"
+    '';
+
   environment.systemPackages = with pkgs; [
     exfat
     pciutils

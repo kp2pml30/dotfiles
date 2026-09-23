@@ -2,7 +2,6 @@
 /result-fd
 /.env
 /agent-docker
-/.agent-vm
 
 # editors
 .vscode/

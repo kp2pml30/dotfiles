@@ -19,6 +19,12 @@ local naughty = require("naughty")
 -- when client with a matching name is opened:
 require("awful.hotkeys_popup.keys")
 
+awful.spawn.once("fcitx5")
+
+client.connect_signal("focus", function()
+	awful.spawn { "input-method-cycle", "sync" }
+end)
+
 -- {{{ Error handling
 -- Check if awesome encountered an error during startup and fell back to
 -- another config (This code will only ever execute for the fallback config)
@@ -332,6 +338,12 @@ root.buttons(gears.table.join(
 -- {{{ Key bindings
 globalkeys = gears.table.join(
 	awful.key({ modkey }, "s", hotkeys_popup.show_help, { description = "show help", group = "awesome" }),
+	awful.key({ modkey }, "space", function()
+		awful.spawn { "input-method-cycle", "next" }
+	end, { description = "next input method", group = "keyboard" }),
+	awful.key({ modkey, "Shift" }, "space", function()
+		awful.spawn { "input-method-cycle", "previous" }
+	end, { description = "previous input method", group = "keyboard" }),
 	awful.key({ modkey, "Shift" }, "Left", awful.tag.viewprev, { description = "view previous", group = "tag" }),
 	awful.key({ modkey, "Shift" }, "Right", awful.tag.viewnext, { description = "view next", group = "tag" }),
 	awful.key({ modkey }, "Escape", awful.tag.history.restore, { description = "go back", group = "tag" }),
