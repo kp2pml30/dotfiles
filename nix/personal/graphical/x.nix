@@ -221,7 +221,7 @@ lib.mkIf cfg.xserver {
     programs.rofi = {
       enable = true;
       theme = "simple-tokyonight";
-      location = "center";
+      settings.location = 0; # center
     };
     home.file = linkTree ".config/awesome" (rootPath + "/home/.config/awesome") // {
       ".config/rofi/simple-tokyonight.rasi" = {

@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  inputs,
   rootPath,
   linkTree,
   pkgs,
@@ -63,6 +64,40 @@ in
     home-manager.users.${cfg.username} =
       { lib, ... }:
       {
+        imports = [ inputs.agent-skills.homeManagerModules.default ];
+
+        programs.agent-skills = {
+          enable = true;
+          sources = {
+            gh-stack = {
+              path = inputs.gh-stack;
+              subdir = "skills";
+            };
+            # herdr's own input, so the skill matches the installed binary
+            herdr = {
+              path = inputs.herdr;
+              subdir = "skills";
+            };
+          };
+          skills.enable = [
+            "gh-stack"
+            "herdr"
+          ];
+          # `link` adds per-skill entries, leaving linkTree and unmanaged skills alone
+          targets = {
+            claude = {
+              enable = true;
+              dest = ".claude/skills";
+              structure = "link";
+            };
+            codex = {
+              enable = true;
+              dest = ".codex/skills";
+              structure = "link";
+            };
+          };
+        };
+
         home.file =
           linkTree ".claude/skills" (rootPath + "/agents/skills")
           // linkTree ".claude" (rootPath + "/agents/claude")

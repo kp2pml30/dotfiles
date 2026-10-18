@@ -62,7 +62,15 @@ in
         type = lib.types.int;
         description = "gamescope output refresh rate (Hz) used by game-wrapper";
       };
+      nvidiaOffloadDevice = lib.mkOption {
+        type = lib.types.nullOr (lib.types.strMatching "[0-9a-f]{4}:[0-9a-f]{4}");
+        default = null;
+        example = "10de:2d04";
+        description = "Vulkan vendor:device of an NVIDIA GPU that game-wrapper renders on via PRIME render offload";
+      };
     };
+    guitar = lib.mkEnableOption "guitarix rig over pipewire's JACK";
+    printing3d = lib.mkEnableOption "3D printing: CAD and slicer";
     messengers = {
       personal = lib.mkEnableOption "";
       work = lib.mkEnableOption "";

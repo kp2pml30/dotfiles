@@ -59,6 +59,7 @@ lib.mkIf cfg.gayming.enable {
     #   game-wrapper %command%
     #   game-wrapper --async=false %command%
     #   game-wrapper --runtime-cache=true --async=false %command%
+    #   game-wrapper --adaptive-sync=false --gamescope-args='--hdr-enabled -S fit' %command%
     (symlinkJoin {
       name = "game-wrapper";
       paths = [
@@ -70,7 +71,12 @@ lib.mkIf cfg.gayming.enable {
           --set GAME_WRAPPER_GAMESCOPE ${lib.getExe gamescope} \
           --set GAME_WRAPPER_WIDTH ${toString cfg.gayming.width} \
           --set GAME_WRAPPER_HEIGHT ${toString cfg.gayming.height} \
-          --set GAME_WRAPPER_REFRESH_RATE ${toString cfg.gayming.refreshRate}
+          --set GAME_WRAPPER_REFRESH_RATE ${toString cfg.gayming.refreshRate} \
+          ${lib.optionalString (cfg.gayming.nvidiaOffloadDevice != null) ''
+            --set GAME_WRAPPER_VK_DEVICE ${cfg.gayming.nvidiaOffloadDevice} \
+            --set-default __NV_PRIME_RENDER_OFFLOAD 1 \
+            --set-default __VK_LAYER_NV_optimus NVIDIA_only
+          ''}
       '';
     })
   ];

@@ -47,6 +47,16 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    agent-skills = {
+      url = "github:Kyure-A/agent-skills-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    # pinned to the installed `gh stack` extension version
+    gh-stack = {
+      url = "github:github/gh-stack/v0.1.1";
+      flake = false;
+    };
+
     zen-browser = {
       url = "github:youwen5/zen-browser-flake";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -205,6 +215,7 @@
                   width = 1920;
                   height = 1080;
                   refreshRate = 60;
+                  nvidiaOffloadDevice = "10de:2d04";
                 };
                 agent.enable = true;
                 agent.local = true;
@@ -224,6 +235,9 @@
 
                 hardware.wireless = true;
                 hardware.audio = true;
+
+                guitar = true;
+                printing3d = true;
 
                 messengers.personal = true;
                 messengers.work = true;

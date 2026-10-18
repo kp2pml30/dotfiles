@@ -1,5 +1,6 @@
 import argparse
 import os
+import shlex
 
 
 def parse_bool(value):
@@ -42,6 +43,21 @@ parser.add_argument(
 	metavar='BOOL',
 	help='run the game under gamescope; accepts true or false (default: true)',
 )
+parser.add_argument(
+	'--adaptive-sync',
+	type=parse_bool,
+	default=True,
+	metavar='BOOL',
+	help='pass --adaptive-sync to gamescope; accepts true or false (default: true)',
+)
+parser.add_argument(
+	'--gamescope-args',
+	action='append',
+	type=shlex.split,
+	default=[],
+	metavar='ARGS',
+	help='extra shell-quoted gamescope arguments, may be repeated (e.g. --gamescope-args="--hdr-enabled -S fit")',
+)
 parser.add_argument('command', nargs=argparse.REMAINDER)
 
 args = parser.parse_args()
@@ -51,6 +67,10 @@ if command[:1] == ['--']:
 
 if not command:
 	parser.error('missing game command')
+
+gamescope_args = [arg for group in args.gamescope_args for arg in group]
+if gamescope_args and not args.gamescope:
+	parser.error('--gamescope-args requires --gamescope=true')
 
 if args.async_enabled:
 	os.environ['DXVK_ASYNC'] = '1'
@@ -75,6 +95,7 @@ if args.runtime_cache:
 	os.environ.setdefault('VKD3D_SHADER_CACHE_PATH', vkd3d_cache)
 
 if args.gamescope:
+	vk_device = os.environ.get('GAME_WRAPPER_VK_DEVICE')
 	command = [
 		os.environ['GAME_WRAPPER_GAMESCOPE'],
 		'-W',
@@ -84,6 +105,9 @@ if args.gamescope:
 		'-r',
 		os.environ['GAME_WRAPPER_REFRESH_RATE'],
 		'-f',
+		*(['--adaptive-sync'] if args.adaptive_sync else []),
+		*(['--prefer-vk-device', vk_device] if vk_device else []),
+		*gamescope_args,
 		'--',
 		*command,
 	]

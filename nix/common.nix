@@ -69,6 +69,10 @@ in
 
     console.keyMap = "us";
 
+    systemd.tmpfiles.rules = [
+      "L+ /bin/rm - - - - ${pkgs.coreutils}/bin/rm"
+    ];
+
     nix.gc = {
       automatic = true;
       dates = "weekly";
@@ -161,6 +165,7 @@ in
       gnugrep
       stow
       xxd
+      b3sum
 
       killall
       gnupg
