@@ -1,0 +1,36 @@
+Linux 7.2 renamed struct drm_atomic_state and the drm_atomic_state_* helpers
+to drm_atomic_commit*. NVIDIA 595.x still uses the old names. Remove once
+NVIDIA handles the rename upstream.
+
+--- a/kernel-open/nvidia-drm/nvidia-drm-conftest.h
++++ b/kernel-open/nvidia-drm/nvidia-drm-conftest.h
+@@ -208,4 +208,29 @@
+
+ #endif /* defined(NV_BSD) */
+
++/*
++ * Linux 7.2 renamed struct drm_atomic_state and its drm_atomic_state_*
++ * helpers to drm_atomic_commit*. The rename is mechanical, so map the old
++ * spellings onto the new ones before any drm header is pulled in.
++ */
++#include <linux/version.h>
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(7, 2, 0)
++#define drm_atomic_state                 drm_atomic_commit
++#define drm_atomic_state_alloc           drm_atomic_commit_alloc
++#define drm_atomic_state_clear           drm_atomic_commit_clear
++#define drm_atomic_state_default_clear   drm_atomic_commit_default_clear
++#define drm_atomic_state_default_release drm_atomic_commit_default_release
++#define drm_atomic_state_init            drm_atomic_commit_init
++#define drm_atomic_state_get             drm_atomic_commit_get
++#define drm_atomic_state_put             drm_atomic_commit_put
++
++/*
++ * The conftest probes for these two callback signatures name the old struct,
++ * so they now fail and select the pre-5.12 variants; the new signature is the
++ * only one this kernel has.
++ */
++#define NV_DRM_CRTC_ATOMIC_CHECK_HAS_ATOMIC_STATE_ARG
++#define NV_DRM_PLANE_ATOMIC_CHECK_HAS_ATOMIC_STATE_ARG
++#endif
++
+ #endif /* defined(__NVIDIA_DRM_CONFTEST_H__) */

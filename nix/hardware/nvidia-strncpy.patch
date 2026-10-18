@@ -1,0 +1,78 @@
+strncpy() was removed from the kernel (deprecated in favour of the strscpy
+family). NVIDIA 595.x still uses it in a few places; rewrite them in terms of
+strscpy/memcpy, keeping the exact semantics where the return value or the NUL
+padding matters. Remove once NVIDIA stops using strncpy.
+
+diff -ur a/kernel-open/nvidia/linux_nvswitch.c b/kernel-open/nvidia/linux_nvswitch.c
+--- a/kernel-open/nvidia/linux_nvswitch.c
++++ b/kernel-open/nvidia/linux_nvswitch.c
+@@ -2059,7 +2059,7 @@
+         return -NVL_ERR_GENERIC;
+     }
+
+-    strncpy(regkey_val, regkey_val_start, regkey_val_len);
++    memcpy(regkey_val, regkey_val_start, regkey_val_len);
+     regkey_val[regkey_val_len] = '\0';
+
+     if (nvswitch_os_strtouint(regkey_val, data) != 0)
+@@ -2414,7 +2414,15 @@
+     NvLength length
+ )
+ {
+-    return strncpy(dest, src, length);
++    NvLength len = strnlen(src, length);
++
++    memcpy(dest, src, len);
++    if (len < length)
++    {
++        memset(dest + len, 0, length - len);
++    }
++
++    return dest;
+ }
+
+ int
+diff -ur a/kernel-open/nvidia/os-interface.c b/kernel-open/nvidia/os-interface.c
+--- a/kernel-open/nvidia/os-interface.c
++++ b/kernel-open/nvidia/os-interface.c
+@@ -761,8 +761,7 @@
+ void NV_API_CALL os_get_current_process_name(char *buf, NvU32 len)
+ {
+     task_lock(current);
+-    strncpy(buf, current->comm, len - 1);
+-    buf[len - 1] = '\0';
++    strscpy_pad(buf, current->comm, len);
+     task_unlock(current);
+ }
+
+diff -ur a/kernel-open/nvidia-modeset/nvidia-modeset-linux.c b/kernel-open/nvidia-modeset/nvidia-modeset-linux.c
+--- a/kernel-open/nvidia-modeset/nvidia-modeset-linux.c
++++ b/kernel-open/nvidia-modeset/nvidia-modeset-linux.c
+@@ -639,7 +639,14 @@
+
+ char* nvkms_strncpy(char *dest, const char *src, size_t n)
+ {
+-    return strncpy(dest, src, n);
++    size_t len = strnlen(src, n);
++
++    memcpy(dest, src, len);
++    if (len < n) {
++        memset(dest + len, 0, n - len);
++    }
++
++    return dest;
+ }
+
+ void nvkms_usleep(NvU64 usec)
+diff -ur a/kernel-open/nvidia-uvm/uvm_pmm_gpu.c b/kernel-open/nvidia-uvm/uvm_pmm_gpu.c
+--- a/kernel-open/nvidia-uvm/uvm_pmm_gpu.c
++++ b/kernel-open/nvidia-uvm/uvm_pmm_gpu.c
+@@ -2806,7 +2806,7 @@
+             size_t size;
+             size_t align;
+             if (level == 0) {
+-                strncpy(chunk_split_cache[level].name, "uvm_gpu_chunk_t", sizeof(chunk_split_cache[level].name) - 1);
++                strscpy_pad(chunk_split_cache[level].name, "uvm_gpu_chunk_t", sizeof(chunk_split_cache[level].name));
+                 size = sizeof(uvm_gpu_chunk_t);
+                 align = __alignof__(uvm_gpu_chunk_t);
+             } else {

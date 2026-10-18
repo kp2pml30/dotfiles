@@ -6,7 +6,7 @@ builds on new kernels. Remove once NVIDIA guards this upstream.
 
 --- a/kernel-open/common/inc/nv-linux.h
 +++ b/kernel-open/common/inc/nv-linux.h
-@@ -1727,7 +1727,29 @@
+@@ -1727,6 +1727,29 @@
  #include <linux/reset.h>
  #include <linux/dma-buf.h>
  #include <linux/gpio.h>
@@ -25,8 +25,9 @@ builds on new kernels. Remove once NVIDIA guards this upstream.
 +static inline int of_get_named_gpio(const struct device_node *np,
 +                                    const char *propname, int index)
 +{
-+    struct gpio_desc *desc = fwnode_gpiod_get_index(of_fwnode_handle(np),
-+                                                    propname, index,
++    /* of_fwnode_handle() keeps np's constness; the gpiod API takes non-const */
++    struct fwnode_handle *fwnode = (struct fwnode_handle *)of_fwnode_handle(np);
++    struct gpio_desc *desc = fwnode_gpiod_get_index(fwnode, propname, index,
 +                                                    GPIOD_ASIS, "nvidia-compat");
 +    if (IS_ERR(desc))
 +        return PTR_ERR(desc);
