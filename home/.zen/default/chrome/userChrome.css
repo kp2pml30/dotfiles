@@ -1,0 +1,22 @@
+/* zen keeps its chrome gaps in fullscreen, leaving a strip the content never fills */
+:root[inFullscreen] {
+	--zen-element-separation: 0px !important;
+	--zen-toolbox-padding: 0px !important;
+}
+
+:root[inFullscreen] #navigator-toolbox {
+	visibility: collapse !important;
+}
+
+:root[inFullscreen] #zen-main-app-wrapper,
+:root[inFullscreen] #zen-tabbox-wrapper,
+:root[inFullscreen] #tabbrowser-tabbox,
+:root[inFullscreen] #appcontent,
+:root[inFullscreen] #browser {
+	margin: 0 !important;
+	padding: 0 !important;
+	border: none !important;
+	border-radius: 0 !important;
+	height: 100% !important;
+	max-height: 100% !important;
+}

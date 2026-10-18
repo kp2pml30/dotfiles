@@ -41,6 +41,10 @@ lib.mkIf cfg.xserver {
         source = rootPath + "/home/.zen/default/user.js";
       };
 
+      home.file.".zen/default/chrome/userChrome.css" = {
+        source = rootPath + "/home/.zen/default/chrome/userChrome.css";
+      };
+
       home.sessionVariables.BROWSER = "zen";
 
       xdg.mimeApps.defaultApplications = builtins.listToAttrs (

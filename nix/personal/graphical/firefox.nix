@@ -55,6 +55,46 @@ lib.mkIf cfg.xserver {
 
       # only a deliberate click may raise a popup
       "dom.popup_allowed_events" = "click dblclick auxclick";
+
+      # RFP spoofs the timezone as UTC, the locale as en-US and the screen size;
+      # letterboxing pads the viewport to a coarse grid so window size stops being an id
+      "privacy.resistFingerprinting" = true;
+      "privacy.resistFingerprinting.letterboxing" = true;
+
+      "browser.contentblocking.category" = "strict";
+      "privacy.trackingprotection.enabled" = true;
+      "privacy.trackingprotection.socialtracking.enabled" = true;
+      "privacy.trackingprotection.cryptomining.enabled" = true;
+      "privacy.trackingprotection.fingerprinting.enabled" = true;
+
+      # 5 = dFPI: third parties keep state, partitioned per top-level site
+      "network.cookie.cookieBehavior" = 5;
+      "privacy.partition.network_state" = true;
+      "privacy.query_stripping.enabled" = true;
+      "privacy.query_stripping.enabled.pbmode" = true;
+      "privacy.globalprivacycontrol.enabled" = true;
+
+      # 2 = send a referer only same-origin, and trim it to the origin cross-origin
+      "network.http.referer.XOriginPolicy" = 2;
+      "network.http.referer.XOriginTrimmingPolicy" = 2;
+      "beacon.enabled" = false;
+
+      # webrtc negotiates its own sockets and would bypass the proxy outright
+      "media.peerconnection.ice.proxy_only" = true;
+
+      # speculative connections resolve and dial hosts the user never visits
+      "network.prefetch-next" = false;
+      "network.dns.disablePrefetch" = true;
+      "network.predictor.enabled" = false;
+
+      "datareporting.healthreport.uploadEnabled" = false;
+      "datareporting.policy.dataSubmissionEnabled" = false;
+      "toolkit.telemetry.enabled" = false;
+      "toolkit.telemetry.unified" = false;
+      "toolkit.telemetry.archive.enabled" = false;
+      "app.shield.optoutstudies.enabled" = false;
+      "browser.discovery.enabled" = false;
+      "browser.newtabpage.activity-stream.feeds.telemetry" = false;
     };
   };
 }
