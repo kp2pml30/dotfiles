@@ -217,6 +217,7 @@ for i = 1, 9 do
 	})
 end
 
+-- send the selected tag to the adjacent screen and follow it
 local function screen_delta(delta)
 	local cur_screen = awful.screen.focused()
 	local tag = cur_screen.selected_tag
@@ -225,34 +226,46 @@ local function screen_delta(delta)
 		return
 	end
 
-	local other_tag = nil
+	local all_screens = {}
+	local idx = 0
 
-	for _, some_tag in ipairs(cur_screen.tags) do
-		if some_tag ~= tag then
-			other_tag = some_tag
+	for s in screen do
+		all_screens[#all_screens + 1] = s
+		if s == cur_screen then
+			idx = #all_screens
+		end
+	end
+
+	local next_screen = all_screens[(idx - 1 + delta) % #all_screens + 1]
+
+	if next_screen == cur_screen then
+		return
+	end
+
+	-- sloppy focus means client.focus may sit on a screen we are not moving
+	local follow = nil
+
+	for _, c in ipairs(tag:clients()) do
+		if c == client.focus then
+			follow = c
 			break
 		end
 	end
 
-	local all_screens = {}
-	local i = 0
-	local idx = 0
+	tag.screen = next_screen
 
-	for s in screen do
-		all_screens[i] = s
-		if s == cur_screen then
-			idx = i
-		end
-		i = i + 1
+	-- screen.selected_tag is read-only; view_only is what actually deselects the rest
+	tag:view_only()
+
+	-- set_screen restores the source history itself, but that no-ops before any tag switch
+	if cur_screen.selected_tag == nil and #cur_screen.tags > 0 then
+		cur_screen.tags[1]:view_only()
 	end
 
-	local next_screen = all_screens[(idx + delta + i) % i]
+	awful.screen.focus(next_screen)
 
-	tag.screen = next_screen
-	next_screen.selected_tag = tag
-
-	if other_tag ~= nil then
-		cur_screen.selected_tag = other_tag
+	if follow ~= nil and follow.valid then
+		follow:emit_signal("request::activate", "screen_delta", { raise = true })
 	end
 end
 
