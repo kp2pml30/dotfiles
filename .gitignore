@@ -3,6 +3,8 @@
 /.env
 /agent-docker
 
+/.pre-commit-config.yaml
+
 # editors
 .vscode/
 .idea/

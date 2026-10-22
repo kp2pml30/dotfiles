@@ -73,7 +73,8 @@ in
           "wheel"
         ]
         ++ lib.optional config.networking.networkmanager.enable "networkmanager"
-        ++ lib.optional cfg.nginx "acme";
+        ++ lib.optional cfg.nginx "acme"
+        ++ lib.optional config.virtualisation.docker.enable "docker";
         hashedPassword = "$6$UK6oHr2gPRYD4Rak$lgF.mYReC0jahNuI4kt0j/CsrajVzMprvp3HgjKwwsjYHU6/Ur9jfROXZbKhhpyCLRmnlCpWeRCbHEYO/jhIv/";
       };
     }

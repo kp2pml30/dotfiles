@@ -23,19 +23,26 @@
   hardware.deviceTree.enable = true;
   hardware.deviceTree.name = "rockchip/rk3576-nanopi-m5.dtb";
 
+  # Headless; panfrost probe sometimes hangs the SoC after the gpu power domain
+  # fails to ack.
+  boot.blacklistedKernelModules = [ "panfrost" ];
+
   boot.kernelParams = [
     "console=tty1"
     # Matches the rk3576 boot ROM / rkbin TPL/SPL fixed baud (UART0_M0).
     "console=ttyS0,1500000n8"
   ];
 
-  # SD/eMMC and both RGMII ports, needed in the initrd for zfs import and for
-  # the unlock sshd.
+  # SD/eMMC/NVMe and both RGMII ports, needed in the initrd for zfs import and
+  # for the unlock sshd. The PCIe host controller is built in.
   boot.initrd.availableKernelModules = [
     "dw_mmc_rockchip"
     "dw_mmc_pltfm"
     "sdhci_of_dwcmshc"
     "mmc_block"
+    "nvme"
+    # RTC, so the initrd clock is sane enough for TLS to the headscale server
+    "rtc_hym8563"
     "dwmac_rk"
     "stmmac_platform"
     "stmmac"

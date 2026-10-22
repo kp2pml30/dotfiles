@@ -107,6 +107,7 @@ in
     ./audio.nix
     ./sync-files.nix
     ./damn-rust.nix
+    ./ssh-hosts.nix
     ../xray.nix
   ];
 

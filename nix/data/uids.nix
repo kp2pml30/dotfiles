@@ -15,6 +15,9 @@
   # agent-vm
   agent = 1200;
 
+  # initrd only (kp2pml30.zfs.initrd-ssh); reserved everywhere
+  boot-unlocker = 1300;
+
   # Pinned upstream by nixpkgs (nixos/modules/misc/ids.nix);
   # recorded here for visibility / collision avoidance only:
   #   root=0, messagebus=4, nginx=60, postgres=71,

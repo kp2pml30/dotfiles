@@ -350,8 +350,8 @@
           };
         };
 
-        # Deployed system: root on encrypted zfs, unlocked over ssh from the
-        # initrd. Flashing/rescue happens from nanopi-m5-sd below.
+        # Deployed system: root on encrypted zfs on NVMe, unlocked over ssh (LAN
+        # or tailnet) from the initrd. Flashing/rescue happens from nanopi-m5-sd below.
         nanopi-m5 = nixpkgs.lib.nixosSystem {
           modules = nanopi-m5-modules ++ [
             ./nix/hardware/nanopi-m5-homeserver/installed.nix
@@ -364,6 +364,7 @@
                   data.ssh-keys.kp2pml30-personal-pc
                   data.ssh-keys.kp2pml30-ideapad
                 ];
+                initrd-ssh.tailscale.enable = true;
               };
             }
           ];

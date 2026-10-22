@@ -7,6 +7,7 @@
   xray = 991;
   forgejo = 992;
   acme = 993;
+  boot-unlocker = 1300;
 
   # Pinned upstream (see uids.nix for the equivalent note):
   #   root=0, messagebus=4, nginx=60, postgres=71,
