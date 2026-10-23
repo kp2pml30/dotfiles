@@ -1,0 +1,10 @@
+{
+  "name": "@kp2pml30/dsh-plugins",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./self-compact": "./self-compact.js",
+    "./live-session-controller": "./live-session-controller.js"
+  }
+}

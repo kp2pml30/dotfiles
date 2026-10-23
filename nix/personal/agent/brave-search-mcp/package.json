@@ -1,0 +1,8 @@
+{
+  "name": "brave-search-mcp-wrapper",
+  "version": "2.1.4",
+  "private": true,
+  "dependencies": {
+    "@brave/brave-search-mcp-server": "2.1.4"
+  }
+}

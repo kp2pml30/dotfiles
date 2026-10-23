@@ -95,6 +95,12 @@ in
               dest = ".codex/skills";
               structure = "link";
             };
+            # shared root, read by dsh
+            agents = {
+              enable = true;
+              dest = ".agents/skills";
+              structure = "link";
+            };
           };
         };
 
@@ -102,6 +108,7 @@ in
           linkTree ".claude/skills" (rootPath + "/agents/skills")
           // linkTree ".claude" (rootPath + "/agents/claude")
           // linkTree ".codex/skills" (rootPath + "/agents/skills")
+          // linkTree ".agents/skills" (rootPath + "/agents/skills")
           // {
             ".claude/CLAUDE.md".text = stitch [
               "${prompts}/PRELUDE.md"
@@ -113,6 +120,11 @@ in
                 "${output-styles}/brief.md"
               ]
               + "\n@${codexLocal}\n";
+            # dsh's user-global prompt; ~/.agents/AGENTS.md would risk codex loading it too
+            ".dsh/AGENTS.md".text = stitch [
+              "${prompts}/PRELUDE.md"
+              "${output-styles}/brief.md"
+            ];
           };
 
         # keep the import above from dangling on a machine that has no local notes yet
