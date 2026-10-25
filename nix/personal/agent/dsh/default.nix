@@ -67,6 +67,9 @@ stdenv.mkDerivation (finalAttrs: {
   installPhase = ''
     runHook preInstall
     mkdir -p $out/lib $out/bin
+    # herdr forwards kitty keyboard flags to panes, but isn't on the extended-keys allowlist
+    substituteInPlace node_modules/@deepseek-harness-tui/dsh-tui/lib/types/ink/terminal.js \
+      --replace-fail "'windows-terminal'," "'windows-terminal', 'herdr',"
     cp -r node_modules $out/lib/
     mkdir -p $out/lib/node_modules/@kp2pml30
     cp -r plugins $out/lib/node_modules/@kp2pml30/dsh-plugins

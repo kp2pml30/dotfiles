@@ -33,13 +33,7 @@
     claude-code = {
       url = "github:sadjow/claude-code-nix";
       inputs.nixpkgs.follows = "nixpkgs";
-      inputs.flake-utils.follows = "flake-utils";
-    };
-
-    codex-cli = {
-      url = "github:sadjow/codex-cli-nix";
-      inputs.nixpkgs.follows = "nixpkgs";
-      inputs.flake-utils.follows = "flake-utils";
+      inputs.systems.follows = "systems";
     };
 
     herdr = {
@@ -82,7 +76,6 @@
       kp2pml30-moe,
       code-flake,
       claude-code,
-      codex-cli,
       ...
     }:
     let
@@ -183,7 +176,6 @@
 
               nixpkgs.overlays = [
                 claude-code.overlays.default
-                codex-cli.overlays.default
                 code-flake.overlays.default
               ];
 
@@ -282,6 +274,7 @@
                   refreshRate = 60;
                 };
                 agent.enable = true;
+                agent.chatgpt = true;
                 sync-files.enable = true;
 
                 boot.efiGrub = true;
@@ -312,7 +305,6 @@
 
               nixpkgs.overlays = [
                 claude-code.overlays.default
-                codex-cli.overlays.default
                 code-flake.overlays.default
               ];
             }

@@ -117,29 +117,61 @@ let
     }
   ];
 
-  # a bundle layer, so it stays out of other profiles and below in-app settings
-  bundle = pkgs.runCommand "dsh-local-bundle" { } ''
-    mkdir $out
-    cp ${yaml.generate "cordis.patch.yml" patch} $out/cordis.patch.yml
-    cp ${
-      pkgs.writeText "package.json" (
-        builtins.toJSON {
-          name = "dsh-local-bundle";
-          private = true;
-          dsh.bundle.patch = "./cordis.patch.yml";
-        }
-      )
-    } $out/package.json
-  '';
+  # the base default is deepseek-official, which needs a DeepSeek key
+  headlessPatch = [
+    {
+      id = "agent-default-model";
+      config = {
+        provider = "deepinfra";
+        model = "deepseek-ai/DeepSeek-V4-Pro";
+        reasoningEffort = "high";
+      };
+    }
+    # waits on agentPresets, which headless never provides
+    {
+      id = "self-compact";
+      disabled = true;
+    }
+  ];
 
-  profileModules = pkgs.runCommand "dsh-tui-node-modules" { } ''
+  # a bundle layer, so it stays out of other profiles and below in-app settings
+  mkBundle =
+    name: patch:
+    pkgs.runCommand name { } ''
+      mkdir $out
+      cp ${yaml.generate "cordis.patch.yml" patch} $out/cordis.patch.yml
+      cp ${
+        pkgs.writeText "package.json" (
+          builtins.toJSON {
+            inherit name;
+            private = true;
+            dsh.bundle.patch = "./cordis.patch.yml";
+          }
+        )
+      } $out/package.json
+    '';
+  bundles = lib.mapAttrs mkBundle {
+    dsh-local-bundle = patch;
+    dsh-headless-bundle = headlessPatch;
+  };
+
+  profileModules = pkgs.runCommand "dsh-profile-node-modules" { } ''
     mkdir $out
     shopt -s nullglob
     for f in ${dshUnwrapped}/lib/node_modules/* ${dshUnwrapped}/lib/node_modules/.[!.]*; do
       ln -s "$f" $out/
     done
-    ln -s ${bundle} $out/dsh-local-bundle
+    ${lib.concatMapAttrsStringSep "\n" (n: b: "ln -s ${b} $out/${n}") bundles}
   '';
+
+  mkProfile = name: profileBundles: {
+    ".dsh/profiles/${name}/package.json".text = builtins.toJSON {
+      name = "dsh-profile-${name}";
+      private = true;
+      dsh.profile.bundles = profileBundles;
+    };
+    ".dsh/profiles/${name}/node_modules".source = profileModules;
+  };
 in
 {
   config = lib.mkIf cfg.agent.enable {
@@ -171,23 +203,25 @@ in
       '';
     };
 
-    home-manager.users.${cfg.username}.home.file = {
-      # store-managed, so in-app plugin add/toggle and dsh-tui's /update fail by design;
-      # the profile's own cordis.patch.yml stays unmanaged, so in-app settings keep working
-      ".dsh/profiles/dsh-tui/package.json".text = builtins.toJSON {
-        name = "dsh-profile-dsh-tui";
-        private = true;
-        dsh.profile.bundles = [
-          "@deepseek-ai/dsh-base"
-          "@deepseek-harness-tui/dsh-tui"
-          "dsh-local-bundle"
-        ];
+    # store-managed, so in-app plugin add/toggle and dsh-tui's /update fail by design;
+    # each profile's own cordis.patch.yml stays unmanaged, so in-app settings keep working
+    home-manager.users.${cfg.username}.home.file =
+      mkProfile "dsh-tui" [
+        "@deepseek-ai/dsh-base"
+        "@deepseek-harness-tui/dsh-tui"
+        "dsh-local-bundle"
+      ]
+      // mkProfile "headless" [
+        "@deepseek-ai/dsh-base"
+        "@deepseek-ai/dsh-headless"
+        "dsh-local-bundle"
+        "dsh-headless-bundle"
+      ]
+      // {
+        # `dsh tui`; dsh-tui hard-codes its own profile name, so this is only an alias
+        ".dsh/profiles/tui".source =
+          config.home-manager.users.${cfg.username}.lib.file.mkOutOfStoreSymlink
+            "${config.users.users.${cfg.username}.home}/.dsh/profiles/dsh-tui";
       };
-      ".dsh/profiles/dsh-tui/node_modules".source = profileModules;
-      # `dsh tui`; dsh-tui hard-codes its own profile name, so this is only an alias
-      ".dsh/profiles/tui".source =
-        config.home-manager.users.${cfg.username}.lib.file.mkOutOfStoreSymlink
-          "${config.users.users.${cfg.username}.home}/.dsh/profiles/dsh-tui";
-    };
   };
 }

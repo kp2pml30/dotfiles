@@ -19,6 +19,7 @@ in
     agent = {
       enable = lib.mkEnableOption "";
       local = lib.mkEnableOption "heavy weight local-only agent features (e.g. Ollama)";
+      chatgpt = lib.mkEnableOption "ChatGPT desktop";
     };
     vscode = lib.mkEnableOption "";
     kitty = lib.mkEnableOption "";
@@ -174,6 +175,7 @@ in
         "slack"
         "anytype"
         "claude-code"
+        "chatgpt"
         "obsidian"
       ];
   };

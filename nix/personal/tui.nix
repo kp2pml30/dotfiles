@@ -12,7 +12,6 @@ in
   config = {
     nixpkgs.overlays = lib.optionals cfg.agent.enable [
       inputs.claude-code.overlays.default
-      inputs.codex-cli.overlays.default
     ];
     programs = {
       tmux.enable = true;

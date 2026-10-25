@@ -12,6 +12,7 @@ in
     ./x.nix
     ./kitty.nix
     ./vscode.nix
+    ./chatgpt.nix
     ./firefox.nix
     ./zen.nix
     ./virtual-cam.nix
