@@ -27,6 +27,13 @@ in
     nix-cache = lib.mkEnableOption "";
     xray = lib.mkEnableOption "";
     headscale = lib.mkEnableOption "";
+    mail-relay = lib.mkEnableOption "public mail front forwarding to nanopi-m5";
+
+    zoneExtraRecords = lib.mkOption {
+      type = lib.types.lines;
+      default = "";
+      description = "Raw records appended to the hostname's zone";
+    };
 
     sitePath = lib.mkOption {
       type = lib.types.str;
@@ -44,6 +51,7 @@ in
     ./nix-cache.nix
     ./xray.nix
     ./headscale.nix
+    ./mail/relay.nix
     ./secrets.nix
     ./firewall.nix
   ];

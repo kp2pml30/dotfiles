@@ -71,6 +71,12 @@
       url = "github:microvm-nix/microvm.nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    simple-nixos-mailserver = {
+      url = "gitlab:simple-nixos-mailserver/nixos-mailserver";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.git-hooks.follows = "git-hooks";
+    };
   };
 
   outputs =
@@ -145,6 +151,7 @@
                 nix-cache = true;
                 xray = true;
                 headscale = true;
+                mail-relay = true;
               };
 
               kp2pml30.headscale-client.enable = true;
@@ -350,6 +357,9 @@
           modules = nanopi-m5-modules ++ [
             ./nix/hardware/nanopi-m5-homeserver/installed.nix
 
+            inputs.simple-nixos-mailserver.nixosModules.default
+            ./nix/server/mail/host.nix
+
             {
               kp2pml30.zfs = {
                 enable = true;
@@ -400,7 +410,11 @@
         {
           pre-commit-check = inputs.git-hooks.lib.${system}.run {
             src = ./.;
-            excludes = [ "\.lock$" ];
+            excludes = [
+              "\.lock$"
+              # age blobs; text fixers append bytes and break decryption
+              "^nix/secrets/data/"
+            ];
             hooks = {
               check-commit-message = {
                 enable = true;

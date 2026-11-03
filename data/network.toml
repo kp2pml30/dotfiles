@@ -5,12 +5,29 @@ ipv4 = "146.103.126.11"
 ipv6 = "2a14:1e00:3:44d::1"
 
 [addresses]
+autoconfig = { machine = "vdsina", fqdn = "autoconfig.kp2pml30.moe" }
 backend = { machine = "vdsina", fqdn = "backend.kp2pml30.moe" }
 dns = { machine = "vdsina", fqdn = "dns.kp2pml30.moe" }
 dns2 = { machine = "vdsina", fqdn = "dns2.kp2pml30.moe" }
 forgejo = { machine = "vdsina", fqdn = "git.kp2pml30.moe" }
+mta-sts = { machine = "vdsina", fqdn = "mta-sts.kp2pml30.moe" }
 nix-cache = { machine = "vdsina", fqdn = "cache.nix.kp2pml30.moe" }
 signal-proxy = { machine = "vdsina", fqdn = "pr.kp2pml30.moe" }
 wg = { machine = "vdsina", fqdn = "wg.kp2pml30.moe" }
 www = { machine = "vdsina", fqdn = "kp2pml30.moe" }
 xray = { machine = "vdsina", fqdn = "x.kp2pml30.moe" }
+
+# vdsina <-> nanopi-m5 WireGuard link carrying all mail traffic
+[mail-tunnel.vdsina]
+ipv4 = "10.20.0.1"
+ipv6 = "fd20::1"
+wg-pub = "rOxD0Ms+o9Q9Utfvzvb2zKPx/caYWQT4vIBilf0e5Eo="
+
+[mail-tunnel.nanopi-m5]
+ipv4 = "10.20.0.2"
+ipv6 = "fd20::2"
+wg-pub = "DqPfo4l6RfJo8vmXQJB2ouO4XXMkTWhXrklbxZfL1SI="
+
+# Assigned by headscale; re-enrolling a node changes it. Peers get IPv6 only
+[tailnet]
+nanopi-m5 = "fd7a:115c:a1e0::3"

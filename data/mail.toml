@@ -1,0 +1,28 @@
+# Mail addresses served by nanopi-m5. Local parts only; every alias and
+# reserved name delivers to (and may be sent from by) the account it is under.
+
+domain = "kp2pml30.moe"
+
+[accounts.kp2pml30]
+aliases = ["me", "r3vdy-2-b10vv", "r3vdy2b10vv", "kira"]
+
+# Role addresses: RFC 2142, RFC 5321 and the ones CAs use for domain
+# validation. Never hand them out to anyone else.
+[reserved]
+names = [
+    "postmaster",
+    "abuse",
+    "security",
+    "hostmaster",
+    "webmaster",
+    "admin",
+    "administrator",
+    "root",
+    "mailer-daemon",
+]
+owner = "kp2pml30"
+
+# Private half: nix/secrets/data/mail/dkim-mail.key
+[dkim]
+pub = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAxzQyXxc+6tfsthedSqPySgngPwNa7zS4L72eNtRwShZVLhp9l9hxIEPVnDxoiQ/DcouwOzjWJSgrFbkXqh6oCLzXKchQX8cnkxntFkfUg8JvrQ6XcFrSwuhNG/0RTSV8FockXt/cWWRL5ZqJkwrDqutj6E2i/bfIQ877i/F69pts3O6AXWHz2hsKwN6XAiAXsCBayngNFyARHHH9AjE/OPLx9Hoq1lOUbDKUKpuMGJJ2CCupv/lTMXAYr8xCgJKRWlDobx8j0qHej3AK32TnnPSiMcptWITc9Qyp9G9S4516vpY38Sq5s4HfviYmxixnvsK7lW5teLQzHb1Y8ZA8AwIDAQAB"
+selector = "mail"

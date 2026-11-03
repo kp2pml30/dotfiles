@@ -59,6 +59,7 @@
         address = "2a14:1e00:3:44d::1";
       }
     ];
+    nat.externalInterface = "ens3";
     defaultGateway = "146.103.126.1";
     defaultGateway6 = {
       address = "fe80::1";

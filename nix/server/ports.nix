@@ -71,5 +71,17 @@
       default = 3478;
       description = "Embedded DERP STUN (UDP, public)";
     };
+
+    mail-wg = lib.mkOption {
+      type = lib.types.int;
+      default = 51820;
+      description = "vdsina <-> nanopi-m5 mail WireGuard (UDP, public on vdsina)";
+    };
+
+    mail-acme = lib.mkOption {
+      type = lib.types.int;
+      default = 8402;
+      description = "nanopi-m5 lego HTTP-01 listener, reached from vdsina nginx over the mail tunnel";
+    };
   };
 }

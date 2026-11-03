@@ -42,6 +42,7 @@ let
     @ IN NS dns2.${hostname}.
     www IN CNAME ${hostname}.
     ${zoneRecords}
+    ${cfg.zoneExtraRecords}
   '';
 in
 lib.mkIf cfg.nginx {

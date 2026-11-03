@@ -3,11 +3,15 @@
 
 [uids]
 dhcpcd = 999
+dovecot2 = 46
+dovenull2 = 47
 messagebus = 4
 nginx = 60
 nscd = 998
+postfix = 13
 postgres = 71
 root = 0
+rspamd = 225
 sshd = 997
 systemd-coredump = 151
 systemd-network = 152
@@ -17,11 +21,16 @@ systemd-timesync = 154
 
 [gids]
 dhcpcd = 999
+dovecot2 = 46
+dovenull2 = 47
 messagebus = 4
 nginx = 60
 nscd = 998
+postdrop = 14
+postfix = 13
 postgres = 71
 root = 0
+rspamd = 225
 sshd = 996
 systemd-coredump = 995
 systemd-network = 152

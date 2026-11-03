@@ -2,6 +2,7 @@
   config,
   pkgs,
   lib,
+  data,
   ...
 }:
 let
@@ -33,6 +34,12 @@ lib.mkIf cfg.headscale {
           "1.1.1.1"
           "9.9.9.9"
         ];
+        # Mail clients reach nanopi-m5 directly; publicly mail. only takes delivery
+        extra_records = lib.optional cfg.mail-relay {
+          name = (import ./mail/common.nix data).fqdn;
+          type = "AAAA";
+          value = data.network.tailnet.nanopi-m5;
+        };
       };
 
       derp = {
