@@ -11,6 +11,14 @@ let
   ips = import ./ips.nix;
   acmeRoot = "/var/lib/acme/acme-challenge";
   pref = "kp2";
+  hsts = ''
+    add_header Strict-Transport-Security "max-age=63072000; includeSubDomains; preload" always;
+  '';
+  # location-level add_header drops inherited ones, so HSTS is repeated
+  siteHeaders = cacheControl: ''
+    ${hsts}
+    add_header Cache-Control ${cacheControl};
+  '';
 in
 lib.mkIf cfg.nginx {
   users.users.acme.uid = data.uids.acme;
@@ -34,9 +42,14 @@ lib.mkIf cfg.nginx {
     recommendedTlsSettings = true;
     recommendedProxySettings = true;
     recommendedGzipSettings = true;
+    recommendedBrotliSettings = true;
 
     commonHttpConfig = ''
-      add_header Strict-Transport-Security "max-age=63072000; includeSubDomains; preload" always;
+      ${hsts}
+      map $arg_h $kp2_cache_control {
+        default "public, max-age=31536000, immutable";
+        "" no-cache;
+      }
     '';
 
     logError = "stderr debug";
@@ -165,16 +178,32 @@ lib.mkIf cfg.nginx {
         locations."/" = {
           root = cfg.sitePath;
           tryFiles = "$uri $uri/ /index.html";
+          extraConfig = siteHeaders "$kp2_cache_control";
+        };
+
+        locations."/_astro/" = {
+          root = cfg.sitePath;
+          tryFiles = "$uri =404";
+          extraConfig = siteHeaders ''"public, max-age=31536000, immutable"'';
+        };
+
+        # no SPA fallback, or a missing ?h= file would cache index.html as immutable
+        locations."/fs-tree/" = {
+          root = cfg.sitePath;
+          tryFiles = "$uri =404";
+          extraConfig = siteHeaders "$kp2_cache_control";
         };
 
         locations."/fs/" = {
           root = cfg.sitePath;
           tryFiles = "$uri $uri/ /fs/index.html";
+          extraConfig = siteHeaders "$kp2_cache_control";
         };
 
         locations."/view/" = {
           root = cfg.sitePath;
           tryFiles = "$uri $uri/ /view/index.html";
+          extraConfig = siteHeaders "$kp2_cache_control";
         };
       };
     }
