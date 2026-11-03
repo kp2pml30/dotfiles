@@ -12,4 +12,11 @@ skip-magic-trailing-comma = false
 [lint]
 ignore = ["E741"]
 
-extend-select = ["I"]
+extend-select = [
+    "E9",
+    "F",
+    "ASYNC",
+    "RUF006", # dangling asyncio task
+    "D213", # docstring summary on next line
+    "I", # sort imports
+]

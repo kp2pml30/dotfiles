@@ -7,6 +7,16 @@ repos:
         entry: python3 support/scripts/check-commit-message.py --message-file
         language: system
         stages: [commit-msg]
+      - id: check-source-text
+        name: check source text
+        entry: python3 support/scripts/check-source-text.py
+        language: system
+        files: \.(rs|py|nix|lua|ts|c|cpp|h|hpp)$
+      - id: markdown-local-links
+        name: markdown local links
+        entry: python3 support/scripts/md-local-links.py
+        language: system
+        types: [markdown]
 
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.6.0

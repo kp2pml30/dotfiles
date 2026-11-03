@@ -13,7 +13,7 @@ docs/contributing/
 		testing/
 			README.md            ← how to run the full test suite
 		committing/
-			README.md            ← branching model, commit style, pre-commit hook
+			README.md            ← hooks, nix fmt / flake check, commit style; start from docs/contributing/howto/committing/README.md
 		releasing/
 			versioning.md
 			release-build.md
@@ -36,9 +36,11 @@ docs/contributing/
 - [setup.md](setup.md) — first-time clone: …
 
 ## building/
+
 - [build.md](building/build.md) — …
 
 ## testing/
+
 - [README.md](testing/README.md) — …
 ```
 

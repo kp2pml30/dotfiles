@@ -8,7 +8,7 @@ trim_trailing_whitespace = true
 indent_style = tab
 tab_width = 2
 
-[*.{json,yaml,yml}]
+[{*.{json,yaml,yml},flake.lock}]
 indent_style = space
 indent_size = 2
 
