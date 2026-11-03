@@ -8,7 +8,10 @@ let
   bootDevice = "/dev/disk/by-uuid/0006861b-0b4f-451e-a26c-b713cda3a10d";
 in
 {
-  imports = [ ./default.nix ];
+  imports = [
+    ./default.nix
+    ./gpu.nix
+  ];
 
   # u-boot lives in SPI NOR; it only needs to find extlinux.conf on a filesystem
   # it can read. ext4 rather than btrfs: u-boot's btrfs driver is read-only and

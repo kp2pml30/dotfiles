@@ -23,10 +23,6 @@
   hardware.deviceTree.enable = true;
   hardware.deviceTree.name = "rockchip/rk3576-nanopi-m5.dtb";
 
-  # Headless; panfrost probe sometimes hangs the SoC after the gpu power domain
-  # fails to ack.
-  boot.blacklistedKernelModules = [ "panfrost" ];
-
   boot.kernelParams = [
     "console=tty1"
     # Matches the rk3576 boot ROM / rkbin TPL/SPL fixed baud (UART0_M0).

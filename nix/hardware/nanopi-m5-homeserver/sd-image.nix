@@ -12,6 +12,9 @@ in
     ./default.nix
   ];
 
+  # Without gpu.nix's pinned rail, panfrost probe can hang the SoC
+  boot.blacklistedKernelModules = [ "panfrost" ];
+
   sdImage.firmwarePartitionOffset = 16;
 
   sdImage.postBuildCommands = ''

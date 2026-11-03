@@ -213,8 +213,15 @@ read-only; after editing `extlinux.conf`, `umount /boot` before rebooting —
 u-boot does not replay the ext4 journal and would read the old file. A one-off
 kernel parameter goes on the `APPEND` line of `LABEL nixos-default`.
 
-`panfrost` is blacklisted: its probe sometimes hangs the SoC right after the gpu
-power domain fails to ack, a few seconds into stage 2.
+Without `gpu.nix`'s pinned rail, `panfrost` probe can hang the SoC a few
+seconds into stage 2, so the SD image blacklists it. If the installed system
+hangs there, add `module_blacklist=panfrost` from the initrd shell.
+
+The NPU is not enabled: Kiln's pmdomain patches wedge the M5 before userspace
+as soon as the NPU iommus power NPU0 on. A different device tree is testable
+without UART via `kexec -c --dtb` (not `-s`, which ignores it), after patching
+in u-boot's fixups (memory, gmac MACs, serial-number); a wedge resets into the
+default entry after ~90 s, the dw_wdt hardware maximum.
 
 Otherwise insert the SD card, boot, and:
 
