@@ -1,0 +1,16 @@
+# Public addresses name their machine; nix/data.nix fills in its IPs.
+
+[machines.vdsina]
+ipv4 = "146.103.126.11"
+ipv6 = "2a14:1e00:3:44d::1"
+
+[addresses]
+backend = { machine = "vdsina", fqdn = "backend.kp2pml30.moe" }
+dns = { machine = "vdsina", fqdn = "dns.kp2pml30.moe" }
+dns2 = { machine = "vdsina", fqdn = "dns2.kp2pml30.moe" }
+forgejo = { machine = "vdsina", fqdn = "git.kp2pml30.moe" }
+nix-cache = { machine = "vdsina", fqdn = "cache.nix.kp2pml30.moe" }
+signal-proxy = { machine = "vdsina", fqdn = "pr.kp2pml30.moe" }
+wg = { machine = "vdsina", fqdn = "wg.kp2pml30.moe" }
+www = { machine = "vdsina", fqdn = "kp2pml30.moe" }
+xray = { machine = "vdsina", fqdn = "x.kp2pml30.moe" }

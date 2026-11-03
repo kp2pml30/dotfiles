@@ -1,0 +1,30 @@
+# IDs taken by nixpkgs (nixos/modules/misc/ids.nix) or observed on the live
+# machines. Not applied anywhere; only checked against uids.toml / gids.toml.
+
+[uids]
+dhcpcd = 999
+messagebus = 4
+nginx = 60
+nscd = 998
+postgres = 71
+root = 0
+sshd = 997
+systemd-coredump = 151
+systemd-network = 152
+systemd-oom = 996
+systemd-resolve = 153
+systemd-timesync = 154
+
+[gids]
+dhcpcd = 999
+messagebus = 4
+nginx = 60
+nscd = 998
+postgres = 71
+root = 0
+sshd = 996
+systemd-coredump = 995
+systemd-network = 152
+systemd-oom = 994
+systemd-resolve = 153
+systemd-timesync = 154

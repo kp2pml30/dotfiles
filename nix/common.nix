@@ -1,16 +1,16 @@
 {
   pkgs,
   lib,
+  data,
   ...
 }:
 let
-  ips = import ./server/ips.nix;
   groupByAttr =
     attr:
     lib.foldlAttrs (
       acc: _: v:
-      acc // { ${v.${attr}} = (acc.${v.${attr}} or [ ]) ++ [ v.full-address ]; }
-    ) { } ips.addresses;
+      acc // { ${v.${attr}} = (acc.${v.${attr}} or [ ]) ++ [ v.fqdn ]; }
+    ) { } data.network.addresses;
   groupToLines = lib.mapAttrsToList (ip: domains: "${ip} ${lib.concatStringsSep " " domains}");
 in
 {
@@ -47,7 +47,7 @@ in
 
   config = {
     networking.extraHosts = lib.concatStringsSep "\n" (
-      groupToLines (groupByAttr "ip") ++ groupToLines (groupByAttr "ipv6")
+      groupToLines (groupByAttr "ipv4") ++ groupToLines (groupByAttr "ipv6")
     );
     system.stateVersion = "24.05";
 

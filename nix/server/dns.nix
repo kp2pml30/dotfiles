@@ -12,7 +12,6 @@
 let
   cfg = config.kp2pml30.server;
   ports = config.kp2pml30.server.ports;
-  ips = import ./ips.nix;
 
   hostname = cfg.hostname;
 
@@ -24,16 +23,15 @@ let
     if stripped == fullAddr then "@" else stripped;
 
   domainEntries = lib.mapAttrsToList (_: v: {
-    name = relName v.full-address;
-    ip = v.ip;
-    ipv6 = v.ipv6;
-  }) ips.addresses;
+    name = relName v.fqdn;
+    inherit (v) ipv4 ipv6;
+  }) data.network.addresses;
 
   zoneRecords = lib.concatMapStringsSep "\n" (
     e:
-    "${e.name} IN A ${e.ip}\n"
+    "${e.name} IN A ${e.ipv4}\n"
     + "${e.name} IN AAAA ${e.ipv6}\n"
-    + "${e.name} IN HTTPS 1 . alpn=h2,http/1.1 ipv4hint=${e.ip} ipv6hint=${e.ipv6}"
+    + "${e.name} IN HTTPS 1 . alpn=h2,http/1.1 ipv4hint=${e.ipv4} ipv6hint=${e.ipv6}"
   ) domainEntries;
 
   zoneFile = pkgs.writeText "${hostname}.zone" ''

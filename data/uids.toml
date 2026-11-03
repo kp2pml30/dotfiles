@@ -1,0 +1,19 @@
+# Single source of truth for user IDs across hosts.
+# Values match current state on the live machines so existing on-disk
+# ownership stays valid.
+
+# personal
+kp2pml30 = 1000
+
+# server
+acme = 995
+coredns = 992
+forgejo = 994
+kp2pml30-moe-backend = 1001
+xray = 993
+
+# agent-vm
+agent = 1200
+
+# initrd only (kp2pml30.zfs.initrd-ssh); reserved everywhere
+boot-unlocker = 1300

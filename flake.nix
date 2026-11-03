@@ -86,11 +86,7 @@
     }:
     let
       rootPath = self;
-      data = {
-        uids = import ./nix/data/uids.nix;
-        gids = import ./nix/data/gids.nix;
-        ssh-keys = import ./nix/data/ssh-keys.nix;
-      };
+      data = import ./nix/data.nix lib;
       linkTree = import ./nix/link-tree.nix lib;
       additionalArgs = {
         inherit

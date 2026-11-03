@@ -8,7 +8,6 @@
 let
   cfg = config.kp2pml30.server;
   ports = config.kp2pml30.server.ports;
-  ips = import ./ips.nix;
   acmeRoot = "/var/lib/acme/acme-challenge";
   pref = "kp2";
   hsts = ''
@@ -30,7 +29,7 @@ lib.mkIf cfg.nginx {
     defaults.email = "kp2pml30@gmail.com";
     #defaults.server = "https://acme-staging-v02.api.letsencrypt.org/directory";
     certs."${cfg.hostname}" = {
-      extraDomainNames = lib.mapAttrsToList (_: v: v.full-address) ips.addresses;
+      extraDomainNames = lib.mapAttrsToList (_: v: v.fqdn) data.network.addresses;
       webroot = acmeRoot;
       group = "certreaders";
     };

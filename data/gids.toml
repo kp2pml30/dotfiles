@@ -1,0 +1,10 @@
+# Single source of truth for group IDs across hosts.
+
+acme = 993
+boot-unlocker = 1300
+certreaders = 990
+coredns = 989
+forgejo = 992
+steam-input = 988
+users = 100
+xray = 991

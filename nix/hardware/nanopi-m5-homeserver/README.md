@@ -117,7 +117,7 @@ ssh-keygen -t ed25519 -N "" -C nanopi-m5-initrd \
 chmod 600 /mnt/boot/initrd-ssh/ssh_host_ed25519_key
 ```
 
-Put the `.pub` into `nanopi-m5-initrd` in `nix/data/ssh-keys.nix`; clients pin it
+Put the `.pub` into `nanopi-m5-initrd` in `data/ssh-keys.toml`; clients pin it
 from there.
 
 Initrd tailnet node — likewise its own identity, enrolled once. Mint a single-use
@@ -179,7 +179,7 @@ ssh -o HostName=<lan-ip> nanopi-boot     # LAN
 Client needs OpenSSH >= 9.9 (`mlkem768x25519-sha256`) or >= 9.0
 (`sntrup761x25519`): `nix/common.nix` allows nothing else.
 
-The only ssh user is `boot-unlocker` (uid/gid in `nix/data`): it gets a
+The only ssh user is `boot-unlocker` (uid/gid in `data/`): it gets a
 passphrase prompt and nothing else — no shell, no commands, no forwarding. A
 root-owned socket service hands the passphrase to the `rpool` ask-password
 request only and reports back. Tries are unlimited, with a 2 s doubling to 60 s
