@@ -54,6 +54,7 @@ in
 
       nushell = {
         enable = true;
+        loadSessionVariables = false;
         extraEnv = builtins.readFile (rootPath + "/home/.config/nushell/env.nu");
         extraConfig = builtins.readFile (rootPath + "/home/.config/nushell/config.nu");
       };

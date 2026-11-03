@@ -24,6 +24,17 @@
             ./nvidia-strncpy.patch
             ./nvidia-drm-atomic-commit.patch
           ];
+          # Upstream's `PAHOLE=awk '...'` gets word-split by gen-btf.sh on 7.x
+          makeFlags = (o.makeFlags or [ ]) ++ [
+            "PAHOLE_VARIABLES=PAHOLE=${pkgs.writeShellScript "nvidia-pahole" ''
+              args=()
+              for a in "$@"; do
+                case $a in --lang_exclude=*) a="$a,c++" ;; esac
+                args+=("$a")
+              done
+              exec ${pkgs.pahole}/bin/pahole "''${args[@]}"
+            ''}"
+          ];
         });
       };
     modesetting.enable = true;

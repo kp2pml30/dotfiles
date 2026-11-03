@@ -135,7 +135,6 @@ in
         boot.zfs.requestEncryptionCredentials = false;
 
         boot.initrd.systemd = {
-          enable = true;
           services."zfs-load-key-${cfg.pool}" = {
             description = "Load the ${cfg.pool} encryption key";
             requires = [ "zfs-import-${cfg.pool}.service" ];
@@ -197,7 +196,6 @@ in
         boot.initrd.availableKernelModules = [ "ext4" ];
 
         boot.initrd.systemd = {
-          enable = true;
           network.enable = true;
           network.networks."10-unlock" = {
             matchConfig.Name = ssh.matchName;

@@ -8,6 +8,10 @@
       url = "github:numtide/flake-utils";
       inputs.systems.follows = "systems";
     };
+    rust-overlay = {
+      url = "github:oxalica/rust-overlay/stable";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     home-manager = {
       url = "github:nix-community/home-manager/master";
@@ -23,6 +27,7 @@
       inputs.flake-utils.follows = "flake-utils";
       inputs.systems.follows = "systems";
       inputs.git-hooks.follows = "git-hooks";
+      inputs.rust-overlay.follows = "rust-overlay";
     };
 
     code-flake = {
@@ -39,6 +44,7 @@
     herdr = {
       url = "github:ogulcancelik/herdr";
       inputs.nixpkgs.follows = "nixpkgs";
+      inputs.rust-overlay.follows = "rust-overlay";
     };
 
     agent-skills = {
