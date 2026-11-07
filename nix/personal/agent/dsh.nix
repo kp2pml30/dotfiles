@@ -117,16 +117,34 @@ let
     }
   ];
 
-  # the base default is deepseek-official, which needs a DeepSeek key
-  headlessPatch = [
+  # the base default is deepseek-official, which needs a DeepSeek key; Codex rides the
+  # ChatGPT subscription, DeepInfra is paid per token
+  codexPatch = [
     {
       id = "agent-default-model";
       config = {
-        provider = "deepinfra";
-        model = "deepseek-ai/DeepSeek-V4-Pro";
+        provider = "openai-codex";
+        model = "gpt-6-astra";
         reasoningEffort = "high";
       };
     }
+    {
+      insert = [
+        # reads the sign-in saved by dsh-tui's `/auth login openai-codex`
+        {
+          id = "dsh-auth";
+          name = "@deepseek-harness-tui/dsh-tui/oauth";
+          inject = [
+            "llm"
+            "commands"
+          ];
+          config.providers = [ "openai-codex" ];
+        }
+      ];
+    }
+  ];
+
+  headlessPatch = codexPatch ++ [
     # waits on agentPresets, which headless never provides
     {
       id = "self-compact";
@@ -153,6 +171,7 @@ let
   bundles = lib.mapAttrs mkBundle {
     dsh-local-bundle = patch;
     dsh-headless-bundle = headlessPatch;
+    dsh-acp-bundle = codexPatch;
   };
 
   profileModules = pkgs.runCommand "dsh-profile-node-modules" { } ''
@@ -216,6 +235,13 @@ in
         "@deepseek-ai/dsh-headless"
         "dsh-local-bundle"
         "dsh-headless-bundle"
+      ]
+      // mkProfile "acp" [
+        "@deepseek-ai/dsh-base"
+        "@deepseek-ai/dsh-acp-app"
+        "@openma/deepseek-harness-acp"
+        "dsh-local-bundle"
+        "dsh-acp-bundle"
       ]
       // {
         # `dsh tui`; dsh-tui hard-codes its own profile name, so this is only an alias
