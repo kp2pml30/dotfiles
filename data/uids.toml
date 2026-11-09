@@ -18,6 +18,9 @@ agent = 1200
 # initrd only (kp2pml30.zfs.initrd-ssh); reserved everywhere
 boot-unlocker = 1300
 
+# ya-coder harness (nanopi-m5)
+ya-coder = 1500
+
 # mail (nanopi-m5); virtualMail owns the mail store
 knot-resolver = 1402
 postfix-tlspol = 1403

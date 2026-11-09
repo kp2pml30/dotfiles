@@ -77,6 +77,15 @@
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.git-hooks.follows = "git-hooks";
     };
+
+    # Private repo, so hosts evaluating this input need a forgejo ssh key
+    ya-coder = {
+      url = "git+ssh://forgejo@git.kp2pml30.moe/ya/coder.git?lfs=1";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.systems.follows = "systems";
+      inputs.rust-overlay.follows = "rust-overlay";
+      inputs.git-hooks.follows = "git-hooks";
+    };
   };
 
   outputs =
@@ -359,6 +368,7 @@
 
             inputs.simple-nixos-mailserver.nixosModules.default
             ./nix/server/mail/host.nix
+            ./nix/server/ya-coder.nix
 
             {
               kp2pml30.zfs = {

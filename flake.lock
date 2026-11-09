@@ -366,6 +366,7 @@
         "rust-overlay": "rust-overlay",
         "simple-nixos-mailserver": "simple-nixos-mailserver",
         "systems": "systems",
+        "ya-coder": "ya-coder",
         "zen-browser": "zen-browser"
       }
     },
@@ -444,6 +445,37 @@
         "owner": "nix-systems",
         "repo": "default",
         "type": "github"
+      }
+    },
+    "ya-coder": {
+      "inputs": {
+        "git-hooks": [
+          "git-hooks"
+        ],
+        "nixpkgs": [
+          "nixpkgs"
+        ],
+        "rust-overlay": [
+          "rust-overlay"
+        ],
+        "systems": [
+          "systems"
+        ]
+      },
+      "locked": {
+        "lastModified": 1794077295,
+        "lfs": true,
+        "narHash": "sha256-ASEhqSb9SXiQ5zI6CFslhRWb8HdN4nlsb4K4fJUFlfs=",
+        "ref": "refs/heads/main",
+        "rev": "a16e3707538154164ed6d4c54f7c272fe2d23393",
+        "revCount": 160,
+        "type": "git",
+        "url": "ssh://forgejo@git.kp2pml30.moe/ya/coder.git"
+      },
+      "original": {
+        "lfs": true,
+        "type": "git",
+        "url": "ssh://forgejo@git.kp2pml30.moe/ya/coder.git"
       }
     },
     "yamd": {
