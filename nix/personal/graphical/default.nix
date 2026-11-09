@@ -23,6 +23,7 @@ in
 
     ./messengers.nix
     ./messengers-work.nix
+    ./ephemeral-email.nix
   ];
 
   config = lib.mkMerge [

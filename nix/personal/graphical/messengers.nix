@@ -14,6 +14,5 @@ lib.mkIf cfg.messengers.personal {
     discord
     telegram-desktop
     wechat-uos
-    thunderbird
   ];
 }
