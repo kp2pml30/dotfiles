@@ -69,7 +69,7 @@
     ];
   };
 
-  swapDevices = [ { device = "/dev/disk/by-uuid/c68daa9f-f165-4e23-8710-2aab0ad8d282"; } ];
+  swapDevices = [ { device = "/dev/disk/by-partuuid/e4f655fd-3320-450b-966b-083452efbfdc"; } ];
 
   boot.kernelPackages = pkgs.linuxPackages_latest;
   boot.kernelParams = [ "pcie_aspm=off" ];

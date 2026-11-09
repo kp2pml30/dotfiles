@@ -26,6 +26,8 @@
     ];
   };
 
+  # Hibernates on lid close
+  kp2pml30.hardware.encrypted-swap = false;
   swapDevices = [ { device = "/dev/disk/by-uuid/3231b9fd-4afe-41cf-a3ee-e71ceb774c1b"; } ];
 
   boot.kernelPackages = pkgs.linuxPackages_6_12;

@@ -50,17 +50,6 @@ in
 
   # `/` and friends come from kp2pml30.zfs.datasets.
 
-  # Not a zvol: swapping onto zfs can deadlock under memory pressure. Fresh
-  # random key every boot, so no hibernation. By PARTUUID: the filesystem UUID
-  # is wiped on every boot.
-  swapDevices = [
-    {
-      device = "/dev/disk/by-partuuid/12f77ef1-15d7-4389-ac7f-e9cedcfcbe77";
-      discardPolicy = "both";
-      randomEncryption = {
-        enable = true;
-        allowDiscards = true;
-      };
-    }
-  ];
+  # Not a zvol: swapping onto zfs can deadlock under memory pressure
+  swapDevices = [ { device = "/dev/disk/by-partuuid/12f77ef1-15d7-4389-ac7f-e9cedcfcbe77"; } ];
 }

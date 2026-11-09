@@ -1,6 +1,7 @@
 {
   pkgs,
   lib,
+  config,
   data,
   ...
 }:
@@ -19,6 +20,20 @@ in
     ./oom-killer.nix
     ./zfs.nix
   ];
+
+  options.swapDevices = lib.mkOption {
+    type = lib.types.listOf (
+      lib.types.submodule {
+        config = lib.mkIf config.kp2pml30.hardware.encrypted-swap {
+          discardPolicy = lib.mkDefault "both";
+          randomEncryption = {
+            enable = lib.mkDefault true;
+            allowDiscards = lib.mkDefault true;
+          };
+        };
+      }
+    );
+  };
 
   options.kp2pml30 = {
     short-hostname = lib.mkOption {
@@ -42,6 +57,11 @@ in
     hardware = {
       wireless = lib.mkEnableOption "";
       audio = lib.mkEnableOption "";
+      encrypted-swap = lib.mkOption {
+        type = lib.types.bool;
+        default = true;
+        description = "Encrypt swap devices with a fresh random key every boot. Rules out hibernation; devices must be addressed by PARTUUID.";
+      };
     };
   };
 
