@@ -1,6 +1,6 @@
 ---
 name: dsh
-description: Use when delegating a task, review or research to DeepSeek Harness (`dsh`, DeepSeek and ChatGPT Codex models) — one-shot headless runs, long-lived multi-turn ACP sessions you can steer, cancel and approve, or sending a message into a user's running dsh-tui session. Also use when the user says /dsh or asks to "ask dsh / deepseek".
+description: Use when delegating a task, review or research to DeepSeek Harness (`dsh`, ChatGPT Codex models) — one-shot headless runs, long-lived multi-turn ACP sessions you can steer, cancel and approve, or sending a message into a user's running dsh-tui session. Also use when the user says /dsh or asks to "ask dsh / deepseek".
 ---
 
 # dsh — DeepSeek Harness
@@ -9,11 +9,15 @@ description: Use when delegating a task, review or research to DeepSeek Harness 
 
 |Way|Use for|Models|
 |---|---|---|
-|**Headless** (`dsh headless`)|1 task, 1 answer. Default for delegation|Codex, DeepInfra|
-|**ACP** (`dsh --profile acp`)|Multi-turn work you own: steer, cancel, approve, run several sessions|Codex, DeepInfra|
+|**Headless** (`dsh headless`)|1 task, 1 answer. Default for delegation|Codex|
+|**ACP** (`dsh --profile acp`)|Multi-turn work you own: steer, cancel, approve, run several sessions|Codex|
 |**Inject** into a live `dsh-tui`|A session the user already runs. Only when asked|Whatever it uses|
 
-**Codex is free** (ChatGPT subscription) and the default. **DeepInfra is paid per token**: use it only when asked.
+**Always use Codex** (`openai-codex`, covered by the ChatGPT subscription).
+
+**Subagent models:** in `dsh tui`, `subagent` takes `provider`, `model` and `reasoning_effort`, and `list_subagent_models`
+shows the routes (`standard`, `ptc`, `cordis` presets). In headless and ACP it inherits the parent's model, so use
+`workflow`'s `agent(prompt, {provider, model})` there.
 
 ## Non-negotiables
 
@@ -46,8 +50,6 @@ echo "exit=$?"; jq -r 'select(.type=="final").text' "$L.jsonl"
 	```
 
 	- Codex efforts: `minimal`, `low`, `medium`, `high`, `xhigh`, `max`
-	- DeepInfra, paid, only when asked: `provider: deepinfra`, `model: deepseek-ai/DeepSeek-V4-Pro` or
-		`deepseek-ai/DeepSeek-V4.1-Flash`, efforts `off`, `high`, `max`
 	- Signed out of Codex: exit `1` with `Provider is not configured: openai-codex` on stderr and an empty `final`
 5. **Long tasks:** run with `run_in_background`; its exit notifies you. There is no heartbeat before the first step
 	commits. dsh's own bash calls default to a 60 s timeout; overruns move to background jobs
@@ -143,9 +145,8 @@ jq -n --arg s "$SID" '{sessionId:$s,configId:"model",value:"openai-codex::gpt-6-
 jq -n --arg s "$SID" '{sessionId:$s,modeId:"read-only"}' | call 4 session/set_mode; res 4
 ```
 
-- **Models:** default `openai-codex::gpt-6-astra`; paid and only when asked, `deepinfra::deepseek-ai/DeepSeek-V4-Pro`,
-	`deepinfra::deepseek-ai/DeepSeek-V4.1-Flash`. The live list is the `model` entry of `configOptions` in the
-	`session/new` result
+- **Models:** default `openai-codex::gpt-6-astra`; also `gpt-6-luna`, `gpt-6-sol`, `gpt-6.1-sol`, `gpt-5.6-luna`,
+	`gpt-5.6-terra`, `gpt-5.6-sol`. The live list is the `model` entry of `configOptions` in the `session/new` result
 - **Effort:** default `high`; `configId:"effort"`, listed the same way
 - **Modes:** `read-only`, `workspace-write`, `danger-full-access`; `DSH_PERMISSION_MODE` only sets the server's start
 	value for new sessions

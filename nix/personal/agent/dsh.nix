@@ -91,6 +91,26 @@ let
             };
           };
         }
+        {
+          id = "mcp-ya";
+          name = "@deepseek-ai/dsh-mcp-client";
+          config = {
+            serverName = "ya";
+            transport = "stdio";
+            command = "${pkgs.openssh}/bin/ssh";
+            args = [
+              "-i"
+              "${config.users.users.${cfg.username}.home}/.ssh/ya-coder-deep-seek"
+              "-o"
+              "IdentitiesOnly=yes"
+              "-o"
+              "BatchMode=yes"
+              "ya-coder@nanopi-m5.ts.kp2pml30.moe"
+            ];
+            # the server only accepts this key from the tailnet
+            failOnStartupError = false;
+          };
+        }
       ];
     }
     {
@@ -152,6 +172,31 @@ let
     }
   ];
 
+  # only the upstream presets can use this: headless and acp have no preset scope for it
+  tuiPatch = [
+    {
+      id = "dsh-tui-subagent-model-selection-settings";
+      config = {
+        enabled = true;
+        allowedModels =
+          map
+            (model: {
+              provider = "openai-codex";
+              inherit model;
+            })
+            [
+              "gpt-6-luna"
+              "gpt-6-sol"
+              "gpt-6.1-sol"
+              "gpt-6-astra"
+              "gpt-5.6-luna"
+              "gpt-5.6-terra"
+              "gpt-5.6-sol"
+            ];
+      };
+    }
+  ];
+
   # a bundle layer, so it stays out of other profiles and below in-app settings
   mkBundle =
     name: patch:
@@ -170,6 +215,7 @@ let
     '';
   bundles = lib.mapAttrs mkBundle {
     dsh-local-bundle = patch;
+    dsh-tui-bundle = tuiPatch;
     dsh-headless-bundle = headlessPatch;
     dsh-acp-bundle = codexPatch;
   };
@@ -229,6 +275,7 @@ in
         "@deepseek-ai/dsh-base"
         "@deepseek-harness-tui/dsh-tui"
         "dsh-local-bundle"
+        "dsh-tui-bundle"
       ]
       // mkProfile "headless" [
         "@deepseek-ai/dsh-base"
