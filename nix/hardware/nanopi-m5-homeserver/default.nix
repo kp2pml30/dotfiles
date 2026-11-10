@@ -61,6 +61,9 @@
   };
 
   security.sudo.wheelNeedsPassword = false;
+  # Console rescue login
+  users.users.root.hashedPassword =
+    config.users.users.${config.kp2pml30.server.username}.hashedPassword;
 
   # The box wedges every few days (answers ping, no userspace progress, journald
   # silent), likely the SD/dwmmc controller stalling with tasks stuck in D state.
