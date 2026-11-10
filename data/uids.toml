@@ -4,6 +4,8 @@
 
 # personal
 kp2pml30 = 1000
+# AI user; primary group ai (gids.toml)
+violet = 1600
 
 # server
 acme = 995

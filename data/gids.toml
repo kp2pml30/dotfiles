@@ -1,6 +1,7 @@
 # Single source of truth for group IDs across hosts.
 
 acme = 993
+ai = 1600
 boot-unlocker = 1300
 certreaders = 990
 coredns = 989
