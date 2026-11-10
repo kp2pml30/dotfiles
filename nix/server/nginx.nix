@@ -54,26 +54,6 @@ lib.mkIf cfg.nginx {
     logError = "stderr debug";
 
     virtualHosts = {
-      "git.${cfg.hostname}" = {
-        enableACME = true;
-        acmeRoot = acmeRoot;
-
-        listen = [
-          {
-            addr = "0.0.0.0";
-            port = 80;
-          }
-          {
-            addr = "[::]";
-            port = 80;
-          }
-        ];
-
-        locations."/" = {
-          proxyPass = "http://127.0.0.1:${toString ports.forgejo}";
-        };
-      };
-
       "backend.${cfg.hostname}" = {
         enableACME = true;
         acmeRoot = acmeRoot;

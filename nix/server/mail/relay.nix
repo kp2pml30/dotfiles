@@ -9,7 +9,7 @@ let
   cfg = config.kp2pml30.server;
   ports = cfg.ports;
   vdsina = data.network.machines.vdsina;
-  tun = data.network.mail-tunnel;
+  tun = data.network.tunnel;
   common = import ./common.nix data;
   inherit (data.mail) domain dkim;
   acmeRoot = "/var/lib/acme/acme-challenge";
@@ -82,29 +82,11 @@ lib.mkIf cfg.mail-relay {
       assertion = cfg.nginx && cfg.hostname == domain;
       message = "mail-relay serves ${domain} through this host's nginx and zone";
     }
+    {
+      assertion = cfg.tunnel == "relay";
+      message = "mail-relay forwards to nanopi-m5 through the tunnel";
+    }
   ];
-
-  networking.wireguard.interfaces.wg-mail = {
-    ips = [
-      "${tun.vdsina.ipv4}/24"
-      "${tun.vdsina.ipv6}/64"
-    ];
-    listenPort = ports.mail-wg;
-    privateKeyFile = "/run/secrets/mail/wg-vdsina";
-    peers = [
-      {
-        publicKey = tun.nanopi-m5.wg-pub;
-        allowedIPs = [
-          "${tun.nanopi-m5.ipv4}/32"
-          "${tun.nanopi-m5.ipv6}/128"
-        ];
-      }
-    ];
-  };
-  systemd.services.wireguard-wg-mail = {
-    after = [ "decrypt-secrets.service" ];
-    requires = [ "decrypt-secrets.service" ];
-  };
 
   # Mail only passes through the kernel here; nothing readable touches disk
   networking.nat = {
@@ -126,20 +108,19 @@ lib.mkIf cfg.mail-relay {
     ]) common.publicPorts;
   };
 
-  networking.firewall.allowedUDPPorts = [ ports.mail-wg ];
-  # NAT turns forwarding on for every interface; forward only the mail tunnel:
+  # NAT turns forwarding on for every interface; forward only the tunnel:
   # in, only the DNAT'd ports; out, only SMTP, so nanopi can't spend this IP's reputation
   networking.firewall.extraCommands = ''
-    ip46tables -I FORWARD ! -i wg-mail ! -o wg-mail -j DROP
-    ip46tables -I FORWARD -o wg-mail -m conntrack ! --ctstate DNAT,RELATED,ESTABLISHED -j DROP
-    ip46tables -I FORWARD -i wg-mail -m conntrack --ctstate NEW ! -p tcp -j DROP
-    ip46tables -I FORWARD -i wg-mail -m conntrack --ctstate NEW -p tcp ! --dport 25 -j DROP
+    ip46tables -I FORWARD ! -i ${tun.interface} ! -o ${tun.interface} -j DROP
+    ip46tables -I FORWARD -o ${tun.interface} -m conntrack ! --ctstate DNAT,RELATED,ESTABLISHED -j DROP
+    ip46tables -I FORWARD -i ${tun.interface} -m conntrack --ctstate NEW ! -p tcp -j DROP
+    ip46tables -I FORWARD -i ${tun.interface} -m conntrack --ctstate NEW -p tcp ! --dport 25 -j DROP
   '';
   networking.firewall.extraStopCommands = ''
-    ip46tables -D FORWARD ! -i wg-mail ! -o wg-mail -j DROP 2>/dev/null || true
-    ip46tables -D FORWARD -o wg-mail -m conntrack ! --ctstate DNAT,RELATED,ESTABLISHED -j DROP 2>/dev/null || true
-    ip46tables -D FORWARD -i wg-mail -m conntrack --ctstate NEW ! -p tcp -j DROP 2>/dev/null || true
-    ip46tables -D FORWARD -i wg-mail -m conntrack --ctstate NEW -p tcp ! --dport 25 -j DROP 2>/dev/null || true
+    ip46tables -D FORWARD ! -i ${tun.interface} ! -o ${tun.interface} -j DROP 2>/dev/null || true
+    ip46tables -D FORWARD -o ${tun.interface} -m conntrack ! --ctstate DNAT,RELATED,ESTABLISHED -j DROP 2>/dev/null || true
+    ip46tables -D FORWARD -i ${tun.interface} -m conntrack --ctstate NEW ! -p tcp -j DROP 2>/dev/null || true
+    ip46tables -D FORWARD -i ${tun.interface} -m conntrack --ctstate NEW -p tcp ! --dport 25 -j DROP 2>/dev/null || true
   '';
 
   services.nginx.virtualHosts = {

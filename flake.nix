@@ -156,11 +156,12 @@
               kp2pml30.server = {
                 hostname = "kp2pml30.moe";
                 nginx = true;
-                forgejo = true;
+                forgejo-relay = true;
                 nix-cache = true;
                 xray = true;
                 headscale = true;
                 mail-relay = true;
+                tunnel = "relay";
               };
 
               kp2pml30.headscale-client.enable = true;
@@ -371,6 +372,11 @@
             ./nix/server/ya-coder.nix
 
             {
+              kp2pml30.server = {
+                tunnel = "host";
+                forgejo = true;
+              };
+
               kp2pml30.zfs = {
                 enable = true;
                 unlock = "initrd-ssh";

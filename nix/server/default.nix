@@ -22,6 +22,18 @@ in
     nginx = lib.mkEnableOption "";
 
     forgejo = lib.mkEnableOption "";
+    forgejo-relay = lib.mkEnableOption "public forgejo front relaying HTTP and ssh to nanopi-m5";
+
+    tunnel = lib.mkOption {
+      type = lib.types.nullOr (
+        lib.types.enum [
+          "relay"
+          "host"
+        ]
+      );
+      default = null;
+      description = "Side of the vdsina (relay) <-> nanopi-m5 (host) WireGuard tunnel";
+    };
 
     dns = lib.mkEnableOption "";
     nix-cache = lib.mkEnableOption "";
@@ -46,6 +58,8 @@ in
     ./nginx.nix
     ./boot.nix
     ./site.nix
+    ./tunnel.nix
+    ./ingress.nix
     ./forgejo.nix
     ./dns.nix
     ./nix-cache.nix

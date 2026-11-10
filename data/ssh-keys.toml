@@ -11,3 +11,9 @@ ya-coder-deep-seek = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFKt5Hr45WzNuQwdT4gpho
 
 # host key of the nanopi initrd sshd, private half on its /boot
 nanopi-m5-initrd = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIF17ijDjIQ6sFMISEJylqbfnhmz7JeQUHwzHa9kVivw nanopi-m5-initrd"
+
+# nanopi-m5 sshd host key, pinned by vdsina's forgejo relay
+nanopi-m5-host = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOwNQCB9oTs9zqGnrM3x9Eo6wpjO/cD/io6kyGeQpg7J"
+
+# vdsina's forgejo ssh relay, only reaches the dispatch command on nanopi-m5
+forgejo-relay = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDEW8Ez8XhlgadeFIV9fhUGEi19XupYHa5p8AHEj3MYc forgejo-relay"

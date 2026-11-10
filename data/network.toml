@@ -17,13 +17,16 @@ wg = { machine = "vdsina", fqdn = "wg.kp2pml30.moe" }
 www = { machine = "vdsina", fqdn = "kp2pml30.moe" }
 xray = { machine = "vdsina", fqdn = "x.kp2pml30.moe" }
 
-# vdsina <-> nanopi-m5 WireGuard link carrying all mail traffic
-[mail-tunnel.vdsina]
+# vdsina <-> nanopi-m5 WireGuard link: mail, nanopi-m5 egress and proxied services
+[tunnel]
+interface = "wg-tunnel"
+
+[tunnel.vdsina]
 ipv4 = "10.20.0.1"
 ipv6 = "fd20::1"
 wg-pub = "rOxD0Ms+o9Q9Utfvzvb2zKPx/caYWQT4vIBilf0e5Eo="
 
-[mail-tunnel.nanopi-m5]
+[tunnel.nanopi-m5]
 ipv4 = "10.20.0.2"
 ipv6 = "fd20::2"
 wg-pub = "DqPfo4l6RfJo8vmXQJB2ouO4XXMkTWhXrklbxZfL1SI="
