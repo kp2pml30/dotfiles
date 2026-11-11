@@ -19,6 +19,7 @@ in
     ./secrets
     ./oom-killer.nix
     ./zfs.nix
+    ./nora/client.nix
   ];
 
   options.swapDevices = lib.mkOption {

@@ -35,6 +35,8 @@ in
       description = "Side of the vdsina (relay) <-> nanopi-m5 (host) WireGuard tunnel";
     };
 
+    nora = lib.mkEnableOption "nora package cache for the tailnet";
+
     dns = lib.mkEnableOption "";
     nix-cache = lib.mkEnableOption "";
     xray = lib.mkEnableOption "";
@@ -61,6 +63,7 @@ in
     ./tunnel.nix
     ./ingress.nix
     ./forgejo.nix
+    ./nora.nix
     ./dns.nix
     ./nix-cache.nix
     ./xray.nix

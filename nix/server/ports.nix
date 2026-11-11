@@ -23,6 +23,13 @@
       description = "CoreDNS HTTPS interface port";
     };
 
+    nora = lib.mkOption {
+      type = lib.types.int;
+      default = (import ../nora/common.nix).port;
+      readOnly = true;
+      description = "NORA package cache (tailnet); clients take it from nix/nora/common.nix";
+    };
+
     # Available ports for new services
     xray-main = lib.mkOption {
       type = lib.types.int;

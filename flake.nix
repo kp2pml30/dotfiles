@@ -78,6 +78,11 @@
       inputs.git-hooks.follows = "git-hooks";
     };
 
+    nora = {
+      url = "github:getnora-io/nora/v1.4.4";
+      flake = false;
+    };
+
     # Private repo, so hosts evaluating this input need a forgejo ssh key
     ya-coder = {
       url = "git+ssh://forgejo@git.kp2pml30.moe/ya/coder.git?lfs=1";
@@ -232,6 +237,7 @@
                 agent.local = true;
                 sync-files.enable = true;
                 damn-rust.enable = true;
+                nora-client.enable = true;
 
                 qemu = true;
 
@@ -375,7 +381,9 @@
               kp2pml30.server = {
                 tunnel = "host";
                 forgejo = true;
+                nora = true;
               };
+              kp2pml30.nora-client.enable = true;
 
               kp2pml30.zfs = {
                 enable = true;

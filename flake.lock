@@ -349,6 +349,23 @@
         "type": "github"
       }
     },
+    "nora": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1794044557,
+        "narHash": "sha256-58/TqTyfh8pyBZHM6j1468dpQ0t/YugvGmga4k9+c4Q=",
+        "owner": "getnora-io",
+        "repo": "nora",
+        "rev": "0d1a5fc54074f2bb8c333a05239790d7bb513e8f",
+        "type": "github"
+      },
+      "original": {
+        "owner": "getnora-io",
+        "ref": "v1.4.4",
+        "repo": "nora",
+        "type": "github"
+      }
+    },
     "root": {
       "inputs": {
         "agent-skills": "agent-skills",
@@ -363,6 +380,7 @@
         "microvm": "microvm",
         "nixos-generators": "nixos-generators",
         "nixpkgs": "nixpkgs",
+        "nora": "nora",
         "rust-overlay": "rust-overlay",
         "simple-nixos-mailserver": "simple-nixos-mailserver",
         "systems": "systems",
