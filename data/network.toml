@@ -10,6 +10,7 @@ backend = { machine = "vdsina", fqdn = "backend.kp2pml30.moe" }
 dns = { machine = "vdsina", fqdn = "dns.kp2pml30.moe" }
 dns2 = { machine = "vdsina", fqdn = "dns2.kp2pml30.moe" }
 forgejo = { machine = "vdsina", fqdn = "git.kp2pml30.moe" }
+hooks = { machine = "vdsina", fqdn = "hooks.kp2pml30.moe" }
 mta-sts = { machine = "vdsina", fqdn = "mta-sts.kp2pml30.moe" }
 nix-cache = { machine = "vdsina", fqdn = "cache.nix.kp2pml30.moe" }
 signal-proxy = { machine = "vdsina", fqdn = "pr.kp2pml30.moe" }

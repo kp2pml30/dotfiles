@@ -23,6 +23,8 @@ in
 
     forgejo = lib.mkEnableOption "";
     forgejo-relay = lib.mkEnableOption "public forgejo front relaying HTTP and ssh to nanopi-m5";
+    hooks = lib.mkEnableOption "webhooks and mail classifier";
+    hooks-relay = lib.mkEnableOption "public hooks front relaying to nanopi-m5";
 
     tunnel = lib.mkOption {
       type = lib.types.nullOr (
@@ -64,6 +66,7 @@ in
     ./ingress.nix
     ./forgejo.nix
     ./nora.nix
+    ./hooks.nix
     ./dns.nix
     ./nix-cache.nix
     ./xray.nix

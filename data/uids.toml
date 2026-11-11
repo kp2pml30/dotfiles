@@ -28,3 +28,5 @@ knot-resolver = 1402
 postfix-tlspol = 1403
 redis-rspamd = 1401
 virtualMail = 1400
+# webhooks and mail classifier (nanopi-m5)
+hooks = 1410

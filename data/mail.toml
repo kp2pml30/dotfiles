@@ -3,8 +3,27 @@
 
 domain = "kp2pml30.moe"
 
+# Port 25 rejects these; only authenticated submissions may deliver to them
+internal = ["alerts-internal"]
+
 [accounts.kp2pml30]
-aliases = ["me", "r3vdy-2-b10vv", "r3vdy2b10vv", "kira"]
+aliases = [
+    "me",
+    "r3vdy-2-b10vv",
+    "r3vdy2b10vv",
+    "kira",
+    "gmail-r3vdy2b10vv",
+    "gmail-kp2pml30",
+    "gmail-work",
+    "alerts-internal",
+]
+
+# Any bot sends from here and reads direct replies
+[accounts.robo-kira]
+aliases = []
+
+[accounts.violet]
+aliases = ["secretary"]
 
 # Role addresses: RFC 2142, RFC 5321 and the ones CAs use for domain
 # validation. Never hand them out to anyone else.

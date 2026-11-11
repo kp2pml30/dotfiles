@@ -91,6 +91,12 @@
       description = "nanopi-m5 nginx, reached from vdsina nginx over the tunnel";
     };
 
+    hooks = lib.mkOption {
+      type = lib.types.int;
+      default = 8404;
+      description = "nanopi-m5 webhook service (kp2pml30-moe-hooks), localhost behind nginx";
+    };
+
     mail-acme = lib.mkOption {
       type = lib.types.int;
       default = 8402;

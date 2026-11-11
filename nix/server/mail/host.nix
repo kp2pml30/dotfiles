@@ -13,12 +13,14 @@ let
     domain
     accounts
     reserved
+    internal
     dkim
     ;
 
   address = local: "${local}@${domain}";
   secrets = "/run/secrets/mail";
   keys = "/run/mail-keys";
+  inherit (config.kp2pml30.server) hooks;
 
   localParts =
     lib.attrNames accounts ++ lib.concatMap (a: a.aliases) (lib.attrValues accounts) ++ reserved.names;
@@ -36,6 +38,10 @@ in
     {
       assertion = lib.length (lib.unique localParts) == lib.length localParts;
       message = "mail: local parts must be unique across accounts, aliases and reserved";
+    }
+    {
+      assertion = lib.all (n: lib.elem n localParts) internal;
+      message = "mail: internal names an address that is not served";
     }
   ];
 
@@ -55,6 +61,9 @@ in
         aliases = map address (acc.aliases ++ lib.optionals (name == reserved.owner) reserved.names);
       }
     ) accounts;
+
+    # Applies on port 25 only; submissions has its own restrictions
+    rejectRecipients = map address internal;
 
     x509.useACMEHost = common.fqdn;
 
@@ -126,6 +135,12 @@ in
     script = ''
       install -d -m 0711 ${keys}
       install -m 0400 -o rspamd -g rspamd ${secrets}/dkim-mail.key ${keys}/dkim-mail.key
+    ''
+    # A missing hooks secret must not take mail down with it
+    + lib.optionalString hooks ''
+      if [ -e ${secrets}/hooks-master.passwd ]; then
+        install -m 0400 -o dovecot2 -g dovecot2 ${secrets}/hooks-master.passwd ${keys}/hooks-master.passwd
+      fi
     '';
   };
   systemd.services.rspamd = {
@@ -133,8 +148,22 @@ in
     after = [ "mail-keys.service" ];
   };
   systemd.services.dovecot = {
-    requires = [ "decrypt-secrets.service" ];
-    after = [ "decrypt-secrets.service" ];
+    requires = [ "mail-keys.service" ];
+    after = [ "mail-keys.service" ];
+  };
+
+  # `<account>*hooks` logs into any account with the hooks service's own password,
+  # over IMAP from this host only: SASL for submission and ManageSieve share this auth
+  services.dovecot2.settings = lib.mkIf hooks {
+    auth_master_user_separator = "*";
+    "protocol imap"."passdb master" = {
+      driver = "passwd-file";
+      passwd_file_path = "${keys}/hooks-master.passwd";
+      master = true;
+      # Only for accounts the next passdb knows
+      result_success = "continue";
+      fields.allow_nets = "127.0.0.1/32 ::1/128";
+    };
   };
   # The HTTP-01 challenge arrives over the tunnel
   systemd.services."acme-order-renew-${common.fqdn}" = {

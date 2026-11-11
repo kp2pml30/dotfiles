@@ -99,11 +99,21 @@ let
   };
 
   accountsConfig = toml.generate "accounts.toml" {
-    accounts = lib.mapAttrsToList (name: client: {
-      inherit name;
-      inherit (client) id groups;
-      kind.external.adapter = "tui";
-    }) clients;
+    accounts =
+      lib.mapAttrsToList (name: client: {
+        inherit name;
+        inherit (client) id groups;
+        kind.external.adapter = "tui";
+      }) clients
+      ++ [
+        # hooks hands classified mail over as this one
+        {
+          name = "mailer";
+          id = "019a6000-0000-7000-8000-000000000003";
+          groups = [ ];
+          kind.external.adapter = "tui";
+        }
+      ];
     groups = lib.concatMap (server: [
       { name = server; }
       {
@@ -232,13 +242,16 @@ in
         stateDir
         "--socket"
         socket
+        # Group members (hooks) reach the socket, and may claim any TUI account on it
+        "--socket-mode"
+        "0660"
       ];
       WorkingDirectory = stateDir;
       LoadCredential = lib.mapAttrsToList (name: path: "${name}:/run/secrets/${path}") secrets;
       StateDirectory = user;
       StateDirectoryMode = "0700";
       RuntimeDirectory = user;
-      RuntimeDirectoryMode = "0700";
+      RuntimeDirectoryMode = "0750";
       Restart = "on-failure";
       RestartSec = 5;
 

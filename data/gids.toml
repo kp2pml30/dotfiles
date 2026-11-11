@@ -6,6 +6,7 @@ boot-unlocker = 1300
 certreaders = 990
 coredns = 989
 forgejo = 992
+hooks = 1410
 knot-resolver = 1402
 postfix-tlspol = 1403
 redis-rspamd = 1401

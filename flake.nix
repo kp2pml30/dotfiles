@@ -162,6 +162,7 @@
                 hostname = "kp2pml30.moe";
                 nginx = true;
                 forgejo-relay = true;
+                hooks-relay = true;
                 nix-cache = true;
                 xray = true;
                 headscale = true;
@@ -382,6 +383,7 @@
                 tunnel = "host";
                 forgejo = true;
                 nora = true;
+                hooks = true;
               };
               kp2pml30.nora-client.enable = true;
 
