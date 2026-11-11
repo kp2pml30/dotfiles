@@ -8,7 +8,7 @@ let
   cfg = config.kp2pml30.server;
   ports = cfg.ports;
   tun = data.network.tunnel;
-  upstream = "http://${tun.nanopi-m5.ipv4}:${toString ports.ingress-http}";
+  upstream = "nanopi-ingress";
 in
 {
   options.kp2pml30.server.ingress.forward = lib.mkOption {
@@ -26,6 +26,19 @@ in
         }
       ];
 
+      # Reused connections save a ~270 ms tunnel round trip per request
+      services.nginx.upstreams.${upstream} = {
+        servers."${tun.nanopi-m5.ipv4}:${toString ports.ingress-http}" = { };
+        extraConfig = "keepalive 16;";
+      };
+      # The stock $connection_upgrade sends "close", which defeats keepalive
+      services.nginx.commonHttpConfig = ''
+        map $http_upgrade $kp2_ingress_connection {
+          default upgrade;
+          "" "";
+        }
+      '';
+
       services.nginx.virtualHosts = lib.genAttrs cfg.ingress.forward (_: {
         enableACME = true;
         acmeRoot = "/var/lib/acme/acme-challenge";
@@ -40,10 +53,12 @@ in
           }
         ];
         locations."/" = {
-          proxyPass = upstream;
-          proxyWebsockets = true;
+          proxyPass = "http://${upstream}";
           # nanopi-m5's vhost enforces its own limit
           extraConfig = ''
+            proxy_http_version 1.1;
+            proxy_set_header Upgrade $http_upgrade;
+            proxy_set_header Connection $kp2_ingress_connection;
             client_max_body_size 0;
             proxy_request_buffering off;
           '';

@@ -13,6 +13,8 @@ let
   keys = "/run/tunnel-keys";
   # Routes everything sourced from the tunnel addresses out via vdsina
   routeTable = 2525;
+  # nanopi-m5's uplink path MTU is 1454 (double NAT); wireguard's 1420 default blackholes
+  mtu = 1280;
 in
 lib.mkMerge [
   (lib.mkIf (cfg.tunnel == "relay") {
@@ -22,6 +24,7 @@ lib.mkMerge [
         "${tun.vdsina.ipv6}/64"
       ];
       listenPort = ports.tunnel-wg;
+      inherit mtu;
       privateKeyFile = "/run/secrets/tunnel/wg-vdsina";
       peers = [
         {
@@ -82,7 +85,10 @@ lib.mkMerge [
           Priority = 1000;
         }
       ];
-      linkConfig.RequiredForOnline = "no";
+      linkConfig = {
+        RequiredForOnline = "no";
+        MTUBytes = toString mtu;
+      };
     };
 
     # The peer accepts any source: vdsina may only reach the tunnel address, and
