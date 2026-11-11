@@ -484,12 +484,12 @@
         ]
       },
       "locked": {
-        "lastModified": 1794407965,
+        "lastModified": 1794430573,
         "lfs": true,
-        "narHash": "sha256-cVddDRN1sYqN71xXltx2CYTfxrhEURBz+ELYv31SHhI=",
+        "narHash": "sha256-Nze8NH92DNqvYeWWW8smEHsyvTU53yv69ZNe3apDE9c=",
         "ref": "refs/heads/main",
-        "rev": "316f61b575ea0d70a1103bf071b01bc3aacfdd67",
-        "revCount": 166,
+        "rev": "f54f1160a89545e7d4e3458c0cd1be6c2d774656",
+        "revCount": 168,
         "type": "git",
         "url": "ssh://forgejo@git.kp2pml30.moe/ya/coder.git"
       },
