@@ -90,6 +90,7 @@
       inputs.systems.follows = "systems";
       inputs.rust-overlay.follows = "rust-overlay";
       inputs.git-hooks.follows = "git-hooks";
+      inputs.microvm.follows = "microvm";
     };
   };
 

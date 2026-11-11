@@ -263,11 +263,11 @@
         "yamd": "yamd"
       },
       "locked": {
-        "lastModified": 1793694334,
-        "narHash": "sha256-WC2q6IKspndgtUdBj4WfnfcRMhjq7qYHxw/GfneRnJ4=",
+        "lastModified": 1794400972,
+        "narHash": "sha256-uKAelV4VFnYvqFbu3mNNNahAqJ/+vBiI7f3K8mGRR5I=",
         "owner": "kp2pml30",
         "repo": "kp2pml30.github.io",
-        "rev": "ac601dee4e72b26da733b2921e24a827c2a54333",
+        "rev": "d1f7c6cce11a7083013b2e256f8a9fe4775ed3df",
         "type": "github"
       },
       "original": {
@@ -470,6 +470,9 @@
         "git-hooks": [
           "git-hooks"
         ],
+        "microvm": [
+          "microvm"
+        ],
         "nixpkgs": [
           "nixpkgs"
         ],
@@ -481,12 +484,12 @@
         ]
       },
       "locked": {
-        "lastModified": 1794077295,
+        "lastModified": 1794400887,
         "lfs": true,
-        "narHash": "sha256-ASEhqSb9SXiQ5zI6CFslhRWb8HdN4nlsb4K4fJUFlfs=",
+        "narHash": "sha256-yP9UIPfheeaCwN43ugli1KWMapi1h0elkEHYz1rF5d8=",
         "ref": "refs/heads/main",
-        "rev": "a16e3707538154164ed6d4c54f7c272fe2d23393",
-        "revCount": 160,
+        "rev": "a9fceb5440c057f63a6f285e0e7a5bf82bcd3fa4",
+        "revCount": 165,
         "type": "git",
         "url": "ssh://forgejo@git.kp2pml30.moe/ya/coder.git"
       },
