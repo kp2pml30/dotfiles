@@ -27,7 +27,6 @@
       inputs.flake-utils.follows = "flake-utils";
       inputs.systems.follows = "systems";
       inputs.git-hooks.follows = "git-hooks";
-      inputs.rust-overlay.follows = "rust-overlay";
     };
     # Private repo, so hosts evaluating this input need a forgejo ssh key
     kp2pml30-moe-backend = {

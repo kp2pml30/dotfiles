@@ -169,35 +169,6 @@
         "type": "github"
       }
     },
-    "git-third-party": {
-      "inputs": {
-        "git-hooks": [
-          "kp2pml30-moe",
-          "git-hooks"
-        ],
-        "nixpkgs": [
-          "kp2pml30-moe",
-          "nixpkgs"
-        ],
-        "systems": [
-          "kp2pml30-moe",
-          "systems"
-        ]
-      },
-      "locked": {
-        "lastModified": 1785223192,
-        "narHash": "sha256-B0G3SjlmGM0m5hJVufWnw3dxi4NZ80rTRY59KmWtasY=",
-        "owner": "kp2pml30",
-        "repo": "git-third-party",
-        "rev": "a6e28ba6ca31215d994e8778b53abf142bd7f3dd",
-        "type": "github"
-      },
-      "original": {
-        "owner": "kp2pml30",
-        "repo": "git-third-party",
-        "type": "github"
-      }
-    },
     "herdr": {
       "inputs": {
         "nixpkgs": [
@@ -250,12 +221,8 @@
         "git-hooks": [
           "git-hooks"
         ],
-        "git-third-party": "git-third-party",
         "nixpkgs": [
           "nixpkgs"
-        ],
-        "rust-overlay": [
-          "rust-overlay"
         ],
         "systems": [
           "systems"
@@ -263,11 +230,11 @@
         "yamd": "yamd"
       },
       "locked": {
-        "lastModified": 1794400972,
-        "narHash": "sha256-uKAelV4VFnYvqFbu3mNNNahAqJ/+vBiI7f3K8mGRR5I=",
+        "lastModified": 1794506149,
+        "narHash": "sha256-5aQNTwC7/YPO+K8Ds0YBWAoS+AFHdFKSZ0ekOM6c92A=",
         "owner": "kp2pml30",
         "repo": "kp2pml30.github.io",
-        "rev": "d1f7c6cce11a7083013b2e256f8a9fe4775ed3df",
+        "rev": "ea5193374b56aae2e126a2b1bfcd6f074d2c3bb7",
         "type": "github"
       },
       "original": {
