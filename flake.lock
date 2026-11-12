@@ -276,6 +276,35 @@
         "type": "github"
       }
     },
+    "kp2pml30-moe-backend": {
+      "inputs": {
+        "flake-utils": [
+          "flake-utils"
+        ],
+        "git-hooks": [
+          "git-hooks"
+        ],
+        "nixpkgs": [
+          "nixpkgs"
+        ],
+        "systems": [
+          "systems"
+        ]
+      },
+      "locked": {
+        "lastModified": 1794505470,
+        "narHash": "sha256-NQDAs8qrYlMWFvpZzD4Qusohf0d40YLwvGYrxjKzJJ4=",
+        "ref": "refs/heads/main",
+        "rev": "c194905d605f18f1bc7dbc832f7292c0ced37371",
+        "revCount": 11,
+        "type": "git",
+        "url": "ssh://forgejo@git.kp2pml30.moe/kp2pml30/website-backend.git"
+      },
+      "original": {
+        "type": "git",
+        "url": "ssh://forgejo@git.kp2pml30.moe/kp2pml30/website-backend.git"
+      }
+    },
     "microvm": {
       "inputs": {
         "nixpkgs": [
@@ -377,6 +406,7 @@
         "herdr": "herdr",
         "home-manager": "home-manager",
         "kp2pml30-moe": "kp2pml30-moe",
+        "kp2pml30-moe-backend": "kp2pml30-moe-backend",
         "microvm": "microvm",
         "nixos-generators": "nixos-generators",
         "nixpkgs": "nixpkgs",

@@ -29,6 +29,14 @@
       inputs.git-hooks.follows = "git-hooks";
       inputs.rust-overlay.follows = "rust-overlay";
     };
+    # Private repo, so hosts evaluating this input need a forgejo ssh key
+    kp2pml30-moe-backend = {
+      url = "git+ssh://forgejo@git.kp2pml30.moe/kp2pml30/website-backend.git";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.flake-utils.follows = "flake-utils";
+      inputs.systems.follows = "systems";
+      inputs.git-hooks.follows = "git-hooks";
+    };
 
     code-flake = {
       url = "github:kp2pml30/code-flake";
@@ -101,6 +109,7 @@
       home-manager,
       nixos-generators,
       kp2pml30-moe,
+      kp2pml30-moe-backend,
       code-flake,
       claude-code,
       ...
@@ -143,7 +152,12 @@
       # nix/server submodules take these as module args even with all
       # services off.
       nanopi-m5-specialArgs = additionalArgs // {
-        inherit self nixpkgs kp2pml30-moe;
+        inherit
+          self
+          nixpkgs
+          kp2pml30-moe
+          kp2pml30-moe-backend
+          ;
         system = "aarch64-linux";
       };
     in
@@ -186,7 +200,7 @@
           ];
 
           specialArgs = {
-            inherit kp2pml30-moe data;
+            inherit kp2pml30-moe kp2pml30-moe-backend data;
             system = "x86_64-linux";
           };
         };

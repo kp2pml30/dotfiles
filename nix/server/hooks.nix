@@ -3,7 +3,7 @@
   lib,
   pkgs,
   data,
-  kp2pml30-moe,
+  kp2pml30-moe-backend,
   system,
   ...
 }:
@@ -132,7 +132,7 @@ lib.mkMerge [
         Group = user;
         SupplementaryGroups = lib.optional handoff "ya-coder";
         ExecStart = lib.escapeShellArgs [
-          (lib.getExe kp2pml30-moe.packages.${system}.kp2pml30-moe-hooks)
+          (lib.getExe kp2pml30-moe-backend.packages.${system}.kp2pml30-moe-hooks)
           "--config"
           hooksConfig
         ];

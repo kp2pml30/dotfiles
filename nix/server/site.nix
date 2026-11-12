@@ -5,6 +5,7 @@
   self,
   nixpkgs,
   kp2pml30-moe,
+  kp2pml30-moe-backend,
   system,
   data,
   ...
@@ -12,7 +13,7 @@
 let
   cfg = config.kp2pml30.server;
   ports = config.kp2pml30.server.ports;
-  backend = kp2pml30-moe.packages.${system}.kp2pml30-moe-backend;
+  backend = kp2pml30-moe-backend.packages.${system}.kp2pml30-moe-backend;
   frontend = kp2pml30-moe.packages.${system}.kp2pml30-moe-frontend;
 in
 lib.mkIf cfg.nginx {
